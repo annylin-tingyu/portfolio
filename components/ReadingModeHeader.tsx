@@ -6,10 +6,26 @@ import { useEffect, useState } from "react";
 const CHAPTERS: { label: string; targetId: string }[] = [
   { label: "Overview", targetId: "context" },
   { label: "Inflection Point", targetId: "the-inflection-point-marketplace" },
-  { label: "Strategy", targetId: "constraints-that-shaped-the-design" },
+  { label: "Strategy", targetId: "my-role" },
   { label: "Decisions", targetId: "key-decisions" },
   { label: "Outcome", targetId: "outcome" },
 ];
+
+/** Section id → chapter index for active indicator (which chapter to highlight when this section is in view) */
+const SECTION_TO_CHAPTER: Record<string, number> = {
+  context: 0,
+  "the-scaling-problem": 0,
+  "the-inflection-point-marketplace": 1,
+  "my-role": 2,
+  "constraints-that-shaped-the-design": 2,
+  "design-strategy": 2,
+  "key-decisions": 3,
+  "merchant-setup-guardrails": 3,
+  "customer-purchase-clarity": 3,
+  "designing-for-irreversible-actions": 3,
+  outcome: 4,
+  "what-i-learned": 4,
+};
 
 /** Offset from viewport top so the section heading has breathing room below the header */
 const SCROLL_TOP_OFFSET = 140;
@@ -35,7 +51,10 @@ export function ReadingModeHeader() {
   };
 
   useEffect(() => {
-    const targets = CHAPTERS.map((c) => document.getElementById(c.targetId)).filter(Boolean);
+    const sectionIds = Object.keys(SECTION_TO_CHAPTER);
+    const targets = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el != null);
     if (targets.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -43,14 +62,14 @@ export function ReadingModeHeader() {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const id = entry.target.id;
-          const idx = CHAPTERS.findIndex((c) => c.targetId === id);
-          if (idx !== -1) setActiveIndex(idx);
+          const chapterIdx = SECTION_TO_CHAPTER[id];
+          if (chapterIdx !== undefined) setActiveIndex(chapterIdx);
         }
       },
       { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
     );
 
-    targets.forEach((el) => el && observer.observe(el));
+    targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [pathname]);
 

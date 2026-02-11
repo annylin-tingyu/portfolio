@@ -1,26 +1,61 @@
-import Link from "next/link";
-
 const contentMax = "clamp(720px, 88vw, 880px)";
 const sectionGap = "clamp(72px, 10vw, 110px)";
 const inSectionGap = "clamp(16px, 2vw, 24px)";
 const headingToBody = "clamp(12px, 1.5vw, 18px)";
 
-/** Section body copy by section id. Omit for placeholder. */
-const SECTION_CONTENT: Record<string, string[]> = {
+/** Section body copy by section id. Use string for paragraphs, { list: string[] } for bullet lists. */
+const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
   context: [
     "The product started as a reservation tool for beauty businesses. Merchants could offer loyalty bundles (e.g., buy 10 sessions, get 3 free) and stored-value credits, but these required manual promotion and in-person setup. This worked at a small scale but didn't support the company's expansion into fitness, lifestyle, and retail.",
     "Manual workflows became a constraint. The team needed digital campaigns, online sales, and scalable loyalty mechanics that worked across industries without fragmenting the product.",
   ],
+  "the-scaling-problem": [
+    "Existing loyalty features technically met merchant needs, but they were operationally expensive. Promotions lived in conversations, posters, or social posts, and tracking required staff effort. These workflows limited scalability and made it difficult to support new business models or industries consistently.",
+    "To continue growing, the product needed to shift from staff-led promotion toward system-led distribution, without overwhelming non-technical merchants or introducing financial risk.",
+  ],
   "the-inflection-point-marketplace": [
-    "Marketplace introduced a platform layer for creating, selling, and managing digital packages, subscriptions, and campaign-based offers. Promotions shifted from manual, in-person processes to digitally created, sold, and tracked campaigns within the system. This enabled use cases like e-ticket gifting and referral sharing (member-get-member), expanding acquisition and retention beyond the physical store.",
-    "This repositioned the product from a reservation and operations tool to a multi-vertical loyalty and commerce platform.",
+    "Marketplace introduced a platform layer for creating, selling, and managing digital packages, subscriptions, and campaign-based offers directly within the system. Promotions shifted from manual, in-person processes to digitally created, sold, and tracked campaigns.",
+    "This enabled new use cases such as e-ticket gifting and referral sharing (member-get-member), extending customer acquisition and retention beyond the physical store. More importantly, Marketplace repositioned the product from a reservation and operations tool to a multi-vertical loyalty and commerce platform.",
   ],
   "my-role": [
-    "I designed the merchant setup experience (creating and publishing items) and the customer purchase and e-ticket flows. I worked with the PM and engineers to translate requirements into workflows that balanced flexibility with error prevention.",
-    "Key constraints shaped the design:",
-    "No in-platform refunds — transactions were irreversible.",
-    "Misconfiguration risked financial or trust issues for merchants and customers.",
-    "Customer service teams needed clear system states to resolve payment questions efficiently.",
+    "I led the experience design for Marketplace, focusing on how merchants create and publish items for sale and how customers purchase, receive, and use those items. I worked closely with the PM and engineers to translate product requirements into workflows that balanced flexibility with safety and clarity.",
+  ],
+  "constraints-that-shaped-the-design": [
+    "Several constraints had a direct impact on design decisions:",
+    {
+      list: [
+        "Transactions were irreversible within the system, as in-platform refunds were not supported.",
+        "Misconfiguration could result in financial loss or trust issues for merchants and customers.",
+        "Customer service teams relied on clear system states to resolve payment-related questions efficiently.",
+      ],
+    },
+    "These constraints required careful attention to transparency, error prevention, and expectation-setting throughout the experience.",
+  ],
+  "design-strategy": [
+    "Rather than relying on warnings or reactive fixes, I focused on preventing problems through structure:",
+    {
+      list: [
+        "Merchant setup flows were designed with guardrails—using defaults, validation, and clear sequencing to reduce misconfiguration.",
+        "Monetary information was made explicit in both merchant and customer experiences to ensure shared understanding.",
+        "Status communication was designed to minimize ambiguity for customers and reduce investigation work for customer service teams.",
+      ],
+    },
+    "Earlier in the product's evolution, I had worked on a deposit feature to address no-shows in appointment-based services. That experience informed my approach to payment UX, transparency, and trust in Marketplace.",
+  ],
+  "merchant-setup-guardrails": [
+    "Marketplace needed to support different campaign types—bundles, stored-value credits, and subscriptions—without exposing merchants to unnecessary complexity. I designed structured setup flows that guided merchants into safe configurations using defaults and system constraints, rather than relying on warnings after errors occurred.",
+  ],
+  "customer-purchase-clarity": [
+    "On the customer side, I focused on making purchases easy to understand and track. The experience clearly communicated what was purchased, how it could be used, and the current status of remaining value or sessions, reducing confusion and follow-up questions.",
+  ],
+  "designing-for-irreversible-actions": [
+    "Because refunds were not supported in the system, irreversible actions required careful handling. Refund limitations and usage rules were surfaced at key decision points before purchase, setting expectations early and reducing post-transaction disputes.",
+  ],
+  outcome: [
+    "Marketplace enabled the product to support digitally managed campaigns at scale. This unlocked expansion into fitness and retail and increased internal confidence in positioning the platform for enterprise clients. Marketplace became foundational infrastructure as the product evolved from reservation management into a multi-vertical loyalty and commerce system.",
+  ],
+  "what-i-learned": [
+    "Designing for transactions requires prioritizing clarity and correctness over feature volume. Constraints force more deliberate information design, and platform decisions often outlive individual features. As the product expanded across industries, designing scalable patterns rather than one-off solutions became critical.",
   ],
 };
 
@@ -178,11 +213,22 @@ export function CaseStudyLayout({
                   lineHeight: 1.6,
                 }}
               >
-                {SECTION_CONTENT[section.id].map((para, i) => (
-                  <p key={i} className={i > 0 ? "mt-6" : undefined}>
-                    {para}
-                  </p>
-                ))}
+                {SECTION_CONTENT[section.id].map((block, i) => {
+                  if (typeof block === "string") {
+                    return (
+                      <p key={i} className={i > 0 ? "mt-6" : undefined}>
+                        {block}
+                      </p>
+                    );
+                  }
+                  return (
+                    <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
+                      {block.list.map((item, j) => (
+                        <li key={j}>{item}</li>
+                      ))}
+                    </ul>
+                  );
+                })}
               </div>
             </>
           ) : (
@@ -219,25 +265,6 @@ export function CaseStudyLayout({
           )}
         </section>
       ))}
-
-      {/* CTAs */}
-      <footer
-        className="flex flex-wrap gap-6 border-t border-light-gray pt-[clamp(48px,6vw,72px)]"
-        style={{ marginTop: sectionGap }}
-      >
-        <Link
-          href="/#work"
-          className="text-[14px] font-medium text-charcoal transition-colors duration-[120ms] hover:text-accent-hover-text"
-        >
-          View all work
-        </Link>
-        <Link
-          href="/#contact"
-          className="text-[14px] font-medium text-charcoal transition-colors duration-[120ms] hover:text-accent-hover-text"
-        >
-          Get in touch
-        </Link>
-      </footer>
     </article>
   );
 }
