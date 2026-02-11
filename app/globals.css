@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Monochrome-first design tokens */
+:root {
+  --black: #111111;
+  --charcoal: #3a3a3a;
+  --mid-gray: #6b6b6b;
+  --light-gray: #ededed;
+  --white: #ffffff;
+  /* Accent: editorial purple — static only (details underline, etc.) */
+  --accent: #3b245c;
+  /* Hover-only accent: case titles and text links only, no fills/backgrounds */
+  --accent-hover-text: #5a3a85;
+  /* Aliases for non-landing pages (project detail, etc.) */
+  --foreground: var(--black);
+  --muted: var(--mid-gray);
+  --background: var(--white);
+  --border: var(--light-gray);
+  --accent-hover: var(--accent);
+}
+
+@theme inline {
+  --color-black: var(--black);
+  --color-charcoal: var(--charcoal);
+  --color-mid-gray: var(--mid-gray);
+  --color-light-gray: var(--light-gray);
+  --color-white: var(--white);
+  --color-accent: var(--accent);
+  --color-accent-hover-text: var(--accent-hover-text);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-background: var(--background);
+  --color-border: var(--border);
+  --color-accent-hover: var(--accent-hover);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Hero: underline only the word "details" — 2px flat line, 4–6px below baseline */
+.details-underline {
+  position: relative;
+  display: inline;
+}
+.details-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 0;
+}
