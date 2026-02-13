@@ -33,7 +33,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <p className="mb-1 text-xs font-medium uppercase tracking-wider text-muted">
           {project.category} · {project.year}
         </p>
-        <h3 className="font-display text-xl font-semibold text-foreground transition-colors duration-[120ms] group-hover:text-accent-hover-text">
+        <h3 className="link-underline link-underline--lift font-display text-xl font-semibold text-foreground group-hover:text-accent-hover-text">
           {project.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-muted">

@@ -28,7 +28,7 @@ export default async function ProjectPage({ params }: Props) {
     <div className="mx-auto max-w-4xl px-6 py-16">
       <Link
         href="/#work"
-        className="mb-12 inline-block text-sm font-medium text-muted transition-colors duration-[120ms] hover:text-accent-hover-text"
+        className="link-underline link-underline--lift mb-12 inline-block text-sm font-medium text-muted hover:text-accent-hover-text"
       >
         ← Back to work
       </Link>

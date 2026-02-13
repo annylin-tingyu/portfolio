@@ -1,7 +1,20 @@
+import Image from "next/image";
+import { RevealSection } from "@/components/RevealSection";
+import { PlatformShiftDiagram } from "@/components/PlatformShiftDiagram";
+import { InflectionPointTimeline } from "@/components/InflectionPointTimeline";
+
 const contentMax = "clamp(720px, 88vw, 880px)";
 const sectionGap = "clamp(72px, 10vw, 110px)";
 const inSectionGap = "clamp(16px, 2vw, 24px)";
 const headingToBody = "clamp(12px, 1.5vw, 18px)";
+
+/** Paragraph labels for the Inflection Point section only */
+const INFLECTION_POINT_LABELS = [
+  "OPERATIONAL CONSTRAINT",
+  "STRATEGIC REQUIREMENT",
+  "PLATFORM RESPONSE",
+  "PRODUCT REPOSITIONING",
+] as const;
 
 /** Section body copy by section id. Use string for paragraphs, { list: string[] } for bullet lists. */
 const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
@@ -9,11 +22,9 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
     "The product started as a reservation tool for beauty businesses. Merchants could offer loyalty bundles (e.g., buy 10 sessions, get 3 free) and stored-value credits, but these required manual promotion and in-person setup. This worked at a small scale but didn't support the company's expansion into fitness, lifestyle, and retail.",
     "Manual workflows became a constraint. The team needed digital campaigns, online sales, and scalable loyalty mechanics that worked across industries without fragmenting the product.",
   ],
-  "the-scaling-problem": [
-    "Existing loyalty features technically met merchant needs, but they were operationally expensive. Promotions lived in conversations, posters, or social posts, and tracking required staff effort. These workflows limited scalability and made it difficult to support new business models or industries consistently.",
-    "To continue growing, the product needed to shift from staff-led promotion toward system-led distribution, without overwhelming non-technical merchants or introducing financial risk.",
-  ],
   "the-inflection-point-marketplace": [
+    "Existing loyalty features technically met merchant needs, but they were operationally expensive. Promotions lived in conversations, posters, or social posts, and tracking required staff effort. While workable at small scale, these workflows limited scalability and made it difficult to support new business models or industries consistently.",
+    "To continue growing, the product needed to shift from staff-led promotion toward system-led distribution without overwhelming non-technical merchants or introducing financial risk.",
     "Marketplace introduced a platform layer for creating, selling, and managing digital packages, subscriptions, and campaign-based offers directly within the system. Promotions shifted from manual, in-person processes to digitally created, sold, and tracked campaigns.",
     "This enabled new use cases such as e-ticket gifting and referral sharing (member-get-member), extending customer acquisition and retention beyond the physical store. More importantly, Marketplace repositioned the product from a reservation and operations tool to a multi-vertical loyalty and commerce platform.",
   ],
@@ -61,8 +72,7 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
 
 const SECTIONS: { id: string; title: string; dominantVisual?: boolean; supportingVisual?: boolean }[] = [
   { id: "context", title: "Context", supportingVisual: true },
-  { id: "the-scaling-problem", title: "The Scaling Problem", supportingVisual: true },
-  { id: "the-inflection-point-marketplace", title: "The Inflection Point: Marketplace", dominantVisual: true },
+  { id: "the-inflection-point-marketplace", title: "The Inflection Point", dominantVisual: true },
   { id: "my-role", title: "My Role", supportingVisual: true },
   { id: "constraints-that-shaped-the-design", title: "Constraints That Shaped the Design", supportingVisual: true },
   { id: "design-strategy", title: "Design Strategy", supportingVisual: true },
@@ -173,6 +183,14 @@ export function CaseStudyLayout({
         >
           {description}
         </p>
+          <Image
+            src="/CRMhero.webp"
+            alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
+            width={1798}
+            height={1154}
+            className="w-full h-auto pt-[40px]"
+            unoptimized={true}
+          />
       </header>
 
       {/* Optional subtle divider */}
@@ -184,86 +202,111 @@ export function CaseStudyLayout({
 
       {/* Sections */}
       {SECTIONS.map((section, index) => (
-        <section
-          key={section.id}
-          id={section.id}
-          style={{
-            marginTop: section.dominantVisual ? "clamp(48px, 6vw, 72px)" : undefined,
-            marginBottom: section.dominantVisual ? "clamp(96px, 14vw, 140px)" : sectionGap,
-            paddingTop: index === 0 ? 0 : undefined,
-          }}
-        >
-          <h2
-            className="font-semibold text-black"
+        <RevealSection key={section.id}>
+          <section
+            id={section.id}
             style={{
-              fontSize: "clamp(1.125rem, 2.5vw, 1.375rem)",
-              letterSpacing: "-0.01em",
-              lineHeight: 1.3,
+              marginTop: section.dominantVisual ? "clamp(48px, 6vw, 72px)" : undefined,
+              marginBottom: section.dominantVisual ? "clamp(96px, 14vw, 140px)" : sectionGap,
+              paddingTop: index === 0 ? 0 : undefined,
             }}
           >
-            {section.title}
-          </h2>
-          {SECTION_CONTENT[section.id] ? (
-            <>
-              <div
-                className="max-w-[65ch] text-black"
-                style={{
-                  marginTop: headingToBody,
-                  fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-                  lineHeight: 1.6,
-                }}
-              >
-                {SECTION_CONTENT[section.id].map((block, i) => {
-                  if (typeof block === "string") {
+            <h2
+              className="font-semibold text-black"
+              style={{
+                fontSize: "clamp(1.125rem, 2.5vw, 1.375rem)",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.3,
+              }}
+            >
+              {section.title}
+            </h2>
+            {section.id === "the-inflection-point-marketplace" && <InflectionPointTimeline />}
+            {SECTION_CONTENT[section.id] ? (
+              <>
+                <div
+                  className="max-w-[65ch] text-black"
+                  style={{
+                    marginTop: section.id === "the-inflection-point-marketplace" ? 0 : headingToBody,
+                    fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {SECTION_CONTENT[section.id].map((block, i) => {
+                    if (typeof block === "string") {
+                      const isInflectionPoint = section.id === "the-inflection-point-marketplace";
+                      const label = isInflectionPoint ? INFLECTION_POINT_LABELS[i] : null;
+                      return (
+                        <div
+                          key={i}
+                          style={{
+                            marginTop: i === 0 ? 0 : isInflectionPoint ? 48 : 24,
+                          }}
+                        >
+                          {label != null && (
+                            <p
+                              className="font-medium uppercase text-mid-gray"
+                              style={{
+                                fontSize: "clamp(12px, 1.2vw, 14px)",
+                                letterSpacing: "0.1em",
+                                marginBottom: 14,
+                                color: "rgba(0,0,0,0.6)",
+                              }}
+                            >
+                              {label}
+                            </p>
+                          )}
+                          <p className={!isInflectionPoint && i > 0 ? "mt-6" : undefined}>
+                            {block}
+                          </p>
+                        </div>
+                      );
+                    }
                     return (
-                      <p key={i} className={i > 0 ? "mt-6" : undefined}>
-                        {block}
-                      </p>
+                      <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
+                        {block.list.map((item, j) => (
+                          <li key={j}>{item}</li>
+                        ))}
+                      </ul>
                     );
-                  }
-                  return (
-                    <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
-                      {block.list.map((item, j) => (
-                        <li key={j}>{item}</li>
-                      ))}
-                    </ul>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <>
+                  })}
+                </div>
+                {section.id === "context" && <PlatformShiftDiagram />}
+              </>
+            ) : (
+              <>
+                <div
+                  className="mt-[14px] max-w-[65ch]"
+                  style={{ marginTop: headingToBody }}
+                >
+                  <TextPlaceholder />
+                </div>
+                <div
+                  className="mt-6"
+                  style={{ marginTop: inSectionGap }}
+                >
+                  <TextPlaceholder />
+                </div>
+              </>
+            )}
+            {section.dominantVisual && (
               <div
-                className="mt-[14px] max-w-[65ch]"
-                style={{ marginTop: headingToBody }}
-              >
-                <TextPlaceholder />
-              </div>
-              <div
-                className="mt-6"
+                className="mt-8"
                 style={{ marginTop: inSectionGap }}
               >
-                <TextPlaceholder />
+                <VisualPlaceholder dominant />
               </div>
-            </>
-          )}
-          {section.dominantVisual && (
-            <div
-              className="mt-8"
-              style={{ marginTop: inSectionGap }}
-            >
-              <VisualPlaceholder dominant />
-            </div>
-          )}
-          {section.supportingVisual && !section.dominantVisual && (
-            <div
-              className="mt-8"
-              style={{ marginTop: inSectionGap }}
-            >
-              <VisualPlaceholder />
-            </div>
-          )}
-        </section>
+            )}
+            {section.supportingVisual && !section.dominantVisual && section.id !== "context" && (
+              <div
+                className="mt-8"
+                style={{ marginTop: inSectionGap }}
+              >
+                <VisualPlaceholder />
+              </div>
+            )}
+          </section>
+        </RevealSection>
       ))}
     </article>
   );

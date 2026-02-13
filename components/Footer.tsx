@@ -13,7 +13,7 @@ export function Footer() {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] text-mid-gray transition-colors duration-[120ms] hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
             >
               Twitter
             </Link>
@@ -21,7 +21,7 @@ export function Footer() {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] text-mid-gray transition-colors duration-[120ms] hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
             >
               LinkedIn
             </Link>
@@ -29,7 +29,7 @@ export function Footer() {
               href="https://dribbble.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[13px] text-mid-gray transition-colors duration-[120ms] hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
             >
               Dribbble
             </Link>

@@ -33,7 +33,7 @@ export function CaseSection({
         {label}
       </span>
       <h2
-        className="font-semibold text-black transition-colors duration-[120ms] group-hover:text-accent-hover-text"
+        className="link-underline link-underline--lift font-semibold text-black group-hover:text-accent-hover-text"
         style={{
           fontSize: isDominant
             ? "clamp(1.25rem, 4vw, 2rem)"

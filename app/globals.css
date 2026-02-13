@@ -17,6 +17,11 @@
   --background: var(--white);
   --border: var(--light-gray);
   --accent-hover: var(--accent);
+
+  /* Motion tokens */
+  --motion-duration-fast: 140ms;
+  --motion-duration-medium: 260ms;
+  --motion-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @theme inline {
@@ -55,4 +60,63 @@ body {
   height: 2px;
   background: var(--accent);
   border-radius: 0;
+}
+
+/* Shared link / title motion */
+.link-underline {
+  position: relative;
+  display: inline-block;
+  transition:
+    color var(--motion-duration-fast) var(--motion-ease-out),
+    transform var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.18em;
+  height: 2px;
+  background: var(--accent-hover-text);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+.link-underline--lift:hover {
+  transform: translateY(-1px);
+}
+
+/* Page transition wrapper */
+.page-transition {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--motion-duration-medium) var(--motion-ease-out),
+    transform var(--motion-duration-medium) var(--motion-ease-out);
+}
+
+.page-transition--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-medium: 0ms;
+  }
+
+  .link-underline,
+  .link-underline::after,
+  .page-transition,
+  .page-transition--visible {
+    transition: none !important;
+    transform: none !important;
+  }
 }
