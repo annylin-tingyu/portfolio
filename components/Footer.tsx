@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-light-gray bg-white">
-      <div className="mx-auto max-w-[880px] px-6 py-12">
+    <footer className="border-t border-[#E5E7EB] bg-white">
+      <div className="layout-container py-12">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-          <p className="text-[13px] text-mid-gray">
+          <p className="text-[13px] text-[#6B7280]">
             © {new Date().getFullYear()} Portfolio. All rights reserved.
           </p>
           <div className="flex gap-6">
@@ -13,7 +13,7 @@ export function Footer() {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
             >
               Twitter
             </Link>
@@ -21,7 +21,7 @@ export function Footer() {
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
             >
               LinkedIn
             </Link>
@@ -29,7 +29,7 @@ export function Footer() {
               href="https://dribbble.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-mid-gray hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
             >
               Dribbble
             </Link>

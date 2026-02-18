@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
-/* Monochrome-first design tokens */
+/* Clean White Architectural — single indigo accent */
 :root {
   --black: #111111;
   --charcoal: #3a3a3a;
   --mid-gray: #6b6b6b;
-  --light-gray: #ededed;
+  --secondary: #6b7280;
+  --light-gray: #e5e7eb;
   --white: #ffffff;
-  /* Accent: editorial purple — static only (details underline, etc.) */
-  --accent: #3b245c;
-  /* Hover-only accent: case titles and text links only, no fills/backgrounds */
-  --accent-hover-text: #5a3a85;
+  /* Accent: indigo — max 10% of visible UI */
+  --accent: #4f46e5;
+  --accent-hover-text: #4f46e5;
   /* Aliases for non-landing pages (project detail, etc.) */
   --foreground: var(--black);
-  --muted: var(--mid-gray);
+  --muted: var(--secondary);
   --background: var(--white);
   --border: var(--light-gray);
   --accent-hover: var(--accent);
@@ -21,13 +21,14 @@
   /* Motion tokens */
   --motion-duration-fast: 140ms;
   --motion-duration-medium: 260ms;
-  --motion-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @theme inline {
   --color-black: var(--black);
   --color-charcoal: var(--charcoal);
   --color-mid-gray: var(--mid-gray);
+  --color-secondary: var(--secondary);
   --color-light-gray: var(--light-gray);
   --color-white: var(--white);
   --color-accent: var(--accent);
@@ -44,6 +45,61 @@ body {
   background: var(--white);
   color: var(--black);
   font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Shared layout container: nav + hero + cabinet — 1440×900 baseline */
+.layout-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+@media (max-width: 900px) {
+  .layout-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* Hero above-the-fold: min-height = viewport minus nav (56px = h-14) */
+.hero-no-scroll {
+  min-height: calc(100vh - 56px);
+}
+
+/* Stack layout: default when width < 900px OR height < 800px */
+.hero-split-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.hero-pt-stack {
+  padding-top: 96px;
+}
+
+/* Split layout: width >= 900px AND height >= 800px — side-by-side, no scroll */
+@media (min-width: 900px) and (min-height: 800px) {
+  .hero-split-inner {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 56px;
+  }
+  .hero-pt-split {
+    padding-top: 48px;
+  }
+}
+
+/* Cabinet cards: 1 col < 520px, 2 cols >= 520px */
+@media (max-width: 519px) {
+  .cabinet-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.cabinet-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 /* Hero: underline only the word "details" — 2px flat line, 4–6px below baseline */
@@ -78,10 +134,10 @@ body {
   right: 0;
   bottom: -0.18em;
   height: 2px;
-  background: var(--accent-hover-text);
+  background: var(--accent);
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform var(--motion-duration-fast) var(--motion-ease-out);
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .link-underline:hover::after {
@@ -90,6 +146,201 @@ body {
 
 .link-underline--lift:hover {
   transform: translateY(-1px);
+}
+
+/* Case study pages: monochrome editorial — override accent to charcoal */
+.case-study-editorial {
+  --accent: #3a3a3a;
+  --accent-hover-text: #3a3a3a;
+  --accent-hover: #111111;
+}
+.case-study-editorial .link-underline::after {
+  background: var(--charcoal);
+}
+
+/* Case study card: subtle luminous glow on hover/focus only */
+.card-glow:hover,
+.card-glow:focus-visible {
+  border-color: rgba(79, 70, 229, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(79, 70, 229, 0.25),
+    0 10px 30px rgba(79, 70, 229, 0.12);
+}
+
+/* Pantry container — rigid storage box with sticker label */
+.cabinet-card-container {
+  border: 1px solid rgba(17, 17, 17, 0.14);
+  background: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 0 rgba(17, 17, 17, 0.12),
+    0 12px 18px rgba(17, 17, 17, 0.12);
+}
+/* Hover: lift slightly, indigo accent, subtle glow */
+.cabinet-card-container:hover,
+.cabinet-card-container:focus-visible {
+  border-color: rgba(79, 70, 229, 0.35);
+  transform: translateY(-6px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 0 0 1px rgba(79, 70, 229, 0.2),
+    0 4px 0 rgba(17, 17, 17, 0.1),
+    0 16px 24px rgba(17, 17, 17, 0.12),
+    0 8px 20px rgba(79, 70, 229, 0.08);
+}
+
+/* Sticker label — physical label on container */
+.cabinet-sticker {
+  background: #fafafa;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+}
+.cabinet-card-title {
+  transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cabinet-card-container:hover .cabinet-card-title,
+.cabinet-card-container:focus-visible .cabinet-card-title {
+  color: #4f46e5;
+}
+
+/* Card label strip: 2px top border, accent on hover */
+.card-label-strip {
+  border-top: 2px solid transparent;
+  transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-glow:hover .card-label-strip,
+.card-glow:focus-visible .card-label-strip {
+  border-top-color: #4f46e5;
+}
+
+/* Shelf unit — 606 Universal Shelving System (Vitsoe / Dieter Rams) */
+
+/* Lighting — very subtle; 606 is "quiet in form and colour" */
+.shelf-unit-lighting {
+  background: radial-gradient(
+    ellipse 100% 80% at 50% 0%,
+    rgba(17, 17, 17, 0.02) 0%,
+    transparent 60%
+  );
+}
+
+/* E-profile rail — anodised aluminium with two vertical grooves (606) */
+.shelf-unit-rail {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.5) 0%,
+    #b0b4ba 0%,
+    #b0b4ba 1px,
+    #4a4d52 1px,
+    #4a4d52 3px,
+    #9ea2a8 3px,
+    #9ea2a8 5px,
+    #4a4d52 5px,
+    #4a4d52 7px,
+    #b0b4ba 7px,
+    rgba(17, 17, 17, 0.06) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+/* Shelf slab wrapper — full width, edges align with rails */
+.shelf-slab-wrapper {
+  width: 100%;
+}
+
+/* Shelf cards track — horizontal scroll with snap */
+.shelf-unit-cards {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.shelf-unit-cards::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shelf — slab thickness matches rail (606: extreme thinness, almost a single line) */
+.shelf-unit-slab {
+  position: relative;
+  height: 3px;
+  background: #ebeceb;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 1px 0 rgba(17, 17, 17, 0.03),
+    0 3px 8px rgba(17, 17, 17, 0.05),
+    0 1px 0 0 rgba(17, 17, 17, 0.04);
+}
+/* Bent metal — same color as slab, slots into rail grooves (606) */
+.shelf-unit-slab::before,
+.shelf-unit-slab::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 48px;
+  background: #ebeceb;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.04);
+  clip-path: polygon(0 100%, 100% 100%, 85% 0, 15% 0);
+}
+.shelf-unit-slab::before {
+  left: 0;
+  transform: translate(-1px, -100%);
+}
+.shelf-unit-slab::after {
+  right: 0;
+  transform: translate(1px, -100%) scaleX(-1);
+}
+
+
+/* Pantry cabinet frame (legacy) */
+.pantry-cabinet {
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 30px;
+  box-shadow:
+    inset 0 1px 0 rgba(17, 17, 17, 0.04),
+    inset 0 -1px 0 rgba(17, 17, 17, 0.03);
+  overflow: hidden;
+}
+
+/* Shelf rail: 1px plank with top highlight, bottom shadow */
+.shelf-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.9) 0%,
+    #e5e7eb 30%,
+    rgba(17, 17, 17, 0.06) 100%
+  );
+  pointer-events: none;
+}
+
+/* Pantry chip: label tab */
+.pantry-chip {
+  border: 1px solid #e5e7eb;
+  color: #111111;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.pantry-chip:hover,
+.pantry-chip:focus-visible {
+  box-shadow:
+    0 0 0 1px rgba(79, 70, 229, 0.18),
+    0 8px 22px rgba(79, 70, 229, 0.1);
+  outline: none;
+}
+.pantry-chip--active {
+  border-color: rgba(79, 70, 229, 0.35);
+  box-shadow: inset 0 -2px 0 0 #4f46e5;
+}
+.pantry-chip--active:hover,
+.pantry-chip--active:focus-visible {
+  box-shadow:
+    inset 0 -2px 0 0 #4f46e5,
+    0 0 0 1px rgba(79, 70, 229, 0.18),
+    0 8px 22px rgba(79, 70, 229, 0.1);
 }
 
 /* Page transition wrapper */
@@ -115,7 +366,10 @@ body {
   .link-underline,
   .link-underline::after,
   .page-transition,
-  .page-transition--visible {
+  .page-transition--visible,
+  .card-glow,
+  .cabinet-card-container,
+  .cabinet-card-title {
     transition: none !important;
     transform: none !important;
   }

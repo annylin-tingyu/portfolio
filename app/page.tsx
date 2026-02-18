@@ -1,80 +1,105 @@
-import { CaseSection } from "@/components/CaseSection";
-import { FadeInSection } from "@/components/FadeInSection";
+import Link from "next/link";
+import { CabinetCard } from "@/components/CabinetCard";
+import { ShelfUnit } from "@/components/ShelfUnit";
+
+const CASE_STUDIES = [
+  {
+    title: "Auto Table Assignment System",
+    containerLabel: "OPERATIONS",
+    contents: "Automation · Constraints · Strategy",
+    metadata: "B2B SaaS · 2025",
+    href: "/projects/auto-table-assignment",
+  },
+  {
+    title: "CRM Marketplace Platform",
+    containerLabel: "PLATFORM",
+    contents: "Strategy · IA · Workflow",
+    metadata: "B2B SaaS · 2025",
+    href: "/projects/crm-marketplace",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="bg-white">
-      {/* Hero — text only, no image */}
+    <div className="flex h-full flex-col overflow-hidden bg-white">
       <section
-        className="mx-auto w-full px-6 pt-[clamp(96px,12vw,140px)] pb-[clamp(72px,10vw,110px)]"
-        style={{ maxWidth: "clamp(760px, 88vw, 880px)", marginLeft: "auto", marginRight: "auto" }}
+        id="work"
+        className="flex min-h-0 flex-1 flex-col justify-center items-center py-12"
       >
-        <h1
-          className="font-semibold leading-tight text-black"
-          style={{
-            fontSize: "clamp(2.25rem, 5.5vw, 4rem)",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          Designing products where{" "}
-          <span className="details-underline">details</span> matter.
-        </h1>
-        <p
-          className="mt-[clamp(16px,2vw,22px)] font-normal text-mid-gray"
-          style={{
-            fontSize: "clamp(1rem, 1.5vw, 1.5rem)",
-            lineHeight: 1.45,
-          }}
-        >
-          For complex systems and imperfect conditions.
-        </p>
-      </section>
-
-      {/* Pause: whitespace only */}
-      <div aria-hidden className="h-0" />
-
-      {/* Case 01 — dominant / entry point */}
-      <FadeInSection>
-        <section
-          id="work"
-          className="mx-auto w-full px-6 py-[clamp(72px,10vw,110px)]"
-          style={{ maxWidth: "clamp(760px, 88vw, 880px)", marginLeft: "auto", marginRight: "auto" }}
-        >
-          <CaseSection
-            label="CASE 01"
-            title="Auto Table Assignment System"
-            descriptor="Automation under operational and monetary constraints"
-            href="/projects/auto-table-assignment"
-            variant="dominant"
-          >
-          <div
-            className="bg-light-gray/50"
-            style={{ aspectRatio: "2.4/1", maxHeight: "100px" }}
-          />
-          </CaseSection>
-        </section>
-      </FadeInSection>
-
-      {/* Case 02 — same style as Case 01 */}
-      <FadeInSection>
-        <section
-          className="mx-auto w-full px-6 pb-[clamp(96px,12vw,140px)]"
-          style={{ maxWidth: "clamp(760px, 88vw, 880px)", marginLeft: "auto", marginRight: "auto" }}
-        >
-          <CaseSection
-            label="CASE 02"
-            title="CRM Marketplace Platform"
-            descriptor="Scaling a CRM from Reservations to a Loyalty and Commerce Platform"
-            href="/projects/crm-marketplace"
-            variant="dominant"
-          >
+        <div className="mx-auto w-full max-w-[1280px] shrink-0 px-12">
+          <div className="grid grid-cols-1 gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            {/* Hero text (left column on lg+) */}
+            <div className="min-w-0">
             <div
-              className="bg-light-gray/50"
-              style={{ aspectRatio: "2.4/1", maxHeight: "100px" }}
+              className="mb-6 h-0.5 w-14 bg-[#4F46E5]"
+              aria-hidden
             />
-          </CaseSection>
-        </section>
-      </FadeInSection>
+            <h1
+              className="font-extrabold leading-[1.05] text-[#111111]"
+              style={{
+                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                fontSize: "clamp(44px, 4.6vw, 72px)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Turning product complexity
+              <br />
+              into{" "}
+              <span className="text-[#4F46E5]">clarity</span>
+            </h1>
+            <p
+              className="mt-12 max-w-[520px] font-normal text-[#6B7280] md:mt-14"
+              style={{
+                fontSize: "16px",
+                lineHeight: 1.5,
+              }}
+            >
+              Product Designer focused on B2B platforms and scalable systems.
+            </p>
+            <nav
+              className="mt-10 flex flex-wrap gap-6"
+              aria-label="Primary"
+            >
+              <Link
+                href="/#work"
+                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
+              >
+                Work
+              </Link>
+              <Link
+                href="/#about"
+                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
+              >
+                About
+              </Link>
+              <Link
+                href="/resume"
+                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
+              >
+                Resume
+              </Link>
+            </nav>
+            </div>
+
+            {/* Shelf unit (right column on lg+) */}
+            <div className="min-w-0">
+              <ShelfUnit>
+                {CASE_STUDIES.map((study, i) => (
+                  <CabinetCard
+                    key={study.href}
+                    title={study.title}
+                    containerLabel={study.containerLabel}
+                    contents={study.contents}
+                    metadata={study.metadata}
+                    href={study.href}
+                    index={i}
+                  />
+                ))}
+              </ShelfUnit>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

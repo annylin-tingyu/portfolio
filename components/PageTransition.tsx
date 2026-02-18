@@ -4,9 +4,10 @@ import { useEffect, useState, type ReactNode } from "react";
 
 type PageTransitionProps = {
   children: ReactNode;
+  className?: string;
 };
 
-export function PageTransition({ children }: PageTransitionProps) {
+export function PageTransition({ children, className = "" }: PageTransitionProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export function PageTransition({ children }: PageTransitionProps) {
   }, []);
 
   return (
-    <div className={`page-transition ${visible ? "page-transition--visible" : ""}`}>
+    <div className={`page-transition h-full ${visible ? "page-transition--visible" : ""} ${className}`.trim()}>
       {children}
     </div>
   );

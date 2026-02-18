@@ -14,10 +14,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-light-gray bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-[880px] items-center justify-between px-6">
+      <div className="layout-container flex h-14 items-center justify-between">
         <Link
           href="/"
-          className="group text-[15px] font-medium text-black tracking-[-0.01em] hover:text-accent-hover-text"
+          className="group text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#4F46E5]"
           onClick={(event) => {
             if (typeof window === "undefined") return;
             // If we are already on the landing page, just scroll to the top/hero.
@@ -28,7 +28,7 @@ export function Header() {
           }}
         >
           <span>Anny Lin </span>
-          <span className="relative inline-block w-[0.7em] text-accent-hover-text">
+          <span className="relative inline-block w-[0.7em] text-[#4F46E5]">
             <span
               className="block transition-opacity duration-[140ms] group-hover:opacity-0"
             >
@@ -46,7 +46,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="link-underline link-underline--lift text-[13px] font-normal text-charcoal hover:text-accent-hover-text"
+              className="link-underline link-underline--lift text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#4F46E5]"
             >
               {item.label}
             </Link>
