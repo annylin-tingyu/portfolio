@@ -1,6 +1,4 @@
-import Link from "next/link";
-import { CabinetCard } from "@/components/CabinetCard";
-import { ShelfUnit } from "@/components/ShelfUnit";
+import { CatalogShelf } from "@/components/CatalogShelf";
 
 const CASE_STUDIES = [
   {
@@ -21,85 +19,20 @@ const CASE_STUDIES = [
 
 export default function Home() {
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-white">
-      <section
-        id="work"
-        className="flex min-h-0 flex-1 flex-col justify-center items-center py-12"
-      >
-        <div className="mx-auto w-full max-w-[1280px] shrink-0 px-12">
-          <div className="grid grid-cols-1 gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            {/* Hero text (left column on lg+) */}
-            <div className="min-w-0">
-            <div
-              className="mb-6 h-0.5 w-14 bg-[#4F46E5]"
-              aria-hidden
-            />
-            <h1
-              className="font-extrabold leading-[1.05] text-[#111111]"
-              style={{
-                fontFamily: "var(--font-inter), system-ui, sans-serif",
-                fontSize: "clamp(44px, 4.6vw, 72px)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Turning product complexity
-              <br />
-              into{" "}
-              <span className="text-[#4F46E5]">clarity</span>
-            </h1>
-            <p
-              className="mt-12 max-w-[520px] font-normal text-[#6B7280] md:mt-14"
-              style={{
-                fontSize: "16px",
-                lineHeight: 1.5,
-              }}
-            >
-              Product Designer focused on B2B platforms and scalable systems.
-            </p>
-            <nav
-              className="mt-10 flex flex-wrap gap-6"
-              aria-label="Primary"
-            >
-              <Link
-                href="/#work"
-                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
-              >
-                Work
-              </Link>
-              <Link
-                href="/#about"
-                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
-              >
-                About
-              </Link>
-              <Link
-                href="/resume"
-                className="link-underline text-[14px] font-medium text-[#111111] transition-colors duration-200 hover:text-[#4F46E5]"
-              >
-                Resume
-              </Link>
-            </nav>
-            </div>
-
-            {/* Shelf unit (right column on lg+) */}
-            <div className="min-w-0">
-              <ShelfUnit>
-                {CASE_STUDIES.map((study, i) => (
-                  <CabinetCard
-                    key={study.href}
-                    title={study.title}
-                    containerLabel={study.containerLabel}
-                    contents={study.contents}
-                    metadata={study.metadata}
-                    href={study.href}
-                    index={i}
-                  />
-                ))}
-              </ShelfUnit>
-            </div>
-          </div>
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#fafafa]">
+      <div className="relative min-h-0 w-full flex-1">
+        <CatalogShelf caseStudies={CASE_STUDIES} />
+      </div>
+      {/* System footer — catalog style, overlay */}
+      <footer className="pointer-events-none absolute bottom-0 left-0 right-0 flex h-10 items-end justify-between px-6 pb-2 md:px-12">
+        <div className="flex items-center gap-4 text-[8px] font-light uppercase tracking-[0.4em] text-neutral-300 md:text-[9px]">
+          <div className="h-px w-8 bg-neutral-200" />
+          Portfolio · Anny Lin
         </div>
-      </section>
+        <div className="hidden rotate-90 origin-bottom-right whitespace-nowrap text-[7px] font-black uppercase tracking-[0.5em] text-neutral-200 md:mb-4 md:block lg:text-[8px]">
+          Product Designer
+        </div>
+      </footer>
     </div>
   );
 }

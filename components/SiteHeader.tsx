@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/Header";
 import { ReadingModeHeader } from "@/components/ReadingModeHeader";
-
 const CASE_STUDY_PATHS = ["/projects/crm-marketplace"];
 
 export function SiteHeader() {

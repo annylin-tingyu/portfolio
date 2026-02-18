@@ -7,11 +7,11 @@ type ShelfUnitProps = {
 export function ShelfUnit({ children }: ShelfUnitProps) {
   return (
     <div
-      className="shelf-unit-outer relative w-full overflow-hidden rounded-none border border-black/[0.05] bg-[#F5F5F4]"
+      className="shelf-unit-outer relative w-full overflow-hidden rounded-none bg-[#FAFAFA]"
       style={{
         height: "clamp(580px, 72vh, 800px)",
         boxShadow:
-          "inset 0 1px 0 rgba(255,255,255,0.6), 4px 20px 48px rgba(17,17,17,0.06), 0 8px 24px rgba(17,17,17,0.04)",
+          "4px 6px 24px rgba(17,17,17,0.04), 8px 12px 40px rgba(17,17,17,0.03)",
       }}
     >
       {/* Very subtle light — 606 is quiet, minimal drama */}
@@ -55,15 +55,15 @@ export function ShelfUnit({ children }: ShelfUnitProps) {
           <div className="shelf-unit-slab" />
         </div>
 
-        {/* Main shelf slab — holds case study cards */}
+        {/* Main shelf slab — case study boxes sit on top */}
         <div className="shrink-0">
-          <div className="shelf-slab-wrapper mb-10" aria-hidden>
+          <div className="shelf-slab-wrapper mb-0" aria-hidden>
             <div className="shelf-unit-slab" />
           </div>
-          {/* Cards on shelf */}
+          {/* Cards sitting on shelf — pulled up to rest on slab surface */}
           <div
-            className="shelf-unit-cards flex gap-6 overflow-x-auto px-0 pt-6 snap-x snap-mandatory md:gap-8"
-            style={{ transform: "translateY(-2px)" }}
+            className="shelf-unit-cards flex gap-6 overflow-x-auto px-0 pt-2 snap-x snap-mandatory md:gap-8"
+            style={{ transform: "translateY(-8px)" }}
           >
             {children}
           </div>

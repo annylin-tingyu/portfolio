@@ -194,7 +194,7 @@ export function ReadingModeHeader() {
                   <span
                     className="pointer-events-none absolute left-0 right-0 bottom-0 h-0.5 origin-left"
                     style={{
-                      backgroundColor: "#3B245C",
+                      backgroundColor: "#4F46E5",
                       transform: isActive ? "scaleX(1)" : "scaleX(0)",
                       transition: "transform var(--motion-duration-medium) var(--motion-ease-out)",
                     }}
