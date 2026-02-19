@@ -27,7 +27,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
       <Link
-        href="/#work"
+        href="/"
         className="link-underline link-underline--lift mb-12 inline-block text-sm font-medium text-muted hover:text-accent-hover-text"
       >
         ← Back to work
@@ -58,7 +58,7 @@ export default async function ProjectPage({ params }: Props) {
 
       <div className="mt-12 flex flex-wrap gap-4">
         <Link
-          href="/#work"
+          href="/"
           className="rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground hover:text-background"
         >
           View all work

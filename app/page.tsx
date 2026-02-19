@@ -3,15 +3,19 @@ import { CatalogShelf } from "@/components/CatalogShelf";
 const CASE_STUDIES = [
   {
     title: "Auto Table Assignment System",
+    description: "Streamlining restaurant operations with smart automation.",
     containerLabel: "OPERATIONS",
     contents: "Automation · Constraints · Strategy",
+    tags: ["operational scalability", "automation"],
     metadata: "B2B SaaS · 2025",
     href: "/projects/auto-table-assignment",
   },
   {
     title: "CRM Marketplace Platform",
+    description: "From manual workflows to digital campaigns.",
     containerLabel: "PLATFORM",
     contents: "Strategy · IA · Workflow",
+    tags: ["operational scalability", "cross-industry expansion"],
     metadata: "B2B SaaS · 2025",
     href: "/projects/crm-marketplace",
   },
