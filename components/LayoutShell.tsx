@@ -8,9 +8,10 @@ import { Footer } from "@/components/Footer";
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLanding = pathname === "/";
+  const isAltPage = pathname === "/alt";
 
   useEffect(() => {
-    if (isLanding) {
+    if (isLanding || isAltPage) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
@@ -21,12 +22,22 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
-  }, [isLanding]);
+  }, [isLanding, isAltPage]);
 
   if (isLanding) {
     return (
       <div className="flex h-[calc(100vh-56px)] flex-col overflow-hidden">
         <PageTransition className="min-h-0 flex-1 flex flex-col">
+          {children}
+        </PageTransition>
+      </div>
+    );
+  }
+
+  if (isAltPage) {
+    return (
+      <div className="h-[calc(100vh-56px)] overflow-hidden flex flex-col">
+        <PageTransition className="min-h-0 h-full flex flex-col">
           {children}
         </PageTransition>
       </div>

@@ -31,6 +31,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`}>
+      <head>
+        <link
+          href="https://fonts.cdnfonts.com/css/sometype-mono"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-screen bg-white text-black font-sans antialiased">
         <CustomCursor />
         <SiteHeader />

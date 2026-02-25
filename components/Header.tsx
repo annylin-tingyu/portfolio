@@ -20,7 +20,6 @@ export function Header() {
           className="group text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#4F46E5]"
           onClick={(event) => {
             if (typeof window === "undefined") return;
-            // If we are already on the landing page, just scroll to the top/hero.
             if (pathname === "/") {
               event.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -29,14 +28,10 @@ export function Header() {
         >
           <span>Anny Lin </span>
           <span className="relative inline-block w-[0.7em] text-[#4F46E5]">
-            <span
-              className="block transition-opacity duration-[140ms] group-hover:opacity-0"
-            >
+            <span className="block transition-opacity duration-[140ms] group-hover:opacity-0">
               ·
             </span>
-            <span
-              className="absolute inset-0 opacity-0 transition-opacity duration-[140ms] group-hover:opacity-100"
-            >
+            <span className="absolute inset-0 opacity-0 transition-opacity duration-[140ms] group-hover:opacity-100">
               —
             </span>
           </span>
