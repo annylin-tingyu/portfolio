@@ -27,7 +27,7 @@ export function RevealSection({ children, className = "" }: RevealSectionProps) 
           observer.disconnect();
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -20% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
     );
 
     observer.observe(el);

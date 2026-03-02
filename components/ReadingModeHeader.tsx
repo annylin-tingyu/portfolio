@@ -7,7 +7,6 @@ const CHAPTERS: { label: string; targetId: string }[] = [
   { label: "Overview", targetId: "context" },
   { label: "Inflection Point", targetId: "the-inflection-point-marketplace" },
   { label: "Strategy", targetId: "my-role" },
-  { label: "Decisions", targetId: "key-decisions" },
   { label: "Outcome", targetId: "outcome" },
 ];
 
@@ -16,14 +15,8 @@ const SECTION_TO_CHAPTER: Record<string, number> = {
   context: 0,
   "the-inflection-point-marketplace": 1,
   "my-role": 2,
-  "constraints-that-shaped-the-design": 2,
-  "design-strategy": 2,
-  "key-decisions": 3,
-  "merchant-setup-guardrails": 3,
-  "customer-purchase-clarity": 3,
-  "designing-for-irreversible-actions": 3,
-  outcome: 4,
-  "what-i-learned": 4,
+  outcome: 3,
+  "what-i-learned": 3,
 };
 
 /** Offset from viewport top so the section heading has breathing room below the header */
@@ -49,6 +42,8 @@ export function ReadingModeHeader() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  /** When user clicks a chapter, we pin the indicator here until scroll reaches that section (avoids jump through intermediate sections). */
+  const scrollTargetIndexRef = useRef<number | null>(null);
 
   const handleBack = () => {
     if (typeof window !== "undefined" && window.history.length > 1) {
@@ -59,6 +54,7 @@ export function ReadingModeHeader() {
   };
 
   const handleChapterSelect = (idx: number) => {
+    scrollTargetIndexRef.current = idx;
     setActiveIndex(idx);
     scrollToSection(CHAPTERS[idx].targetId);
     setMenuOpen(false);
@@ -73,11 +69,20 @@ export function ReadingModeHeader() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        const pending = scrollTargetIndexRef.current;
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const id = entry.target.id;
           const chapterIdx = SECTION_TO_CHAPTER[id];
-          if (chapterIdx !== undefined) setActiveIndex(chapterIdx);
+          if (chapterIdx === undefined) continue;
+          if (pending !== null) {
+            if (chapterIdx === pending) {
+              setActiveIndex(chapterIdx);
+              scrollTargetIndexRef.current = null;
+            }
+          } else {
+            setActiveIndex(chapterIdx);
+          }
         }
       },
       { rootMargin: "-20% 0px -60% 0px", threshold: 0 }
@@ -103,13 +108,14 @@ export function ReadingModeHeader() {
 
   return (
     <header
-      className="sticky top-6 z-[100] mx-6 mt-6 flex min-h-[44px] items-center justify-between overflow-visible px-4 py-3 md:px-6"
+      className="sticky top-6 z-[100] mx-6 mt-6 flex min-h-[44px] cursor-none items-center justify-between overflow-visible px-4 py-3 md:px-6"
     >
       {/* Back — left; touch target >= 44px on mobile */}
       <button
         type="button"
         onClick={handleBack}
-        className="link-underline link-underline--lift flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center gap-1.5 text-[13px] text-[#6B6B6B] hover:text-accent-hover-text md:min-h-0 md:min-w-0 md:justify-start"
+        className="link-underline link-underline--lift flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 text-[13px] text-[#6B6B6B] hover:text-accent-hover-text md:min-h-0 md:min-w-0 md:justify-start"
+        style={{ fontFamily: "var(--font-plex-mono), monospace", display: "flex" }}
         aria-label="Back to home"
       >
         <span aria-hidden>←</span>
@@ -126,12 +132,13 @@ export function ReadingModeHeader() {
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
-            className="flex min-h-[44px] min-w-[44px] items-center gap-1 rounded-lg border px-3 py-2 text-left text-[13px]"
+            className="flex min-h-[44px] min-w-[44px] cursor-none items-center gap-1 rounded-lg border px-3 py-2 text-left text-[13px]"
             style={{
               border: `1px solid ${MONO.borderColor}`,
               backgroundColor: MONO.bg,
               color: MONO.text,
               borderRadius: 10,
+              fontFamily: "var(--font-plex-mono), monospace",
             }}
             aria-expanded={menuOpen}
             aria-haspopup="listbox"
@@ -156,9 +163,10 @@ export function ReadingModeHeader() {
                   <button
                     type="button"
                     onClick={() => handleChapterSelect(idx)}
-                    className="w-full min-h-[44px] border-b border-[#EDEDED] px-4 py-3 text-left text-[13px] last:border-b-0"
+                    className="w-full min-h-[44px] cursor-none border-b border-[#EDEDED] px-4 py-3 text-left text-[13px] last:border-b-0"
                     style={{
                       color: idx === activeIndex ? MONO.text : MONO.textMuted,
+                      fontFamily: "var(--font-plex-mono), monospace",
                     }}
                   >
                     {ch.label}
@@ -176,6 +184,7 @@ export function ReadingModeHeader() {
             borderColor: "#EDEDED",
             borderRadius: 10,
             backgroundColor: MONO.bg,
+            fontFamily: "var(--font-plex-mono), monospace",
           }}
         >
           {CHAPTERS.map((ch, idx) => {
@@ -185,7 +194,7 @@ export function ReadingModeHeader() {
                 key={ch.targetId}
                 type="button"
                 onClick={() => handleChapterSelect(idx)}
-                className={`shrink-0 whitespace-nowrap rounded px-2 py-1 text-[13px] transition-colors duration-[120ms] hover:text-accent-hover-text ${
+                className={`shrink-0 cursor-none whitespace-nowrap rounded px-2 py-1 text-[13px] transition-colors duration-[120ms] hover:text-accent-hover-text ${
                   isActive ? "text-[#111111]" : "text-[#6B6B6B]"
                 }`}
               >

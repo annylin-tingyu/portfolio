@@ -2,15 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const STEPS = [
-  "Reservation tool",
-  "Manual loyalty",
-  "Scaling constraint",
-  "Marketplace layer",
-  "Commerce platform",
-] as const;
+const STEPS = ["Proven Demand", "Scaling Tension", "Platform Bet"] as const;
 
-const EMPHASIS_INDEX = 3; // Marketplace layer
+const EMPHASIS_INDEX = 2; // Platform Bet
 
 const LINE_COLOR = "rgba(0,0,0,0.14)";
 const NODE_BORDER = "rgba(0,0,0,0.18)";
@@ -51,7 +45,7 @@ export function InflectionPointTimeline() {
   return (
     <div
       ref={ref}
-      className="w-full max-w-[65ch]"
+      className="w-full max-w-full"
       style={{
         marginTop: 28,
         marginBottom: 56,
@@ -65,7 +59,20 @@ export function InflectionPointTimeline() {
           borderColor: "rgba(0,0,0,0.06)",
         }}
       >
-        {/* Line row: line + 5 nodes evenly spaced, centered vertically */}
+        {/* Caption: above the timeline */}
+        <p
+          className="mb-[18px] w-full font-normal text-center"
+          style={{
+            fontSize: "clamp(13px, 1.2vw, 14px)",
+            color: "rgba(0,0,0,0.55)",
+            lineHeight: 1.4,
+            textAlign: "center",
+          }}
+        >
+          Marketplace embedded transactions directly into the CRM.
+        </p>
+
+        {/* Line row: line + 3 nodes evenly spaced, centered vertically */}
         <div className="relative flex w-full items-center" style={{ minHeight: 28 }}>
           <div
             className="absolute left-0 right-0 top-1/2 h-px -translate-y-px"
@@ -75,31 +82,35 @@ export function InflectionPointTimeline() {
               transition: lineTransition,
             }}
           />
-          <div className="relative z-10 flex w-full items-center justify-between">
+          <div className="relative z-10 flex w-full items-center gap-1">
             {STEPS.map((label, i) => {
               const isEmphasis = i === EMPHASIS_INDEX;
               const delay = visible ? i * STAGGER_MS : 0;
               return (
                 <span
                   key={label}
-                  className="flex shrink-0 rounded-full border bg-white"
-                  style={{
-                    width: isEmphasis ? 11 : 9,
-                    height: isEmphasis ? 11 : 9,
-                    borderWidth: isEmphasis ? 2 : 1,
-                    borderColor: NODE_BORDER,
-                    opacity: visible ? 1 : 0,
-                    transition: nodeTransition,
-                    transitionDelay: `${delay}ms`,
-                  }}
-                />
+                  className="flex flex-1 justify-center"
+                >
+                  <span
+                    className="flex shrink-0 rounded-full border bg-white"
+                    style={{
+                      width: isEmphasis ? 11 : 9,
+                      height: isEmphasis ? 11 : 9,
+                      borderWidth: isEmphasis ? 2 : 1,
+                      borderColor: NODE_BORDER,
+                      opacity: visible ? 1 : 0,
+                      transition: nodeTransition,
+                      transitionDelay: `${delay}ms`,
+                    }}
+                  />
+                </span>
               );
             })}
           </div>
         </div>
 
         {/* Labels row: under each node; wrap cleanly on small screens */}
-        <div className="mt-2 flex w-full justify-between gap-1">
+        <div className="mt-2 flex w-full gap-1">
           {STEPS.map((label) => (
             <span
               key={label}
@@ -114,19 +125,6 @@ export function InflectionPointTimeline() {
             </span>
           ))}
         </div>
-
-        {/* Caption: same left edge as timeline, 16–20px below labels */}
-        <p
-          className="mt-[18px] w-full font-normal"
-          style={{
-            fontSize: "clamp(13px, 1.2vw, 14px)",
-            color: "rgba(0,0,0,0.55)",
-            lineHeight: 1.4,
-            maxWidth: "70ch",
-          }}
-        >
-          Scaling exposed the limits of manual loyalty workflows, leading to the introduction of a system-led Marketplace layer.
-        </p>
       </div>
     </div>
   );

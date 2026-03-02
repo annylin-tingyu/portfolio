@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 function Lamp() {
   return (
@@ -148,22 +151,55 @@ const CASE_STUDIES = [
     title: "auto table assignment system",
     year: "2025",
     href: "/projects/auto-table-assignment",
+    previewImage: "https://picsum.photos/600/400?1",
+    caption: "Adaptive table assignment to balance staff load",
   },
   {
     id: "02",
     title: "CRM marketplace platform",
     year: "2023",
     href: "/projects/crm-marketplace",
+    previewImage: "https://picsum.photos/600/400?2",
+    caption: "Configurable deposit rules for B2B merchants",
   },
 ];
 
 function HeadlineSection() {
+  const [hoveredCase, setHoveredCase] = useState<(typeof CASE_STUDIES)[number] | null>(null);
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [isPreviewEnabled, setIsPreviewEnabled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+    const update = () => setIsPreviewEnabled(mediaQuery.matches);
+
+    update();
+    mediaQuery.addEventListener("change", update);
+
+    return () => {
+      mediaQuery.removeEventListener("change", update);
+    };
+  }, []);
+
+  const showPreview = isPreviewEnabled && hoveredCase && hoveredCase.previewImage;
+
   return (
-    <section className="w-full shrink-0 text-left">
-      <h1 className="text-[24px] font-semibold tracking-tight">
+    <section
+      className="w-full shrink-0 text-left"
+      style={{ cursor: "none" }}
+    >
+      <h1
+        className="text-[24px] tracking-tight"
+        style={{ fontFamily: "var(--font-plex-mono), monospace", fontWeight: 500 }}
+      >
         Turning product complexity into clarity
       </h1>
-      <p className="mt-2 text-[16px] text-black/90">
+      <p
+        className="mt-2 text-[16px] text-black/90 font-normal"
+        style={{ fontFamily: "var(--font-plex-mono), monospace" }}
+      >
         Product Designer focused on B2B platforms and scalable systems
       </p>
       <div className="mt-8 space-y-0">
@@ -171,15 +207,96 @@ function HeadlineSection() {
           <Link
             key={cs.id}
             href={cs.href}
-            className="flex justify-between items-center py-4 border-b border-black text-sm hover:opacity-60 transition-opacity"
+            className="flex justify-between items-center py-4 border-b border-black text-sm hover:opacity-60 transition-opacity cursor-none"
+            onMouseEnter={() => {
+              if (!isPreviewEnabled) return;
+              setHoveredCase(cs);
+            }}
+            onMouseMove={(event) => {
+              if (!isPreviewEnabled) return;
+
+              const cardWidth = 360;
+              const cardHeight = 240;
+              const edgeMargin = 16;
+              const offsetX = -180;
+              const offsetY = -30;
+
+              const { clientX, clientY } = event;
+              const viewportWidth = window.innerWidth ?? 0;
+              const viewportHeight = window.innerHeight ?? 0;
+
+              let x = clientX + offsetX;
+              let y = clientY + offsetY;
+
+              x = Math.min(
+                Math.max(edgeMargin, x),
+                viewportWidth - edgeMargin - cardWidth,
+              );
+              y = Math.min(
+                Math.max(edgeMargin, y),
+                viewportHeight - edgeMargin - cardHeight,
+              );
+
+              setCursorPos({ x, y });
+              setHoveredCase(cs);
+            }}
+            onMouseLeave={() => {
+              if (!isPreviewEnabled) return;
+              setHoveredCase(null);
+            }}
           >
-            <span>
-              case study {cs.id} - {cs.title}
+            <span style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+              case study {cs.id} – {cs.title}
             </span>
-            <span>{cs.year}</span>
+            <span style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
+              {cs.year}
+            </span>
           </Link>
         ))}
       </div>
+
+      {showPreview && (
+        <div
+          className="pointer-events-none fixed z-40"
+          style={{
+            top: cursorPos.y,
+            left: cursorPos.x,
+            width: 360,
+            height: 240,
+            borderRadius: 14,
+            overflow: "hidden",
+            backgroundColor: "#ffffff",
+            boxShadow:
+              "0 14px 40px rgba(15, 23, 42, 0.28)",
+            opacity: hoveredCase ? 1 : 0,
+            transform: hoveredCase
+              ? "translate3d(0,0,0)"
+              : "translate3d(0,8px,0)",
+            transition:
+              "opacity 180ms cubic-bezier(0.4,0,0.2,1), transform 180ms cubic-bezier(0.4,0,0.2,1)",
+          }}
+          aria-hidden
+        >
+          <div className="h-[160px] w-full bg-[#e5e7eb]">
+            <img
+              src={hoveredCase!.previewImage}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="flex h-[80px] flex-col justify-between px-4 py-3">
+            <p className="text-[12px] leading-snug text-black">
+              {hoveredCase!.caption}
+            </p>
+            <span
+              className="text-[11px] text-mid-gray"
+              style={{ fontFamily: "var(--font-plex-mono), monospace" }}
+            >
+              {hoveredCase!.year}
+            </span>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

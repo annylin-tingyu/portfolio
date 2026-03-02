@@ -4,16 +4,19 @@ import { useEffect, useRef, useState } from "react";
 
 const PLATFORM_SHIFT = {
   before: {
-    title: "Before Marketplace",
-    items: ["Reservations", "Manual bundles", "In-person promotion"],
+    title: "BEFORE",
+    items: [
+      "Booking system",
+      "Offline loyalty management",
+      "Revenue captured in-store",
+    ],
   },
   after: {
-    title: "After Marketplace",
+    title: "AFTER",
     items: [
-      "Digital campaigns",
-      "Online sales",
-      "E-tickets",
-      "Loyalty & commerce layer",
+      "Commerce platform",
+      "Embedded loyalty in transaction flow",
+      "Online revenue capture",
     ],
   },
 } as const;
@@ -67,7 +70,7 @@ export function PlatformShiftDiagram() {
       className="w-full min-w-0 max-w-full"
       style={{
         marginTop: "clamp(48px, 8vw, 72px)",
-        marginBottom: "clamp(80px, 12vw, 120px)",
+        marginBottom: "clamp(48px, 6vw, 72px)",
         maxWidth: CONTENT_MAX,
         opacity: visible ? 1 : 0,
         transition: blockOpacityTransition,
@@ -87,7 +90,7 @@ export function PlatformShiftDiagram() {
           color: "#111",
         }}
       >
-        From Manual Workflows to Digital Campaigns
+        From Scheduling Tool to Commerce Platform
       </h3>
       <div
         className="relative mt-6 grid min-w-0 max-w-full grid-cols-1 gap-6 overflow-visible rounded-xl border px-4 py-8 md:mt-8 md:grid-cols-2 md:gap-[88px] md:rounded-[18px] md:px-14 md:py-10"
@@ -103,13 +106,13 @@ export function PlatformShiftDiagram() {
           aria-hidden
         />
         <span
-          className="absolute left-1/2 top-1/2 hidden h-5 w-5 -translate-x-1/2 -translate-y-1/2 select-none md:flex"
+          className="absolute left-1/2 top-1/2 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 select-none md:flex"
           style={{
             zIndex: 10,
             pointerEvents: "none",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 18,
+            fontSize: 24,
             color: "rgba(0,0,0,0.28)",
             backgroundColor: "#F7F7F7",
             opacity: visible ? 1 : 0,
@@ -123,7 +126,7 @@ export function PlatformShiftDiagram() {
 
         {/* Before column */}
         <div
-          className="min-w-0 flex flex-col items-start"
+          className="min-w-0 flex flex-col items-center justify-start"
           style={{
             transition: beforeTransition,
             transitionDelay: "0ms",
@@ -132,16 +135,19 @@ export function PlatformShiftDiagram() {
           }}
         >
           <h4
-            className="font-medium"
+            className="text-center text-[12px] font-medium uppercase tracking-[0.06em]"
             style={{
-              fontSize: "1rem",
+              fontFamily: "var(--font-plex-mono), monospace",
               color: "#111",
               marginBottom: 8,
             }}
           >
             {PLATFORM_SHIFT.before.title}
           </h4>
-          <ul className="list-none space-y-0 p-0 text-left" style={{ marginTop: 26 }}>
+          <ul
+            className="list-none space-y-0 p-0 text-center"
+            style={{ marginTop: 26, fontFamily: "var(--font-inter), sans-serif" }}
+          >
             {PLATFORM_SHIFT.before.items.map((item, i) => (
               <li
                 key={item}
@@ -183,7 +189,7 @@ export function PlatformShiftDiagram() {
 
         {/* After column */}
         <div
-          className="min-w-0 flex flex-col items-start"
+          className="min-w-0 flex flex-col items-center justify-start"
           style={{
             transition: afterTransition,
             transitionDelay: `${afterDelay}ms`,
@@ -192,16 +198,16 @@ export function PlatformShiftDiagram() {
           }}
         >
           <h4
-            className="font-medium"
+            className="text-center text-[12px] font-medium uppercase tracking-[0.06em]"
             style={{
-              fontSize: "1rem",
+              fontFamily: "var(--font-plex-mono), monospace",
               color: "#111",
               marginBottom: 8,
             }}
           >
             {PLATFORM_SHIFT.after.title}
           </h4>
-          <ul className="list-none space-y-0 p-0 text-left" style={{ marginTop: 26 }}>
+          <ul className="list-none space-y-0 p-0 text-center" style={{ marginTop: 26 }}>
             {PLATFORM_SHIFT.after.items.map((item, i) => (
               <li
                 key={item}

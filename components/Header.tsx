@@ -13,11 +13,11 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-light-gray bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 cursor-none border-b border-light-gray bg-white/95 backdrop-blur-sm">
       <div className="layout-container flex h-14 items-center justify-between">
         <Link
           href="/"
-          className="group text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#4F46E5]"
+          className="group cursor-none text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#4F46E5]"
           onClick={(event) => {
             if (typeof window === "undefined") return;
             if (pathname === "/") {
@@ -41,7 +41,7 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="link-underline link-underline--lift text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#4F46E5]"
+              className="link-underline link-underline--lift cursor-none text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#4F46E5]"
             >
               {item.label}
             </Link>
