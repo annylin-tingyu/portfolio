@@ -3,6 +3,8 @@ import { RevealSection } from "@/components/RevealSection";
 import { PlatformShiftDiagram } from "@/components/PlatformShiftDiagram";
 import { InflectionPointTimeline } from "@/components/InflectionPointTimeline";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 const contentMax = "clamp(720px, 88vw, 880px)";
 const sectionGap = "clamp(72px, 10vw, 110px)";
 const inSectionGap = "clamp(16px, 2vw, 24px)";
@@ -32,8 +34,8 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
   ],
   "the-inflection-point-marketplace": [
     "Loyalty demand was already validated. Merchants were willing to sell bundles, credits, and prepaid packages. But value capture remained tied to offline workflows. Promotions required staff coordination, fulfillment happened in-store, and revenue was constrained by physical visits.\n\nScaling across industries would multiply this operational complexity.",
-    "Instead of expanding loyalty features incrementally, the team chose to introduce a system-led marketplace layer. Promotion creation, payment processing, and redemption would move inside the product — not remain dependent on manual distribution.\n\nThis shifted the system from supporting transactions to enabling them.",
-    "Marketplace transformed the CRM from a reservation tool into a commerce infrastructure. Digital packages, e-tickets, and campaign-based offers could now be created, sold, and tracked end-to-end — unlocking online revenue and cross-vertical scalability.",
+    "Instead of expanding loyalty features incrementally, the team chose to introduce a system-led marketplace layer. Promotion creation, payment processing, and redemption would move inside the product not remain dependent on manual distribution.\n\nThis shifted the system from supporting transactions to enabling them.",
+    "Marketplace transformed the CRM from a reservation tool into a commerce infrastructure. Digital packages, e-tickets, and campaign-based offers could now be created, sold, and tracked end-to-end, unlocking online revenue and cross-vertical scalability.",
   ],
   "my-role": [
     "The platform expanded from beauty into fitness, lifestyle, and retail. Marketplace needed to support different campaign types without becoming industry-specific.\n\nInstead of designing custom logic for each vertical, we defined flexible product patterns that could adapt across industries.\n\nBundles, subscriptions, and vouchers shared a consistent structural model, allowing businesses with different operational models to use the same underlying system.\n\nThis ensured:\n- Cross-industry scalability\n- Reduced system fragmentation\n- Long-term extensibility\n\nThe goal was not rigid standardization, but reusable structure.",
@@ -138,49 +140,6 @@ function TextPlaceholder() {
       <div className="h-4 w-full max-w-[95%] rounded-sm bg-light-gray/50" />
       <div className="h-4 w-full max-w-[70%] rounded-sm bg-light-gray/40" />
     </div>
-  );
-}
-
-function VisualPlaceholder({
-  dominant = false,
-  comparison = false,
-}: { dominant?: boolean; comparison?: boolean }) {
-  if (comparison) {
-    return (
-      <div className="grid grid-cols-2 gap-4">
-        <div
-          className="w-full overflow-hidden rounded-sm border border-dashed border-light-gray bg-white"
-          style={{ aspectRatio: "4/3", maxWidth: 280, maxHeight: 210 }}
-        />
-        <div
-          className="w-full overflow-hidden rounded-sm border border-dashed border-light-gray bg-white"
-          style={{ aspectRatio: "4/3", maxWidth: 280, maxHeight: 210 }}
-        />
-      </div>
-    );
-  }
-  if (dominant) {
-    return (
-      <div
-        className="w-full overflow-hidden rounded-sm border border-dashed border-light-gray bg-light-gray/30"
-        style={{
-          aspectRatio: "16/10",
-          maxHeight: "clamp(360px, 50vw, 520px)",
-          minHeight: 360,
-        }}
-      />
-    );
-  }
-  return (
-    <div
-      className="w-full overflow-hidden rounded-sm border border-dashed border-light-gray bg-white"
-      style={{
-        maxWidth: 560,
-        aspectRatio: "16/10",
-        maxHeight: 320,
-        minHeight: 220,
-      }}
-    />
   );
 }
 
@@ -393,14 +352,24 @@ export function CaseStudyLayout({
         >
           {description}
         </p>
-          <Image
-            src="/CRMhero.webp"
-            alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
-            width={1798}
-            height={1154}
-            className="w-full h-auto pt-[40px]"
-            unoptimized={true}
+        <div className="relative pt-[40px] flex w-full justify-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-[40px] mx-auto h-[320px] max-w-[880px] blur-3xl"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 0%, rgba(15,23,42,0.14), transparent 60%)",
+            }}
           />
+          <Image
+            src={`${basePath}/CRMhero.webp`}
+            alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
+            width={1920}
+            height={1230}
+            className="relative z-10 h-auto w-full max-w-[960px]"
+            unoptimized
+          />
+        </div>
       </header>
 
       {/* Optional subtle divider */}
@@ -526,12 +495,6 @@ export function CaseStudyLayout({
                       })}
                     </div>
                     <div
-                      className="mt-8"
-                      style={{ marginTop: inSectionGap }}
-                    >
-                      <VisualPlaceholder />
-                    </div>
-                    <div
                       className="text-black"
                       style={{
                         marginTop: 48,
@@ -613,6 +576,29 @@ export function CaseStudyLayout({
                                   i === 0 ? 0 : isInflectionPoint ? 48 : section.id === "my-role" && i === 1 ? 48 : 24,
                               }}
                             >
+                              {section.id === "context" && i === 0 && (
+                                <div className="mb-6 flex w-full justify-center">
+                                  <div
+                                    className="overflow-hidden rounded-sm bg-white"
+                                    style={{
+                                      maxWidth: 560,
+                                      aspectRatio: "16/10",
+                                      maxHeight: 320,
+                                      minHeight: 220,
+                                      borderRadius: "0.125rem",
+                                    }}
+                                  >
+                                    <Image
+                                      src={`${basePath}/crmstory.png`}
+                                      alt="Customer and staff at counter with POS and product display in a beauty or retail setting"
+                                      width={1600}
+                                      height={1067}
+                                      className="h-full w-full object-contain"
+                                      unoptimized
+                                    />
+                                  </div>
+                                </div>
+                              )}
                               {label != null && (
                                 <p
                                   className="font-medium uppercase text-mid-gray"
@@ -670,22 +656,6 @@ export function CaseStudyLayout({
                   <TextPlaceholder />
                 </div>
               </>
-            )}
-            {section.dominantVisual && (
-              <div
-                className="mt-8"
-                style={{ marginTop: inSectionGap }}
-              >
-                <VisualPlaceholder dominant />
-              </div>
-            )}
-            {section.supportingVisual && !section.dominantVisual && section.id !== "context" && section.id !== "my-role" && (
-              <div
-                className="mt-8"
-                style={{ marginTop: inSectionGap }}
-              >
-                <VisualPlaceholder />
-              </div>
             )}
           </section>
         </RevealSection>

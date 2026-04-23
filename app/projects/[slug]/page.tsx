@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getProjectBySlug, projects } from "@/lib/projects";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
+import { AutoTableCaseStudyLayout } from "@/components/AutoTableCaseStudyLayout";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -13,6 +14,16 @@ export default async function ProjectPage({ params }: Props) {
   const project = getProjectBySlug(slug);
 
   if (!project) notFound();
+
+  if (slug === "auto-table-assignment") {
+    return (
+      <AutoTableCaseStudyLayout
+        category={project.category}
+        title={project.title}
+        description={project.description}
+      />
+    );
+  }
 
   if (slug === "crm-marketplace") {
     return (

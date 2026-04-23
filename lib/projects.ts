@@ -6,7 +6,7 @@ export const projects: Project[] = [
     title: "Auto Table Assignment System",
     category: "Case 01",
     description:
-      "Automation under operational and monetary constraints",
+      "Designing flexible automation for real-time restaurant seating.",
     image: "https://picsum.photos/800/400?random=10",
     year: "—",
   },

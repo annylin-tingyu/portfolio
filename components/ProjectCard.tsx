@@ -24,8 +24,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <Image
           src={project.image}
           alt={project.title}
-          width={800}
-          height={600}
+          width={1200}
+          height={900}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>

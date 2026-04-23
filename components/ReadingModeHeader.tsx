@@ -1,19 +1,37 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const CHAPTERS: { label: string; targetId: string }[] = [
+type Chapter = { label: string; targetId: string };
+type SectionToChapter = Record<string, number>;
+
+const CRM_CHAPTERS: Chapter[] = [
   { label: "Overview", targetId: "context" },
   { label: "Inflection Point", targetId: "the-inflection-point-marketplace" },
   { label: "Strategy", targetId: "my-role" },
   { label: "Outcome", targetId: "outcome" },
 ];
 
-/** Section id → chapter index for active indicator (which chapter to highlight when this section is in view) */
-const SECTION_TO_CHAPTER: Record<string, number> = {
+const CRM_SECTION_TO_CHAPTER: SectionToChapter = {
   context: 0,
   "the-inflection-point-marketplace": 1,
+  "my-role": 2,
+  outcome: 3,
+  "what-i-learned": 3,
+};
+
+const AUTO_TABLE_CHAPTERS: Chapter[] = [
+  { label: "Overview", targetId: "context" },
+  { label: "The Core Tension", targetId: "the-inflection-point" },
+  { label: "Strategy", targetId: "my-role" },
+  { label: "Outcome", targetId: "outcome" },
+];
+
+const AUTO_TABLE_SECTION_TO_CHAPTER: SectionToChapter = {
+  context: 0,
+  "the-inflection-point": 1,
   "my-role": 2,
   outcome: 3,
   "what-i-learned": 3,
@@ -37,7 +55,6 @@ const MONO = {
 } as const;
 
 export function ReadingModeHeader() {
-  const router = useRouter();
   const pathname = usePathname();
   const [activeIndex, setActiveIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,23 +62,28 @@ export function ReadingModeHeader() {
   /** When user clicks a chapter, we pin the indicator here until scroll reaches that section (avoids jump through intermediate sections). */
   const scrollTargetIndexRef = useRef<number | null>(null);
 
-  const handleBack = () => {
-    if (typeof window !== "undefined" && window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
+  const { chapters, sectionToChapter } = useMemo(() => {
+    if (pathname === "/projects/auto-table-assignment") {
+      return {
+        chapters: AUTO_TABLE_CHAPTERS,
+        sectionToChapter: AUTO_TABLE_SECTION_TO_CHAPTER,
+      };
     }
-  };
+    return {
+      chapters: CRM_CHAPTERS,
+      sectionToChapter: CRM_SECTION_TO_CHAPTER,
+    };
+  }, [pathname]);
 
   const handleChapterSelect = (idx: number) => {
     scrollTargetIndexRef.current = idx;
     setActiveIndex(idx);
-    scrollToSection(CHAPTERS[idx].targetId);
+    scrollToSection(chapters[idx].targetId);
     setMenuOpen(false);
   };
 
   useEffect(() => {
-    const sectionIds = Object.keys(SECTION_TO_CHAPTER);
+    const sectionIds = Object.keys(sectionToChapter);
     const targets = sectionIds
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el != null);
@@ -73,7 +95,7 @@ export function ReadingModeHeader() {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           const id = entry.target.id;
-          const chapterIdx = SECTION_TO_CHAPTER[id];
+          const chapterIdx = sectionToChapter[id];
           if (chapterIdx === undefined) continue;
           if (pending !== null) {
             if (chapterIdx === pending) {
@@ -90,7 +112,7 @@ export function ReadingModeHeader() {
 
     targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [pathname, sectionToChapter]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -110,17 +132,16 @@ export function ReadingModeHeader() {
     <header
       className="sticky top-6 z-[100] mx-6 mt-6 flex min-h-[44px] cursor-none items-center justify-between overflow-visible px-4 py-3 md:px-6"
     >
-      {/* Back — left; touch target >= 44px on mobile */}
-      <button
-        type="button"
-        onClick={handleBack}
+      {/* Back — always goes to home (consistent when opening case study via direct URL) */}
+      <Link
+        href="/"
         className="link-underline link-underline--lift flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 text-[13px] text-[#6B6B6B] hover:text-accent-hover-text md:min-h-0 md:min-w-0 md:justify-start"
         style={{ fontFamily: "var(--font-plex-mono), monospace", display: "flex" }}
         aria-label="Back to home"
       >
         <span aria-hidden>←</span>
         <span className="hidden md:inline">Back</span>
-      </button>
+      </Link>
 
       {/* Center: mobile = label + menu; desktop = tab bar */}
       <nav
@@ -142,10 +163,10 @@ export function ReadingModeHeader() {
             }}
             aria-expanded={menuOpen}
             aria-haspopup="listbox"
-            aria-label={`Reading: ${CHAPTERS[activeIndex].label}. Open chapter menu`}
+            aria-label={`Reading: ${chapters[activeIndex].label}. Open chapter menu`}
           >
             <span className="whitespace-nowrap">
-              Reading: {CHAPTERS[activeIndex].label} ▾
+              Reading: {chapters[activeIndex].label} ▾
             </span>
           </button>
           {menuOpen && (
@@ -158,7 +179,7 @@ export function ReadingModeHeader() {
                 borderRadius: 10,
               }}
             >
-              {CHAPTERS.map((ch, idx) => (
+              {chapters.map((ch, idx) => (
                 <li key={ch.targetId} role="option" aria-selected={activeIndex === idx}>
                   <button
                     type="button"
@@ -187,7 +208,7 @@ export function ReadingModeHeader() {
             fontFamily: "var(--font-plex-mono), monospace",
           }}
         >
-          {CHAPTERS.map((ch, idx) => {
+          {chapters.map((ch, idx) => {
             const isActive = activeIndex === idx;
             return (
               <button

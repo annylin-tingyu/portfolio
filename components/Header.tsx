@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const nav = [
-  { label: "Work", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
+  { label: "About", href: "/about" },
+  { label: "Resume", href: "/2026%20Anny_Lin%20Resume.pdf", external: true },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/atylin/", external: true },
 ];
 
 export function Header() {
@@ -41,6 +41,8 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
               className="link-underline link-underline--lift cursor-none text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#4F46E5]"
             >
               {item.label}

@@ -10,28 +10,26 @@ export function Footer() {
           </p>
           <div className="flex gap-6">
             <Link
-              href="https://twitter.com"
+              href="/about"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
+            >
+              About
+            </Link>
+            <Link
+              href="/2026%20Anny_Lin%20Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
             >
-              Twitter
+              Resume
             </Link>
             <Link
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/atylin/"
               target="_blank"
               rel="noopener noreferrer"
               className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
             >
               LinkedIn
-            </Link>
-            <Link
-              href="https://dribbble.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
-            >
-              Dribbble
             </Link>
           </div>
         </div>

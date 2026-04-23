@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "export": "next build",
-    "deploy": "gh-pages -d out",
+    "deploy": "next build && node scripts/prune-out.js && gh-pages -d out -r https://github.com/annylin-tingyu/portfolio.git --nojekyll",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -23,7 +25,21 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "gh-pages": "^6.3.0",
+    "pdf-lib": "^1.17.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "storybook": "^10.3.5",
+    "@storybook/nextjs-vite": "^10.3.5",
+    "@chromatic-com/storybook": "^5.1.2",
+    "@storybook/addon-vitest": "^10.3.5",
+    "@storybook/addon-a11y": "^10.3.5",
+    "@storybook/addon-docs": "^10.3.5",
+    "@storybook/addon-onboarding": "^10.3.5",
+    "vite": "^8.0.8",
+    "eslint-plugin-storybook": "^10.3.5",
+    "vitest": "^4.1.4",
+    "playwright": "^1.59.1",
+    "@vitest/browser-playwright": "^4.1.4",
+    "@vitest/coverage-v8": "^4.1.4"
   }
 }
