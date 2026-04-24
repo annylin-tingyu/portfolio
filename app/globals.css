@@ -47,6 +47,60 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
+/* New Home: steaming cup utility */
+.nh-barSteam {
+  position: absolute;
+  /* Tuned by eye: center over cup BODY (not handle) */
+  left: var(--nh-steam-x, 42%);
+  top: 6px;
+  transform: translate(-50%, -18px);
+  display: flex;
+  gap: 0px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.nh-barSteamCup {
+  /* Ensure the cup itself is visible under the steam */
+  z-index: 1;
+}
+
+.nh-steamWisp {
+  display: block;
+  width: 8px;
+  height: 30px;
+  color: rgba(17, 17, 17, 0.28);
+  background: transparent;
+}
+
+.nh-steamSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@keyframes nh-cupSteam {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.15;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(3px, -80px, 0) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.nh-animateSteam {
+  animation: nh-cupSteam 4s ease-in-out infinite;
+  will-change: transform, opacity;
+  opacity: 0.9;
+  animation-play-state: running;
+  background: transparent !important;
+}
+
 /* Nav bars: hide native pointer so custom cursor (black dot) shows */
 header.cursor-none a,
 header.cursor-none button {

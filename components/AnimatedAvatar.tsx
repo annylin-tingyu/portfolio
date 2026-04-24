@@ -2,6 +2,7 @@
 
 import Lottie from "lottie-react";
 import { useEffect, useRef, useState } from "react";
+import type { LottieRefCurrentProps } from "lottie-react";
 
 type AnimatedAvatarProps = {
   src: string;
@@ -17,9 +18,7 @@ export function AnimatedAvatar({
   style,
 }: AnimatedAvatarProps) {
   const [animationData, setAnimationData] = useState<unknown | null>(null);
-  const lottieRef = useRef<{
-    setSpeed?: (value: number) => void;
-  } | null>(null);
+  const lottieRef = useRef<LottieRefCurrentProps | null>(null);
 
   useEffect(() => {
     let cancelled = false;
