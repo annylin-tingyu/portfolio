@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { AnimatedAvatar } from "../components/AnimatedAvatar";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -102,7 +102,7 @@ function EspressoMachine() {
       viewBox="0 0 180 136"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="scale-75 origin-bottom"
+      className="scale-75 origin-bottom translate-x-[16px]"
     >
       <rect x="20" y="40" width="140" height="40" rx="10" fill="black" />
       <rect x="20" y="110" width="140" height="25" rx="8" fill="black" />
@@ -135,15 +135,15 @@ function Cup() {
       <path
         d="M10 10H50L45 30L35 45H25L15 30L10 10Z"
         stroke="black"
-        strokeWidth="1.5"
+        strokeWidth="2"
         fill="white"
       />
-      <path d="M50 15H55V30H45" stroke="black" strokeWidth="1.5" />
+      <path d="M50 15H55V30H45" stroke="black" strokeWidth="2" />
       <rect x="25" y="45" width="10" height="4" fill="black" />
       <path
         d="M22 49H38L45 80H15L22 49Z"
         stroke="black"
-        strokeWidth="1.5"
+        strokeWidth="2"
         fill="white"
       />
     </svg>
@@ -333,14 +333,12 @@ export default function Home() {
               className="flex items-end"
               aria-label="Anny Lin – Home"
             >
-              <div className="relative h-[150px] overflow-hidden flex items-start pt-0 md:pt-1">
-                <Image
-                  src={`${basePath}/myavatar.svg`}
-                  alt="Anny Lin"
-                  width={150}
-                  height={360}
-                  className="w-[150px] h-[360px] object-cover object-top"
-                  unoptimized
+              <div className="relative h-[150px] w-[150px] overflow-visible flex items-start pt-0 md:pt-1">
+                <AnimatedAvatar
+                  src={`${basePath}/animatedavatar.json`}
+                  speed={0.2}
+                  className="w-[150px] h-[360px] pointer-events-none"
+                  style={{ width: 150, height: 360, transform: "translateY(-80px)" }}
                 />
               </div>
             </Link>
@@ -352,7 +350,7 @@ export default function Home() {
           </div>
         </div>
         <div
-          className="relative z-10 w-full flex-1 min-h-0 border-x-2 border-t-4 border-black mt-0 overflow-hidden"
+          className="relative z-0 w-full flex-1 min-h-0 border-x-2 border-t-4 border-black mt-0 overflow-hidden"
           style={{
             backgroundColor: "#fafafa",
             backgroundImage:
