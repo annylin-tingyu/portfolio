@@ -11,7 +11,7 @@ export function Footer() {
           <div className="flex gap-6">
             <Link
               href="/about"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
             >
               About
             </Link>
@@ -19,7 +19,7 @@ export function Footer() {
               href="/2026%20Anny_Lin%20Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
             >
               Resume
             </Link>
@@ -27,7 +27,7 @@ export function Footer() {
               href="https://www.linkedin.com/in/atylin/"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#4F46E5]"
+              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
             >
               LinkedIn
             </Link>

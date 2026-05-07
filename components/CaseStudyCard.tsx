@@ -20,7 +20,7 @@ export function CaseStudyCard({
   return (
     <Link
       href={href}
-      className="card-glow group relative block rounded-2xl border border-[#E5E7EB] bg-white p-6 text-left outline-none transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(79,70,229,0.35)]"
+      className="card-glow group relative block rounded-2xl border border-[#E5E7EB] bg-white p-6 text-left outline-none transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(196,122,91,0.35)]"
       style={{
         transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
       }}
@@ -35,7 +35,7 @@ export function CaseStudyCard({
       >
         {shelfLabel}
       </p>
-      <h2 className="link-underline font-semibold text-[#111111] transition-colors duration-200 group-hover:text-[#4F46E5]">
+      <h2 className="link-underline font-semibold text-[#111111] transition-colors duration-200 group-hover:text-[#C47A5B]">
         {title}
       </h2>
       <p className="mt-2 text-[15px] leading-[1.5] text-[#6B7280]">

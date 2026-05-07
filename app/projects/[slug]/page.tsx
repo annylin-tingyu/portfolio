@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getProjectBySlug, projects } from "@/lib/projects";
 import { CaseStudyLayout } from "@/components/CaseStudyLayout";
 import { AutoTableCaseStudyLayout } from "@/components/AutoTableCaseStudyLayout";
+import { AiEventCaseStudyLayout } from "@/components/AiEventCaseStudyLayout";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -28,6 +29,16 @@ export default async function ProjectPage({ params }: Props) {
   if (slug === "crm-marketplace") {
     return (
       <CaseStudyLayout
+        category={project.category}
+        title={project.title}
+        description={project.description}
+      />
+    );
+  }
+
+  if (slug === "ai-event-planning") {
+    return (
+      <AiEventCaseStudyLayout
         category={project.category}
         title={project.title}
         description={project.description}
@@ -74,12 +85,12 @@ export default async function ProjectPage({ params }: Props) {
         >
           View all work
         </Link>
-        <a
+        <Link
           href="/#contact"
           className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
         >
           Get in touch
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -64,7 +64,7 @@ function HeadlineBay() {
             Turning product complexity
             <br />
             into{" "}
-            <span className="text-[#4F46E5]">clarity</span>
+            <span className="text-[#C47A5B]">clarity</span>
           </h1>
           <p
             className="mt-[52px] max-w-[560px] text-base font-normal leading-[1.6] text-[#6B7280]"
@@ -156,7 +156,7 @@ function Cabinet({
   );
 
   const baseClasses =
-    "absolute z-10 flex flex-col border border-[#d0d0d0] bg-white shadow-sm transition-colors duration-200 hover:border-[#4F46E5]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F46E5]";
+    "absolute z-10 flex flex-col border border-[#d0d0d0] bg-white shadow-sm transition-colors duration-200 hover:border-[#C47A5B]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C47A5B]";
 
   if (href) {
     return (
@@ -201,7 +201,7 @@ function CaseStudyBox({
   return (
     <Link
       href={href}
-      className="group absolute z-40 flex cursor-pointer flex-col overflow-hidden rounded-md border border-[#e5e5e5] bg-white shadow-[0_2px_8px_rgba(17,17,17,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(17,17,17,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F46E5]"
+      className="group absolute z-40 flex cursor-pointer flex-col overflow-hidden rounded-md border border-[#e5e5e5] bg-white shadow-[0_2px_8px_rgba(17,17,17,0.06)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(17,17,17,0.1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C47A5B]"
       style={{ top, left, width, height }}
     >
       {/* Lid — thin strip at top, overlaps body */}

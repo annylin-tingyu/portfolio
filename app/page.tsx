@@ -94,7 +94,13 @@ function TabletopMenu() {
   );
 }
 
-function EspressoMachine() {
+function EspressoMachine({ className = "" }: { className?: string }) {
+  const bodyFill   = "#f5ede0";
+  const bodyStroke = "#2a1a0e";
+  const tray       = "#c4a278";
+  const needleClr  = "#c8764a";
+  const coffee     = "#6b3a1f";
+
   return (
     <svg
       width="170"
@@ -102,22 +108,44 @@ function EspressoMachine() {
       viewBox="0 0 180 136"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="scale-75 origin-bottom translate-x-[16px]"
+      className={`scale-75 origin-bottom translate-x-[16px] ${className}`.trim()}
+      aria-hidden
     >
-      <rect x="20" y="40" width="140" height="40" rx="10" fill="black" />
-      <rect x="20" y="110" width="140" height="25" rx="8" fill="black" />
-      <line x1="28" y1="80" x2="28" y2="110" stroke="black" strokeWidth="1.5" />
-      <line x1="152" y1="80" x2="152" y2="110" stroke="black" strokeWidth="1.5" />
-      <circle cx="60" cy="85" r="8" fill="black" />
-      <circle cx="100" cy="85" r="8" fill="black" />
-      <rect x="38" y="80" width="4" height="27" rx="2" fill="none" stroke="black" strokeWidth="1.5" />
-      <circle cx="40" cy="125" r="2.5" fill="black" />
-      <path d="M45 20H65V35C65 38 45 38 45 35V20Z" fill="black" />
-      <path d="M65 25C68 25 68 30 65 30" stroke="black" strokeWidth="1.5" />
-      <path d="M115 20H130V35C130 38 115 38 115 35V20Z" fill="black" />
-      <path d="M132 20H147V35C147 38 132 38 132 35V20Z" fill="black" />
-      <path d="M58 95H82V110C82 115 58 115 58 110V95Z" fill="black" />
-      <path d="M82 100C86 100 86 105 82 105" stroke="black" strokeWidth="1.5" />
+      {/* Drip tray / base */}
+      <rect x="10" y="122" width="160" height="12" rx="6" fill={tray} />
+
+      {/* Main body */}
+      <rect x="14" y="10" width="152" height="114" rx="22" fill={bodyFill} stroke={bodyStroke} strokeWidth="5" />
+
+      {/* Top lid / tab handle */}
+      <rect x="76" y="3" width="28" height="13" rx="4" fill={bodyFill} stroke={bodyStroke} strokeWidth="3.5" />
+
+      {/* Pressure gauge — left, r=11 (0.5× original), shifted up to cy=48 */}
+      <circle cx="58" cy="48" r="11" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" />
+      {/* Scale arc — endpoints scaled 0.5× around original center (58,60), then shifted up 12 */}
+      <path d="M49.5 53.5 A11 11 0 1 1 66.5 53.5" stroke={bodyStroke} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.4" />
+      {/* Terracotta needle */}
+      <line x1="58" y1="48" x2="64.5" y2="41.5" stroke={needleClr} strokeWidth="2" strokeLinecap="round" />
+      {/* Center dot */}
+      <circle cx="58" cy="48" r="2" fill={bodyStroke} />
+
+      {/* Right oval knob — 75% of original (rx=7, ry=10.5), shifted up to cy=48 */}
+      <ellipse cx="128" cy="48" rx="7" ry="10.5" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" />
+      <line x1="128" y1="43" x2="128" y2="53" stroke={bodyStroke} strokeWidth="1.5" strokeLinecap="round" />
+
+      {/* Group head block */}
+      <rect x="81" y="64" width="18" height="24" rx="3" fill={bodyStroke} />
+
+      {/* Portafilter arm — extends right */}
+      <rect x="97" y="70" width="28" height="8" rx="4" fill={bodyStroke} />
+
+      {/* Espresso drip — spans from group head bottom (y=88) to cup top (y=105) */}
+      <path className="animate-drip" d="M90 88V103" stroke={coffee} strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* Demitasse cup — base bottom aligns with body inner edge y=121.5 */}
+      <path d="M77 105H103L100 118H80L77 105Z" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" strokeLinejoin="round" />
+      {/* Cup base — bottom at y=121.5 (body inner bottom) */}
+      <rect x="75" y="118" width="30" height="3.5" rx="1.5" fill={bodyStroke} />
     </svg>
   );
 }

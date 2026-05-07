@@ -7,6 +7,7 @@ import { ReadingModeHeader } from "@/components/ReadingModeHeader";
 const CASE_STUDY_PATHS = [
   "/projects/crm-marketplace",
   "/projects/auto-table-assignment",
+  "/projects/ai-event-planning",
 ];
 
 export function SiteHeader() {

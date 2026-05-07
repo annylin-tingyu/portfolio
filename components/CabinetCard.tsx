@@ -21,7 +21,7 @@ export function CabinetCard({
   return (
     <Link
       href={href}
-      className="cabinet-card-container card-glow group relative flex min-w-0 flex-1 snap-start rounded-sm outline-none transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(79,70,229,0.35)] sm:min-w-[200px]"
+      className="cabinet-card-container card-glow group relative flex min-w-0 flex-1 snap-start rounded-sm outline-none transition-all duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[rgba(196,122,91,0.35)] sm:min-w-[200px]"
       style={{ transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)" }}
     >
       <div className="cabinet-card-inner flex min-w-0 flex-1 flex-col items-center text-center pt-5 pb-5 px-5">

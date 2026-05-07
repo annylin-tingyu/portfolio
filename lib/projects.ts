@@ -11,6 +11,15 @@ export const projects: Project[] = [
     year: "—",
   },
   {
+    slug: "ai-event-planning",
+    title: "AI Event Planning",
+    category: "Case 03",
+    description:
+      "Designing an AI event planner that kept users in the conversation and turned group intent into a coordinated outing.",
+    image: "https://picsum.photos/800/400?random=12",
+    year: "—",
+  },
+  {
     slug: "crm-marketplace",
     title: "CRM Marketplace Platform",
     category: "Case 02",

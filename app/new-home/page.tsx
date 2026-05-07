@@ -18,19 +18,27 @@ type MenuProject = {
 const MENU_PROJECTS: MenuProject[] = [
   {
     id: "01",
-    title: "Auto table assignment system",
-    href: "/projects/auto-table-assignment",
-    year: "2025",
-    flavorNotes: "Adaptive table assignment to balance staff load.",
-    badges: ["Systems", "Workflow", "B2B"],
+    title: "CRM marketplace feature",
+    href: "/projects/crm-marketplace",
+    year: "2023",
+    flavorNotes: "Deposit rules, prepaid bundles, and loyalty features built within a B2B CRM.",
+    badges: ["CRM", "B2B", "Enterprise"],
   },
   {
     id: "02",
-    title: "CRM marketplace platform",
-    href: "/projects/crm-marketplace",
-    year: "2023",
-    flavorNotes: "Configurable deposit rules for B2B merchants.",
-    badges: ["Platform", "Rules", "UX"],
+    title: "Auto table assignment system",
+    href: "/projects/auto-table-assignment",
+    year: "2025",
+    flavorNotes: "Automated table logic for 30+ restaurants, reducing manual seating errors.",
+    badges: ["B2B", "Workflow", "Operations"],
+  },
+  {
+    id: "03",
+    title: "AI Event Creation",
+    href: "/projects/ai-event-planning",
+    year: "2025",
+    flavorNotes: "Conversational event planner that surfaces personalized suggestions and coordinates group plans without leaving the chat.",
+    badges: ["AI", "Social Community", "Chat UX"],
   },
 ];
 
@@ -130,7 +138,98 @@ function CoffeeCup() {
   );
 }
 
-function EspressoMachine() {
+function Lamp() {
+  return (
+    <div className="relative flex flex-col items-center my-2 w-full" aria-hidden>
+      <svg
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="relative z-10"
+      >
+        <path d="M60 0V45" stroke="black" strokeWidth="2.5" />
+        <path
+          d="M30 75C30 52.5 90 52.5 90 75H30Z"
+          stroke="black"
+          strokeWidth="2.5"
+          fill="white"
+        />
+        <path d="M30 75H90" stroke="black" strokeWidth="2.5" />
+        <circle cx="60" cy="67.5" r="6" fill="#FDE68A" className="animate-pulse" />
+      </svg>
+
+      <div
+        className="absolute left-1/2 top-[72px] -translate-x-1/2 w-[600px] h-[800px] bg-gradient-to-b from-yellow-100/30 via-yellow-50/10 to-transparent pointer-events-none z-0"
+        style={{
+          clipPath: "polygon(45% 0%, 55% 0%, 100% 100%, 0% 100%)",
+          filter: "blur(60px)",
+        }}
+      />
+
+      <div className="absolute left-1/2 top-[60px] -translate-x-1/2 w-48 h-48 bg-yellow-200/20 rounded-full blur-3xl pointer-events-none z-0" />
+    </div>
+  );
+}
+
+function MyAvatar2() {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!wrapperRef.current) return;
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      // max 6 SVG units (~1px rendered) in any direction
+      const max = 6;
+      const norm = Math.min(dist, 120) / 120;
+      setEyeOffset({
+        x: Math.max(-max, Math.min(max, (dx / dist) * max * norm)),
+        y: Math.max(-max, Math.min(max, (dy / dist) * max * norm)),
+      });
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  return (
+    <div ref={wrapperRef} className="relative h-[180px] w-[120px] overflow-visible flex items-end justify-center">
+      <svg
+        viewBox="132 0 264 528"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ width: 120, height: 180, transform: "translateY(10px)" }}
+        aria-hidden
+      >
+        {/* Body + hair + outfit */}
+        <path fill="#000000" d="M130.458069,529.000000 C131.886597,515.858398 133.781479,502.718018 135.650696,489.573944 C135.925186,487.643829 135.512848,486.031189 133.678802,484.846710 C121.229004,476.806244 119.987053,464.834198 122.453918,451.781738 C123.438858,446.570312 124.960144,441.440887 126.523033,436.362061 C129.892853,425.411377 129.160538,414.790070 125.086868,404.118469 C121.834854,395.599304 118.499435,387.079620 117.601044,377.815125 C116.127281,362.617096 122.420708,349.903564 129.903183,337.510986 C132.916611,332.520111 136.049026,327.601135 139.117035,322.643097 C144.432144,314.053741 148.361633,304.950867 149.356186,294.775848 C149.628769,291.987091 150.461609,289.872986 153.376785,288.503815 C156.901505,286.848358 157.012070,281.523010 155.835403,280.344940 C151.891159,276.396149 152.962753,271.660980 152.184296,267.261536 C150.535706,257.944580 148.700317,248.625565 147.763245,239.225479 C146.080246,222.342651 152.450928,207.420013 160.866379,193.428696 C183.051834,156.543716 215.663956,134.763428 258.075531,127.660683 C261.267700,127.126076 262.675568,125.772583 262.706757,122.438583 C262.757050,117.060135 261.871429,111.856468 260.720062,106.647202 C259.987244,103.331619 258.557343,102.229454 255.114777,103.633659 C248.953125,106.146957 242.708603,108.500847 236.377914,110.547691 C217.616257,116.613762 199.688599,105.410522 196.831589,85.991936 C194.750412,71.846718 207.757843,56.586060 222.350311,55.610714 C233.509964,54.864815 242.591522,58.440582 249.677444,67.112175 C252.312012,70.336296 255.046509,73.478630 257.726227,76.666008 C260.215240,79.626556 262.420837,79.337692 264.437561,76.140419 C267.015137,72.053940 269.495789,67.898849 272.237885,63.924904 C282.469391,49.096966 302.337860,45.938164 316.067413,56.874359 C324.846802,63.867527 328.260193,75.318542 324.768250,86.063545 C320.747314,98.436272 310.374512,106.744957 298.494568,107.339828 C291.691315,107.680489 285.361298,105.449112 278.871826,104.097321 C276.291260,103.559761 273.778412,102.886086 270.480225,103.182915 C272.075562,110.550606 272.546326,117.780701 273.167969,125.484589 C279.305878,125.879265 285.577271,125.463539 291.423401,126.846001 C300.722809,129.045074 310.437439,128.576920 319.524231,131.703659 C328.610382,134.830185 336.059479,140.104553 341.484650,148.196838 C343.192627,150.744461 344.266296,153.340790 343.943878,157.590546 C350.136810,153.460663 353.944153,157.072052 357.939484,160.169891 C377.445709,175.294342 387.684814,195.819077 393.430328,219.329254 C396.925690,233.631958 394.367126,247.435638 391.952362,261.315063 C390.099487,271.964935 391.031403,282.514893 391.787231,293.109741 C392.844543,307.929596 390.114166,321.366394 377.902100,331.305267 C367.514435,339.759430 365.974457,350.615692 368.835724,362.871887 C371.063080,372.412964 374.501648,381.659546 375.797852,391.420746 C376.081390,393.555542 376.335266,395.746979 376.162811,397.876740 C375.929871,400.752808 374.587860,403.081696 371.303314,403.222382 C368.276611,403.352020 366.296661,401.245361 366.215729,398.702881 C365.998810,391.886719 361.801422,386.995331 358.763611,381.536011 C356.868195,378.129761 354.319427,375.173767 350.650970,373.655487 C342.577393,370.314026 337.012695,364.349030 332.468872,357.144257 C330.606659,354.191467 328.671478,351.218414 326.341858,348.641083 C322.099762,343.947906 317.050934,341.359802 310.323761,343.017334 C306.171143,344.040527 301.906677,344.905182 296.582001,344.609131 C303.817505,349.655365 310.280670,354.123810 317.008820,358.295807 C332.722504,368.039520 344.319305,381.976562 355.092468,396.744873 C371.421204,419.128998 378.584900,445.011963 384.276978,471.506256 C387.939606,488.554291 390.978973,505.711792 393.394836,522.981628 C393.646637,524.781677 394.265350,526.530334 394.856934,528.651428 C391.638702,529.000000 388.277435,529.000000 384.348389,528.596558 C380.483978,507.212616 376.914276,486.290985 372.420715,465.517426 C366.603180,438.623138 356.711090,413.721924 338.700592,392.517059 C337.157776,390.700592 335.910828,388.464935 332.427795,387.636047 C334.202362,398.110657 329.797699,406.499634 325.270447,414.784668 C321.500366,421.683929 320.715149,428.957550 323.828186,435.932831 C331.420929,452.945435 329.531403,469.848358 324.899963,487.068695 C321.149933,501.011993 316.621246,514.761475 314.000000,529.000000 C310.638702,529.000000 307.277435,529.000000 303.377563,528.585815 C298.676758,503.442596 294.005585,478.810669 287.460114,454.589691 C278.943878,423.076202 267.310883,392.919647 247.599136,366.455597 C242.553406,359.681458 237.287659,353.080811 229.975800,347.727112 C227.429138,354.054108 226.762772,360.327942 225.189941,366.359436 C222.876389,375.231537 220.358704,384.019135 224.990051,392.949738 C225.484787,393.903748 225.415817,395.255157 225.310440,396.394684 C225.042679,399.290222 226.186874,401.451538 228.140427,403.516876 C235.118439,410.894135 241.622437,418.758240 248.975143,425.732422 C257.089478,433.428955 259.329895,441.972931 255.560852,452.367035 C253.188400,458.909637 254.287201,465.172058 257.736084,471.056091 C259.753326,474.497681 261.901245,477.869263 264.124207,481.182556 C274.601440,496.798615 285.229126,512.318481 294.000000,529.000000 C289.975464,529.000000 285.950897,529.000000 281.419556,528.640015 C280.367767,527.077576 279.914276,525.822998 279.263763,524.680664 C271.432678,510.930542 262.669403,497.766937 253.553833,484.857605 C245.144928,472.949036 240.590958,460.571075 246.129578,446.060089 C247.150711,443.384766 247.342468,440.382782 245.206284,438.017426 C237.541962,429.531036 229.786606,421.126862 221.798019,412.399139 C219.609192,414.913696 217.948715,416.953491 216.149887,418.862915 C210.918503,424.416016 209.486786,430.877747 212.711273,437.694092 C215.088608,442.719543 215.418182,447.863678 215.667145,453.149750 C216.857635,478.428284 216.418991,503.714233 216.000000,529.000000 C212.969406,529.000000 209.938812,529.000000 206.342545,528.542358 C205.776871,508.447327 205.776871,488.809967 205.776871,468.023285 C200.847046,471.792877 197.023392,471.886169 192.589386,468.310394 C192.013168,476.271667 187.031723,476.687042 181.410599,476.323608 C174.746384,475.892700 168.652390,478.109436 162.733017,480.864655 C158.967133,482.617584 155.394547,485.023163 151.452240,486.094879 C147.265594,487.233063 145.985748,489.787445 145.481583,493.489410 C143.871506,505.311829 141.529007,517.041077 141.000000,529.000000 C137.638718,529.000000 134.277420,529.000000 130.458069,529.000000 M348.458832,305.944336 C355.498444,297.438873 358.831604,287.570801 359.808533,276.646271 C361.056519,262.690613 357.988464,249.536789 353.265656,236.605743 C351.469666,231.688431 348.401001,226.734955 354.409607,221.934296 C349.572052,220.667618 348.103088,217.674103 347.549530,213.671448 C346.917206,209.099167 344.980408,204.991043 340.956635,202.345993 C336.478088,199.401962 333.435699,195.352249 331.177979,190.599411 C329.012329,186.040390 325.690887,182.425262 320.919373,180.896927 C317.162170,179.693481 313.962219,178.082184 311.623352,174.514969 C308.970184,177.327026 305.986053,178.179062 302.536316,178.624252 C293.126953,179.838547 283.909637,182.042068 274.900421,185.115097 C260.488922,190.030807 250.361008,199.476303 244.435623,213.458633 C239.576416,224.925018 237.542786,237.053207 236.364624,249.335846 C234.747040,266.199432 234.029816,283.180725 229.230148,299.590088 C228.819534,300.993927 228.128036,302.358673 229.593964,303.715210 C236.471619,310.079773 238.137680,318.751740 240.276993,327.331085 C241.523804,332.331146 237.057892,337.571808 240.653610,341.937622 C243.908463,345.889526 247.887054,349.285706 251.118103,353.329041 C251.742081,354.109894 252.370956,354.886871 252.994125,355.668396 C261.089111,365.820282 273.804230,369.063416 285.694183,364.008209 C292.892975,360.947510 293.111755,360.374603 291.125854,352.919495 C290.524567,350.662140 290.201691,348.521545 287.988922,347.031311 C286.254639,345.863281 285.845978,343.747070 285.833099,341.663391 C285.800171,336.333679 285.667297,331.002716 285.745758,325.674774 C285.817963,320.771851 288.568024,318.323669 293.151031,319.702118 C300.697479,321.971954 308.167084,321.874390 315.841187,320.705780 C327.887512,318.871429 339.404175,316.046906 348.458832,305.944336 M312.733917,490.355957 C318.260925,472.584717 321.243744,454.987915 313.050781,436.917633 C309.528564,429.149109 310.625702,420.598022 314.298553,412.701843 C316.122314,408.780975 318.075470,404.919708 320.001678,401.047150 C322.268982,396.488708 322.688538,391.655640 320.996704,386.984619 C318.607880,380.389191 315.302551,374.192657 310.466125,368.989258 C309.309937,367.745270 308.369934,365.949890 306.224762,366.023895 C304.978271,371.733398 306.074249,377.363251 306.082184,382.981537 C306.130554,417.294403 306.238678,451.607147 306.339508,485.919952 C306.353455,490.666412 307.529572,495.158234 309.410706,500.898407 C310.753632,496.765717 311.668121,493.951569 312.733917,490.355957 M270.202026,381.488098 C280.466278,399.355560 287.453857,418.646423 294.636414,437.949188 C296.038391,416.209900 294.567139,394.628693 294.814972,372.142609 C285.629883,376.111084 277.283844,377.664429 268.107727,377.121674 C268.899628,378.841339 269.371338,379.865753 270.202026,381.488098 z" />
+        <path fill="#000000" d="M359.460632,529.000000 C358.667053,517.851685 356.089020,507.008911 354.311462,496.072693 C351.516235,478.875824 348.053680,461.792267 344.028564,444.831635 C343.913574,444.347107 343.797272,443.857544 343.747681,443.363678 C343.405792,439.957123 343.830933,436.683502 347.803162,435.938446 C351.712494,435.205139 353.547516,437.875519 354.279724,441.312042 C356.665100,452.507202 359.190033,463.678192 361.281799,474.929047 C364.584198,492.691650 367.578735,510.511505 370.851807,528.653564 C367.307098,529.000000 363.614166,529.000000 359.460632,529.000000 z" />
+
+        {/* Eyes — follow mouse direction */}
+        <g
+          transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
+          style={{ transition: "transform 80ms ease-out" }}
+        >
+          <path fill="#000000" d="M328.078217,238.218918 C332.105255,235.566116 335.182129,236.043655 337.331848,240.172775 C339.094269,243.557953 338.412201,246.594376 335.789703,249.191498 C333.817261,251.144836 331.482300,251.766327 329.134247,249.889557 C326.297791,247.622406 325.147125,244.692200 326.462830,241.119522 C326.800415,240.202881 327.364838,239.369797 328.078217,238.218918 z" />
+          <path fill="#000000" d="M307.132446,252.113312 C303.824402,253.288651 301.549255,252.200592 299.978333,249.726303 C297.863953,246.396133 298.196503,243.025803 300.774933,240.129761 C302.643860,238.030640 305.224335,237.773849 307.542480,239.301590 C310.707977,241.387787 311.240143,244.565491 310.346619,248.067398 C309.918884,249.743698 308.924805,251.027405 307.132446,252.113312 z" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+function EspressoMachine({ className = "" }: { className?: string }) {
+  const bodyFill   = "#f5ede0";
+  const bodyStroke = "#2a1a0e";
+  const tray       = "#c4a278";
+  const needleClr  = "#c8764a";
+  const coffee     = "#6b3a1f";
+
   return (
     <svg
       width="170"
@@ -138,23 +237,44 @@ function EspressoMachine() {
       viewBox="0 0 180 136"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="scale-75 origin-bottom translate-x-[16px]"
+      className={`scale-75 origin-bottom translate-x-[16px] ${className}`.trim()}
       aria-hidden
     >
-      <rect x="20" y="40" width="140" height="40" rx="10" fill="black" />
-      <rect x="20" y="110" width="140" height="25" rx="8" fill="black" />
-      <line x1="28" y1="80" x2="28" y2="110" stroke="black" strokeWidth="1.5" />
-      <line x1="152" y1="80" x2="152" y2="110" stroke="black" strokeWidth="1.5" />
-      <circle cx="60" cy="85" r="8" fill="black" />
-      <circle cx="100" cy="85" r="8" fill="black" />
-      <rect x="38" y="80" width="4" height="27" rx="2" fill="none" stroke="black" strokeWidth="1.5" />
-      <circle cx="40" cy="125" r="2.5" fill="black" />
-      <path d="M45 20H65V35C65 38 45 38 45 35V20Z" fill="black" />
-      <path d="M65 25C68 25 68 30 65 30" stroke="black" strokeWidth="1.5" />
-      <path d="M115 20H130V35C130 38 115 38 115 35V20Z" fill="black" />
-      <path d="M132 20H147V35C147 38 132 38 132 35V20Z" fill="black" />
-      <path d="M58 95H82V110C82 115 58 115 58 110V95Z" fill="black" />
-      <path d="M82 100C86 100 86 105 82 105" stroke="black" strokeWidth="1.5" />
+      {/* Drip tray / base */}
+      <rect x="10" y="122" width="160" height="12" rx="6" fill={tray} />
+
+      {/* Main body */}
+      <rect x="14" y="10" width="152" height="114" rx="22" fill={bodyFill} stroke={bodyStroke} strokeWidth="5" />
+
+      {/* Top lid / tab handle */}
+      <rect x="76" y="3" width="28" height="13" rx="4" fill={bodyFill} stroke={bodyStroke} strokeWidth="3.5" />
+
+      {/* Pressure gauge — left, r=11 (0.5× original), shifted up to cy=48 */}
+      <circle cx="58" cy="48" r="11" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" />
+      {/* Scale arc — endpoints scaled 0.5× around original center (58,60), then shifted up 12 */}
+      <path d="M49.5 53.5 A11 11 0 1 1 66.5 53.5" stroke={bodyStroke} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.4" />
+      {/* Terracotta needle */}
+      <line x1="58" y1="48" x2="64.5" y2="41.5" stroke={needleClr} strokeWidth="2" strokeLinecap="round" />
+      {/* Center dot */}
+      <circle cx="58" cy="48" r="2" fill={bodyStroke} />
+
+      {/* Right oval knob — 75% of original (rx=7, ry=10.5), shifted up to cy=48 */}
+      <ellipse cx="128" cy="48" rx="7" ry="10.5" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" />
+      <line x1="128" y1="43" x2="128" y2="53" stroke={bodyStroke} strokeWidth="1.5" strokeLinecap="round" />
+
+      {/* Group head block */}
+      <rect x="81" y="64" width="18" height="24" rx="3" fill={bodyStroke} />
+
+      {/* Portafilter arm — extends right */}
+      <rect x="97" y="70" width="28" height="8" rx="4" fill={bodyStroke} />
+
+      {/* Espresso drip — spans from group head bottom (y=88) to cup top (y=105) */}
+      <path className="animate-drip" d="M90 88V103" stroke={coffee} strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* Demitasse cup — base bottom aligns with body inner edge y=121.5 */}
+      <path d="M77 105H103L100 118H80L77 105Z" fill={bodyFill} stroke={bodyStroke} strokeWidth="2" strokeLinejoin="round" />
+      {/* Cup base — bottom at y=121.5 (body inner bottom) */}
+      <rect x="75" y="118" width="30" height="3.5" rx="1.5" fill={bodyStroke} />
     </svg>
   );
 }
@@ -250,28 +370,13 @@ function BarSteamingCup({ className = "" }: { className?: string }) {
   );
 }
 
-function SectionDivider({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3 py-8" aria-hidden>
-      <span className="nh-doodle" />
-      <span
-        className="text-[11px] tracking-[0.28em] uppercase text-black/65"
-        style={{ fontFamily: "var(--font-plex-mono), monospace" }}
-      >
-        {label}
-      </span>
-      <div className="h-px flex-1 bg-black/10" />
-    </div>
-  );
-}
-
 export default function NewHomePage() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const parallaxRef = useRef<HTMLDivElement | null>(null);
 
   const { itemRefs, visible } = useScrollRevealStagger(MENU_PROJECTS.length);
 
-  const typedHeadline = useMemo(() => "Hi, I’m Anny. A designer & developer.", []);
+  const typedHeadlineLines = useMemo(() => ["Hi, I’m Anny.", "A designer & builder."], []);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -302,38 +407,42 @@ export default function NewHomePage() {
       {/* HERO */}
       <section className="nh-hero">
         <div className="nh-heroFrame" aria-hidden />
-        <div className="nh-heroStain" aria-hidden />
         <div className="nh-heroTop">
           <div className="nh-heroInnerCentered">
             <div className="nh-heroStack">
+              <Lamp />
+
               <h1 className="nh-heroTitle">
                 <span
                   className="nh-heroType"
                   style={{
-                    ["--nh-ch" as never]: Math.max(18, typedHeadline.length),
+                    ["--nh-ch" as never]: Math.max(18, ...typedHeadlineLines.map((line) => line.length)),
                     ["--nh-delay" as never]: "80ms",
-                    ["--nh-steps" as never]: Math.max(26, Math.min(72, typedHeadline.length)),
                     fontFamily: "var(--font-inter), system-ui, sans-serif",
                   }}
                 >
-                  <span className="nh-heroTypeInner">{typedHeadline}</span>
+                  {typedHeadlineLines.map((line, idx) => (
+                    <span
+                      key={line}
+                      className="nh-heroTypeLine"
+                      style={{
+                        ["--nh-line-ch" as never]: line.length,
+                        ["--nh-line-delay" as never]: idx === 0 ? "80ms" : "1180ms",
+                      }}
+                    >
+                      {line}
+                    </span>
+                  ))}
                 </span>
               </h1>
 
               <p className="nh-heroSub">
-                I build small, warm corners of the internet — the kind you linger in. Think slow mornings, good light, and
-                software that doesn’t shout.
+              Product Designer focused on B2B2C platforms and operational systems
               </p>
 
               <p className="nh-preHours" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-                Pull up a chair. Let’s turn complexity into clarity.
+                Let’s turn complexity into clarity.
               </p>
-
-              <div className="nh-hours" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-                <span className="nh-hoursRule" aria-hidden />
-                <span className="nh-hoursText">CURRENTLY OPEN</span>
-                <span className="nh-hoursRule" aria-hidden />
-              </div>
 
               <a className="nh-scrollCue" href="#menu" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
                 <span className="nh-scrollArrow" aria-hidden>
@@ -349,16 +458,10 @@ export default function NewHomePage() {
         <div className="nh-heroCoffeeBar">
           <div className="nh-coffeeBarTop">
             <div className="nh-coffeeBarRig">
-              <Link href="/" className="flex items-end" aria-label="Anny Lin – Home">
-                <div className="relative h-[150px] w-[150px] overflow-visible flex items-start pt-0 md:pt-1">
-                  <AnimatedAvatar
-                    src={`${basePath}/animatedavatar.json`}
-                    speed={1.0}
-                    className="w-[150px] h-[360px] pointer-events-none"
-                    style={{ width: 150, height: 360, transform: "translateY(-80px)" }}
-                  />
-                </div>
-              </Link>
+              {/* myavatar2 — left of animated avatar, eyes track mouse */}
+              <MyAvatar2 />
+
+              
               <EspressoMachine />
               <div className="flex gap-0 -space-x-3">
                 <BarCup />
@@ -375,18 +478,31 @@ export default function NewHomePage() {
       <section id="menu" className="nh-menuSection">
         <div className="nh-container">
           <div className="nh-menuHeader">
-            <h2 className="text-[20px] tracking-tight" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
-              Projects — today’s menu
-            </h2>
-            <p className="mt-2 text-[14px] text-black/75 max-w-[62ch]">
-              Each project is a dish: the headline is the item, the one-liner is the flavor notes, and the badges are the
-              “loyalty stamps.”
+            <div className="nh-betweenDivider" aria-hidden>
+              <span className="nh-betweenRule" />
+              <svg viewBox="0 0 24 24" className="nh-betweenCup" aria-hidden>
+                <path
+                  d="M6 10 H16 L15 18 Q14.5 20 13 20 H9 Q7.5 20 7 18 Z M16 12 Q20 12 20 15 Q20 18 16 18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="nh-betweenRule" />
+            </div>
+
+            <p className="nh-menuKicker" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
+              today’s
             </p>
+            <h2 className="nh-menuTitleBig" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+              Menu
+            </h2>
           </div>
 
           <div className="nh-menuBoard">
-            <div className="nh-ringStain" aria-hidden />
-            <ol className="divide-y divide-black/10">
+            <ol className="nh-menuList">
               {MENU_PROJECTS.map((p, idx) => (
                 <li
                   key={p.id}
@@ -398,18 +514,15 @@ export default function NewHomePage() {
                   style={{ transitionDelay: `${prefersReducedMotion ? 0 : idx * 90}ms` }}
                 >
                   <Link href={p.href} className="nh-menuLink">
-                    <div className="nh-menuLeft">
-                      <div className="flex items-baseline justify-between gap-4">
-                        <span className="nh-menuTitle">
-                          <span className="nh-menuId">{p.id}</span> {p.title}
-                        </span>
-                        <span className="nh-menuYear">{p.year}</span>
-                      </div>
-                      <div className="nh-flavor">{p.flavorNotes}</div>
+                    <div className="nh-menuRow">
+                      <span className="nh-menuItemTitle">{p.title}</span>
+                      <span className="nh-menuLeader" aria-hidden />
+                      <span className="nh-menuYear">{`’${String(p.year).slice(-2)}`}</span>
                     </div>
-                    <div className="nh-badges">
+                    <div className="nh-flavor">{p.flavorNotes}</div>
+                    <div className="nh-tags">
                       {p.badges.map((b) => (
-                        <span key={b} className="nh-badge">
+                        <span key={b} className="nh-tag">
                           {b}
                         </span>
                       ))}
@@ -422,72 +535,13 @@ export default function NewHomePage() {
         </div>
       </section>
 
-      <div className="nh-container">
-        <SectionDivider label="deeper hang" />
-      </div>
-
-      {/* ABOUT / CONTACT */}
-      <section id="hang" className="nh-hangSection">
-        <div className="nh-container">
-          <div className="nh-hangGrid">
-            <div className="nh-card">
-              <h3 className="text-[16px]" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-                About
-              </h3>
-              <p className="mt-3 text-[14px] text-black/80 leading-relaxed max-w-[68ch]">
-                I design B2B products that feel calm in the hand: clear IA, good defaults, sturdy systems, and just enough
-                motion to guide the eye. The café theme is the personality layer; the craft is the grid, whitespace, and
-                polish.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["UX systems", "Product strategy", "Design ops", "Prototyping", "Motion"].map((s) => (
-                  <span key={s} className="nh-badge nh-badge--soft">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="nh-card">
-              <h3 className="text-[16px]" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-                Contact
-              </h3>
-              <p className="mt-3 text-[14px] text-black/80 leading-relaxed">
-                If you’d like to talk shop (or just swap notes), send a message.
-              </p>
-              <div className="mt-5 flex flex-col gap-2">
-                <a className="nh-contactLink" href="mailto:hello@annylin.design">
-                  hello@annylin.design
-                </a>
-                <a className="nh-contactLink" href="https://www.linkedin.com" target="_blank" rel="noreferrer">
-                  LinkedIn
-                </a>
-                <a className="nh-contactLink" href="https://github.com" target="_blank" rel="noreferrer">
-                  GitHub
-                </a>
-              </div>
-
-              <div className="mt-6">
-                <Link href="/" className="nh-pill" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-                  Back to current home
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <footer className="mt-12 pb-10 text-[12px] text-black/55" style={{ fontFamily: "var(--font-plex-mono), monospace" }}>
-            Tip: open this page at <span className="text-black/80">/new-home</span> while you iterate on the design.
-          </footer>
-        </div>
-      </section>
-
       <style jsx>{`
         .nh-page {
           --nh-cream: #fbfaf7;
           --nh-paper: #fffdf8;
           --nh-espresso: #2a1d16;
           --nh-ink: rgba(17, 17, 17, 0.92);
-          --nh-rose: #b56a77;
+          --nh-rose: #c47a5b;
           --nh-sage: #58726a;
           --nh-shadow: 0 12px 34px rgba(26, 16, 10, 0.12);
           --nh-parallax: 0px;
@@ -498,6 +552,32 @@ export default function NewHomePage() {
         .nh-container {
           width: min(980px, 92vw);
           margin: 0 auto;
+        }
+
+        .nh-betweenDivider {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          margin: 0 auto 16px;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 18px;
+          color: rgba(196, 122, 91, 0.9);
+        }
+
+        .nh-betweenRule {
+          height: 1px;
+          width: min(180px, 22vw);
+          background: rgba(17, 17, 17, 0.16);
+        }
+
+        .nh-betweenCup {
+          width: 20px;
+          height: 20px;
+          opacity: 0.9;
+          color: rgba(196, 122, 91, 0.9);
         }
 
         /* Soft parallax texture (no image) */
@@ -542,41 +622,33 @@ export default function NewHomePage() {
           box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
         }
 
-        /* Large stain in top-right like reference */
-        .nh-heroStain {
-          position: absolute;
-          top: -120px;
-          right: -80px;
-          width: 460px;
-          height: 460px;
-          border-radius: 999px;
-          opacity: 0.18;
-          pointer-events: none;
-          background: radial-gradient(closest-side, transparent 63%, rgba(42, 29, 22, 0.28) 66%, transparent 72%),
-            radial-gradient(closest-side, transparent 74%, rgba(42, 29, 22, 0.18) 76%, transparent 82%);
-          filter: blur(0.3px);
-          transform: rotate(8deg);
-        }
-
         .nh-heroInnerCentered {
           width: min(980px, 92vw);
           margin: 0 auto;
           padding-top: 10px;
           padding-bottom: 14px;
           text-align: center;
+          transform: translateY(-30px);
         }
 
         .nh-heroStack {
           max-width: 74ch;
           margin: 0 auto;
+          transform: translateY(-20px);
         }
 
         .nh-heroTitle {
           margin-top: 14px;
-          font-size: clamp(34px, 4.4vw, 64px);
-          line-height: 1.04;
+          font-size: clamp(31px, 4vw, 58px);
+          line-height: 1.12;
           letter-spacing: -0.03em;
           color: rgba(42, 29, 22, 0.92);
+        }
+
+        @media (min-width: 900px) and (max-width: 1400px) {
+          .nh-heroTitle {
+            font-size: clamp(29px, 3.8vw, 55px);
+          }
         }
 
         .nh-heroSub {
@@ -595,24 +667,6 @@ export default function NewHomePage() {
           max-width: 58ch;
         }
 
-        .nh-hours {
-          margin: 20px auto 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          color: rgba(17, 17, 17, 0.5);
-          letter-spacing: 0.24em;
-          font-size: 11px;
-          text-transform: uppercase;
-        }
-
-        .nh-hoursRule {
-          height: 1px;
-          width: 72px;
-          background: rgba(17, 17, 17, 0.12);
-        }
-
         .nh-scrollCue {
           display: inline-flex;
           align-items: center;
@@ -627,13 +681,13 @@ export default function NewHomePage() {
           background: rgba(255, 255, 255, 0.68);
           backdrop-filter: blur(10px);
           margin: 16px auto 0;
+          animation: nh-bob 1.8s ease-in-out infinite;
         }
 
         .nh-scrollArrow {
           display: inline-block;
           transform: translateY(-1px);
           opacity: 0.8;
-          animation: nh-bob 1.8s ease-in-out infinite;
         }
 
         @keyframes nh-bob {
@@ -647,7 +701,7 @@ export default function NewHomePage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .nh-scrollArrow {
+          .nh-scrollCue {
             animation: none;
           }
         }
@@ -667,21 +721,25 @@ export default function NewHomePage() {
         .nh-heroType {
           position: relative;
           display: inline-block;
-          white-space: nowrap;
           width: calc(var(--nh-ch) * 1ch);
           max-width: 100%;
         }
 
-        .nh-heroTypeInner {
-          display: inline-block;
+        .nh-heroTypeLine {
+          position: relative;
+          display: block;
+          width: max-content;
+          max-width: 100%;
           white-space: nowrap;
           overflow: hidden;
-          vertical-align: bottom;
+          line-height: 1.12;
+          padding: 0.04em 0 0.08em;
+          margin: -0.04em auto -0.08em;
           clip-path: inset(0 100% 0 0);
-          animation: nh-reveal 2000ms steps(var(--nh-steps), end) var(--nh-delay) forwards;
+          animation: nh-hero-reveal 1000ms steps(var(--nh-line-ch), end) var(--nh-line-delay) forwards;
         }
 
-        .nh-heroType::after {
+        .nh-heroTypeLine::after {
           content: "";
           position: absolute;
           right: 0;
@@ -691,10 +749,10 @@ export default function NewHomePage() {
           background: rgba(42, 29, 22, 0.28);
           transform: translateX(2px);
           opacity: 0;
-          animation: nh-caret 900ms step-end var(--nh-delay) 6;
+          animation: nh-caret 900ms step-end var(--nh-line-delay) 2;
         }
 
-        @keyframes nh-reveal {
+        @keyframes nh-hero-reveal {
           from {
             clip-path: inset(0 100% 0 0);
           }
@@ -729,39 +787,15 @@ export default function NewHomePage() {
             animation: none;
             white-space: normal;
           }
-          .nh-heroTypeInner {
+          .nh-heroTypeLine {
+            width: auto;
             clip-path: none;
             animation: none;
             white-space: normal;
           }
-          .nh-heroType::after {
+          .nh-heroTypeLine::after {
             display: none;
           }
-        }
-
-        .nh-pill {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px 12px;
-          border-radius: 999px;
-          border: 1px solid rgba(17, 17, 17, 0.12);
-          background: rgba(255, 255, 255, 0.72);
-          backdrop-filter: blur(10px);
-          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
-          transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1), border-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
-            background 160ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nh-pill:hover {
-          transform: translateY(-1px);
-          border-color: rgba(17, 17, 17, 0.22);
-          background: rgba(255, 255, 255, 0.84);
-        }
-
-        .nh-pill--primary {
-          border-color: rgba(42, 29, 22, 0.28);
-          background: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.68) 100%);
         }
 
         /* Steam animation (CSS-only, very light) */
@@ -832,50 +866,40 @@ export default function NewHomePage() {
           }
         }
 
-        /* Divider doodle */
-        .nh-doodle {
-          width: 18px;
-          height: 18px;
-          border-radius: 6px;
-          border: 1px solid rgba(42, 29, 22, 0.18);
-          background: radial-gradient(circle at 35% 35%, rgba(181, 106, 119, 0.22), transparent 55%),
-            radial-gradient(circle at 70% 70%, rgba(88, 114, 106, 0.18), transparent 55%);
-          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
-        }
-
         .nh-menuSection {
           position: relative;
           z-index: 1;
-          padding: 10px 0 12px;
+          min-height: 100vh;
+          padding: 120px 0 28px;
         }
 
         .nh-menuHeader {
-          padding-bottom: 14px;
+          text-align: center;
+          padding-bottom: 24px;
+        }
+
+        .nh-menuKicker {
+          font-size: 12px;
+          letter-spacing: 0.12em;
+          color: rgba(196, 122, 91, 0.9);
+          text-transform: lowercase;
+        }
+
+        .nh-menuTitleBig {
+          margin-top: 6px;
+          font-size: 40px;
+          line-height: 1.05;
+          letter-spacing: -0.03em;
+          color: rgba(42, 29, 22, 0.92);
         }
 
         .nh-menuBoard {
           position: relative;
-          border: 1px solid rgba(17, 17, 17, 0.12);
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.76);
-          backdrop-filter: blur(12px);
-          box-shadow: 0 18px 50px rgba(26, 16, 10, 0.09);
-          overflow: hidden;
-        }
-
-        /* Ring stain watermark */
-        .nh-ringStain {
-          position: absolute;
-          top: -24px;
-          right: 10%;
-          width: 180px;
-          height: 180px;
-          border-radius: 999px;
-          opacity: 0.12;
-          pointer-events: none;
-          background: radial-gradient(closest-side, transparent 62%, rgba(42, 29, 22, 0.35) 64%, transparent 70%),
-            radial-gradient(closest-side, transparent 72%, rgba(42, 29, 22, 0.22) 74%, transparent 80%);
-          filter: blur(0.2px);
+          border: none;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          overflow: visible;
         }
 
         .nh-menuItem {
@@ -889,39 +913,47 @@ export default function NewHomePage() {
           transform: translate3d(0, 0, 0);
         }
 
+        .nh-menuList {
+          list-style: none;
+          padding: 0;
+          width: 80%;
+          margin: 0 auto;
+        }
+
+        .nh-menuList > li + li {
+          margin-top: 36px;
+          padding-top: 36px;
+          border-top: 1px solid rgba(17, 17, 17, 0.1);
+        }
+
         .nh-menuLink {
-          display: grid;
-          grid-template-columns: 1fr auto;
-          gap: 14px;
-          padding: 16px;
+          display: block;
+          /* Keep 16px side padding; vertical rhythm handled by li spacing above */
+          padding: 0 16px;
           align-items: center;
-          transition: background 160ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nh-menuLink:hover {
-          background: rgba(181, 106, 119, 0.06);
-        }
-
-        @media (max-width: 720px) {
-          .nh-menuLink {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .nh-menuTitle {
-          display: inline-flex;
+        .nh-menuRow {
+          display: flex;
           align-items: baseline;
-          gap: 8px;
-          font-size: 15px;
-          font-family: var(--font-inter), system-ui, sans-serif;
-          color: rgba(17, 17, 17, 0.9);
+          justify-content: space-between;
+          gap: 16px;
         }
 
-        .nh-menuId {
-          font-family: var(--font-plex-mono), monospace;
-          font-size: 12px;
-          letter-spacing: 0.1em;
-          color: rgba(88, 114, 106, 0.92);
+        .nh-menuItemTitle {
+          font-size: 18px;
+          letter-spacing: -0.01em;
+          font-family: var(--font-inter), system-ui, sans-serif;
+          color: rgba(42, 29, 22, 0.92);
+          transition: color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nh-menuLeader {
+          flex: 1;
+          height: 0;
+          align-self: center;
+          margin: 0 12px;
+          border-top: 1px dotted rgba(17, 17, 17, 0.3);
         }
 
         .nh-menuYear {
@@ -932,87 +964,39 @@ export default function NewHomePage() {
 
         .nh-flavor {
           margin-top: 6px;
+          width: 100%;
           font-size: 13px;
-          color: rgba(17, 17, 17, 0.7);
+          font-style: italic;
+          color: rgba(17, 17, 17, 0.62);
           line-height: 1.45;
-          max-width: 70ch;
+          text-align: justify;
+          text-align-last: left;
         }
 
-        .nh-badges {
+        .nh-tags {
+          margin-top: 10px;
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
-          justify-content: flex-end;
         }
 
-        @media (max-width: 720px) {
-          .nh-badges {
-            justify-content: flex-start;
-          }
-        }
-
-        .nh-badge {
+        .nh-tag {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 6px 10px;
+          padding: 4px 8px;
           border-radius: 999px;
-          border: 1px solid rgba(17, 17, 17, 0.12);
-          background: rgba(255, 255, 255, 0.75);
-          font-size: 12px;
+          border: 1px solid rgba(17, 17, 17, 0.1);
+          background: rgba(255, 255, 255, 0.66);
+          font-size: 11px;
           font-family: var(--font-plex-mono), monospace;
-          color: rgba(17, 17, 17, 0.72);
+          color: rgba(17, 17, 17, 0.62);
           box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
         }
 
         .nh-badge--soft {
           background: rgba(88, 114, 106, 0.07);
           border-color: rgba(88, 114, 106, 0.18);
-        }
-
-        .nh-hangSection {
-          position: relative;
-          z-index: 1;
-          padding: 4px 0 20px;
-        }
-
-        .nh-hangGrid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 18px;
-        }
-
-        @media (max-width: 860px) {
-          .nh-hangGrid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .nh-card {
-          border: 1px solid rgba(17, 17, 17, 0.12);
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.72);
-          backdrop-filter: blur(10px);
-          box-shadow: 0 12px 30px rgba(26, 16, 10, 0.08);
-          padding: 18px 18px 16px;
-        }
-
-        .nh-contactLink {
-          display: inline-flex;
-          align-items: center;
-          padding: 10px 12px;
-          border-radius: 12px;
-          border: 1px solid rgba(17, 17, 17, 0.12);
-          background: rgba(255, 255, 255, 0.72);
-          transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1), border-color 160ms cubic-bezier(0.4, 0, 0.2, 1);
-          font-family: var(--font-plex-mono), monospace;
-          font-size: 13px;
-          color: rgba(17, 17, 17, 0.82);
-        }
-
-        .nh-contactLink:hover {
-          transform: translateY(-1px);
-          border-color: rgba(181, 106, 119, 0.35);
         }
 
         /* Coffee bar (homepage carry-over) */
@@ -1083,9 +1067,15 @@ export default function NewHomePage() {
         }
 
         .nh-coffeeFill {
-          fill: rgba(181, 106, 119, 0.78);
+          fill: rgba(196, 122, 91, 0.78);
         }
 
+      `}</style>
+      <style jsx global>{`
+        .nh-menuLink:hover .nh-menuItemTitle,
+        .nh-menuLink:focus-visible .nh-menuItemTitle {
+          color: rgba(196, 122, 91, 0.95);
+        }
       `}</style>
     </main>
   );

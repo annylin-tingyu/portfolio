@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono, Source_Serif_4 } from "next/font/google";
+import { Inter, IBM_Plex_Mono, Source_Serif_4, Caveat, Architects_Daughter } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -26,6 +26,20 @@ const sourceSerif = Source_Serif_4({
   weight: ["400", "600", "700"],
 });
 
+const caveat = Caveat({
+  variable: "--font-handwritten",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "600", "700"],
+});
+
+const architectsDaughter = Architects_Daughter({
+  variable: "--font-skills",
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Anny Lin",
   description: "Turning product complexity into clarity.",
@@ -37,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sourceSerif.variable}`}>
+      <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sourceSerif.variable} ${caveat.variable} ${architectsDaughter.variable}`}>
       <head>
         <link
           href="https://fonts.cdnfonts.com/css/sometype-mono"

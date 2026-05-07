@@ -8,7 +8,7 @@ type PageTransitionProps = {
 };
 
 export function PageTransition({ children, className = "" }: PageTransitionProps) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

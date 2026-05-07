@@ -37,6 +37,25 @@ const AUTO_TABLE_SECTION_TO_CHAPTER: SectionToChapter = {
   "what-i-learned": 3,
 };
 
+const AI_EVENT_CHAPTERS: Chapter[] = [
+  { label: "Overview", targetId: "problem" },
+  { label: "Key Insight", targetId: "key-insight" },
+  { label: "Solution", targetId: "solution" },
+  { label: "Design Decisions", targetId: "design-decisions" },
+  { label: "Outcome", targetId: "outcome" },
+];
+
+const AI_EVENT_SECTION_TO_CHAPTER: SectionToChapter = {
+  problem: 0,
+  "friction-points": 0,
+  "key-insight": 1,
+  solution: 2,
+  metrics: 2,
+  "design-decisions": 3,
+  outcome: 4,
+  "what-i-learned": 4,
+};
+
 /** Offset from viewport top so the section heading has breathing room below the header */
 const SCROLL_TOP_OFFSET = 140;
 
@@ -67,6 +86,12 @@ export function ReadingModeHeader() {
       return {
         chapters: AUTO_TABLE_CHAPTERS,
         sectionToChapter: AUTO_TABLE_SECTION_TO_CHAPTER,
+      };
+    }
+    if (pathname === "/projects/ai-event-planning") {
+      return {
+        chapters: AI_EVENT_CHAPTERS,
+        sectionToChapter: AI_EVENT_SECTION_TO_CHAPTER,
       };
     }
     return {
@@ -224,7 +249,7 @@ export function ReadingModeHeader() {
                   <span
                     className="pointer-events-none absolute left-0 right-0 bottom-0 h-0.5 origin-left"
                     style={{
-                      backgroundColor: "#4F46E5",
+                      backgroundColor: "#C47A5B",
                       transform: isActive ? "scaleX(1)" : "scaleX(0)",
                       transition: "transform var(--motion-duration-medium) var(--motion-ease-out)",
                     }}

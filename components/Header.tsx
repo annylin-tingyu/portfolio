@@ -17,7 +17,7 @@ export function Header() {
       <div className="layout-container flex h-14 items-center justify-between">
         <Link
           href="/"
-          className="group cursor-none text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#4F46E5]"
+          className="group cursor-none rounded-sm text-[15px] font-medium text-[#111111] tracking-[-0.01em] transition-colors duration-200 hover:text-[#c47a5b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[rgba(196,122,91,0.35)]"
           onClick={(event) => {
             if (typeof window === "undefined") return;
             if (pathname === "/") {
@@ -27,7 +27,7 @@ export function Header() {
           }}
         >
           <span>Anny Lin </span>
-          <span className="relative inline-block w-[0.7em] text-[#4F46E5]">
+          <span className="relative inline-block w-[0.7em] text-[#c47a5b]">
             <span className="block transition-opacity duration-[140ms] group-hover:opacity-0">
               ·
             </span>
@@ -43,7 +43,7 @@ export function Header() {
               href={item.href}
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
-              className="link-underline link-underline--lift cursor-none text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#4F46E5]"
+              className="link-underline link-underline--lift cursor-none rounded-sm text-[13px] font-normal text-[#3a3a3a] transition-colors duration-200 hover:text-[#c47a5b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[rgba(196,122,91,0.35)]"
             >
               {item.label}
             </Link>
