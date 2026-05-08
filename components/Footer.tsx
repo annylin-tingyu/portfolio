@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RESUME_PDF_HREF } from "@/lib/resume";
 
 export function Footer() {
   return (
@@ -16,7 +17,7 @@ export function Footer() {
               About
             </Link>
             <Link
-              href="/2026%20Anny_Lin%20Resume.pdf"
+              href={RESUME_PDF_HREF}
               target="_blank"
               rel="noopener noreferrer"
               className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"

@@ -87,6 +87,8 @@ function StackCard({
 }
 
 const SHUFFLE_INTERVAL_MS = 2400;
+/** First deal runs soon after mount; `setInterval` alone waits a full interval before the first tick. */
+const SHUFFLE_INITIAL_DELAY_MS = 750;
 
 function ShufflingImageStack({ items }: { items: StackItem[] }) {
   const [frontIndex, setFrontIndex] = useState(0);
@@ -97,11 +99,25 @@ function ShufflingImageStack({ items }: { items: StackItem[] }) {
 
   useEffect(() => {
     if (n <= 1) return;
-    const id = setInterval(() => {
+
+    const tick = () => {
       setLeavingIndex(frontRef.current);
       setFrontIndex((prev) => (prev + 1) % n);
-    }, SHUFFLE_INTERVAL_MS);
-    return () => clearInterval(id);
+    };
+
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+
+    const initialId = window.setTimeout(() => {
+      tick();
+      intervalId = window.setInterval(tick, SHUFFLE_INTERVAL_MS);
+    }, SHUFFLE_INITIAL_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(initialId);
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, [n]);
 
   // After deal-to-back animation ends, clear leaving state so z-index matches stack order
@@ -222,7 +238,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="about-skills-board-section" aria-label="Skills and tools">
+      <section
+        className="about-skills-board-section hidden md:block"
+        aria-label="Skills and tools"
+      >
         <SkillsBoard />
       </section>
 

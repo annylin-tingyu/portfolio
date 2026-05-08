@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { RESUME_PDF_HREF } from "@/lib/resume";
 
 const nav = [
   { label: "About", href: "/about" },
-  { label: "Resume", href: "/2026%20Anny_Lin%20Resume.pdf", external: true },
+  { label: "Resume", href: RESUME_PDF_HREF, external: true },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/atylin/", external: true },
 ];
 

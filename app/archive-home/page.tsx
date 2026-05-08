@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { AnimatedAvatar } from "../components/AnimatedAvatar";
+import { AnimatedAvatar } from "@/components/AnimatedAvatar";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
