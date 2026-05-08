@@ -107,15 +107,15 @@ function ShufflingImageStack({ items }: { items: StackItem[] }) {
 
     let intervalId: ReturnType<typeof setInterval> | undefined;
 
-    const initialId = window.setTimeout(() => {
+    const initialId = setTimeout(() => {
       tick();
-      intervalId = window.setInterval(tick, SHUFFLE_INTERVAL_MS);
+      intervalId = setInterval(tick, SHUFFLE_INTERVAL_MS);
     }, SHUFFLE_INITIAL_DELAY_MS);
 
     return () => {
-      window.clearTimeout(initialId);
+      clearTimeout(initialId);
       if (intervalId !== undefined) {
-        window.clearInterval(intervalId);
+        clearInterval(intervalId);
       }
     };
   }, [n]);
