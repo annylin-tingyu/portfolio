@@ -1,0 +1,1230 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><style>
+  /* embed shell: white page + border-box on the root so its padding is
+     included in width:100% (otherwise the tablet's right bezel clips). */
+  body { margin: 0; background: #ffffff; }
+  /* room around the tablet so its soft shadow isn't clipped by the iframe edge */
+  #hero-demo-loop { box-sizing: border-box; padding: 28px 44px 60px !important; }
+</style></head>
+<body>
+<div id="hero-demo-loop" aria-label="Interactive dark mode table assignment prototype, single column, no keypad">
+  <style>
+    #hero-demo-loop {
+      --font-size-base: 14px;
+      --modal-bg: #2f4054;
+      --modal-border: #5d728c;
+      --surface: #374b62;
+      --surface-hover: #405871;
+      --surface-disabled: rgba(82, 103, 126, .34);
+      --line: rgba(225, 235, 247, .2);
+      --line-strong: rgba(225, 235, 247, .34);
+      --text: #f7f9fc;
+      --text-soft: #d2dbea;
+      --text-muted: #a6b5c8;
+      --brand-red: #ff4f4f;
+      --brand-red-strong: #ff6a63;
+      --brand-red-soft: rgba(255, 79, 79, .28);
+      --success: #39d98a;
+      --success-strong: #65eca8;
+      --success-soft: rgba(57, 217, 138, .22);
+      --warning: #ffb94e;
+      --warning-soft: rgba(255, 185, 78, .24);
+      --pending: #8fb3ec;
+      --pending-strong: #a9c5f5;
+      --pending-soft: rgba(124, 156, 214, .2);
+      --error: #ff5a5a;
+      --error-strong: #ff7474;
+      --error-soft: rgba(255, 90, 90, .2);
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    #hero-demo-loop * {
+      box-sizing: border-box;
+    }
+
+    #hero-demo-loop .tablet {
+      width: min(1080px, 100%);
+      /* 10.9-inch iPad (10th gen): 248.6 x 179.5 mm device, even bezels,
+         4:3-ish display. Percentage padding keeps bezels proportional. */
+      aspect-ratio: 2486 / 1795;
+      position: relative;
+      padding: 4.3%;
+      border-radius: 34px;
+      background: linear-gradient(145deg, #232a33, #0e1319);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, .14), inset 0 1px 2px rgba(255, 255, 255, .18);
+    }
+
+    #hero-demo-loop .tablet::before {
+      content: '';
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: #05070a;
+      box-shadow: inset 0 0 2px rgba(120, 160, 220, .8);
+    }
+
+    #hero-demo-loop .tablet-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      background: #1a2634;
+      display: grid;
+      place-items: center;
+      place-content: center;
+      overflow: hidden;
+    }
+
+    #hero-demo-loop .stage {
+      width: 560px;
+      max-width: 100%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--modal-border);
+      border-radius: 24px;
+      background: var(--modal-bg);
+      box-shadow: 0 24px 60px rgba(12, 18, 27, .44);
+    }
+
+    #hero-demo-loop .date-strip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 41px;
+    }
+
+    #hero-demo-loop .day {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 41px;
+      display: grid;
+      place-items: center;
+      padding: 4px 2px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: none;
+      color: var(--text-soft);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .day span:first-child {
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    #hero-demo-loop .day span:last-child {
+      font-size: 16px;
+      line-height: 19px;
+      font-weight: 600;
+    }
+
+    #hero-demo-loop .day.outline {
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, .065);
+      color: var(--brand-red-strong);
+    }
+
+    #hero-demo-loop .day.active {
+      color: #fff;
+      background: var(--surface);
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    #hero-demo-loop .calendar-icon {
+      width: 28px;
+      height: 41px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .065);
+      padding: 0;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .calendar-icon:hover {
+      background: var(--surface-hover);
+    }
+
+    #hero-demo-loop .fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #hero-demo-loop .field-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #hero-demo-loop .popover {
+      position: absolute;
+      z-index: 30;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 12px;
+      box-shadow: 0 16px 40px rgba(12, 18, 27, .5);
+      padding: 12px;
+    }
+
+    #hero-demo-loop .popover.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      pointer-events: none;
+    }
+
+    #hero-demo-loop .calendar-popover {
+      top: 48px;
+      left: 0;
+      right: 0;
+      width: 260px;
+    }
+
+    #hero-demo-loop .popover-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    #hero-demo-loop .popover-nav {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: none;
+      background: none;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .popover-nav:hover {
+      color: var(--text);
+    }
+
+    #hero-demo-loop .calendar-weekdays,
+    #hero-demo-loop .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    #hero-demo-loop .calendar-weekdays {
+      margin-bottom: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    #hero-demo-loop .calendar-day {
+      height: 28px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: none;
+      color: var(--text-soft);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .calendar-day:hover {
+      background: var(--surface-hover);
+    }
+
+    #hero-demo-loop .calendar-day:disabled {
+      visibility: hidden;
+      cursor: default;
+    }
+
+    #hero-demo-loop .calendar-day.is-today {
+      border-color: var(--line-strong);
+      color: var(--brand-red-strong);
+    }
+
+    #hero-demo-loop .calendar-day.is-selected {
+      background: var(--brand-red);
+      color: #fff;
+    }
+
+    #hero-demo-loop .time-popover {
+      top: 50px;
+      left: 0;
+      width: 200px;
+      max-height: 216px;
+      overflow-y: auto;
+      display: grid;
+      gap: 4px;
+    }
+
+    #hero-demo-loop .time-option {
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: none;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      text-align: left;
+      padding: 0 8px;
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .time-option:hover {
+      background: var(--surface-hover);
+    }
+
+    #hero-demo-loop .time-option.is-selected {
+      background: var(--brand-red-soft);
+      color: var(--text);
+    }
+
+    #hero-demo-loop .field {
+      width: 100%;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    #hero-demo-loop .field span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #hero-demo-loop .field small {
+      color: var(--text-soft);
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    #hero-demo-loop .field.is-editable {
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .field.is-empty span {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    #hero-demo-loop i {
+      color: currentColor;
+      flex: 0 0 auto;
+    }
+
+    #hero-demo-loop .field i,
+    #hero-demo-loop .calendar-icon i,
+    #hero-demo-loop .warning-note i {
+      color: var(--text-muted);
+    }
+
+    #hero-demo-loop .party-chips {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+    }
+
+    #hero-demo-loop .chip {
+      height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    #hero-demo-loop .chip:hover {
+      background: var(--surface-hover);
+    }
+
+    #hero-demo-loop .chip.is-active {
+      color: #fff;
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    #hero-demo-loop .rest-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 12px;
+      border: 1.5px solid rgba(124, 156, 214, .55);
+      border-radius: 8px;
+      background: var(--pending-soft);
+      color: var(--pending-strong);
+      font-weight: 600;
+    }
+
+    #hero-demo-loop .rest-banner.is-hidden {
+      display: none;
+    }
+
+    #hero-demo-loop .rest-banner.is-error {
+      border-color: rgba(255, 90, 90, .55);
+      background: var(--error-soft);
+      color: var(--error-strong);
+    }
+
+    #hero-demo-loop .warning {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 54px;
+      padding: 12px;
+      border: 1px solid rgba(255, 185, 78, .52);
+      border-radius: 8px;
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    #hero-demo-loop .warning.is-visible {
+      display: flex;
+    }
+
+    #hero-demo-loop .warning.is-success {
+      border-color: rgba(57, 217, 138, .72);
+      background: var(--success-soft);
+      color: var(--success-strong);
+    }
+
+    #hero-demo-loop .warning.is-success .warning-note i {
+      color: var(--success-strong);
+    }
+
+    #hero-demo-loop .warning strong {
+      color: var(--text);
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 500;
+    }
+
+    #hero-demo-loop .warning-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      font-weight: 600;
+    }
+
+    #hero-demo-loop .warning-note span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #hero-demo-loop .picker {
+      display: grid;
+      gap: 16px;
+    }
+
+    #hero-demo-loop .section {
+      display: grid;
+      gap: 4px;
+    }
+
+    #hero-demo-loop .section-title {
+      color: oklch(0.5 0.01 250);
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    #hero-demo-loop .section-title.is-bright {
+      color: oklch(0.75 0.01 250);
+    }
+
+    #hero-demo-loop .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #hero-demo-loop .table-card {
+      position: relative;
+      min-height: 59px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 12px 10px 12px 16px;
+      border: none;
+      border-radius: 8px;
+      background: oklch(0.24 0.015 250);
+      color: oklch(0.62 0.005 250);
+      text-align: left;
+      font: inherit;
+    }
+
+    #hero-demo-loop .table-card::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 10px;
+      bottom: 10px;
+      width: 4px;
+      border-radius: 2px;
+      background: oklch(0.34 0.01 250);
+    }
+
+    #hero-demo-loop .table-card[data-status="available"] {
+      background: oklch(0.29 0.02 250);
+    }
+
+    #hero-demo-loop .table-card[data-status="available"]::before {
+      background: oklch(0.72 0.15 155);
+    }
+
+    #hero-demo-loop .table-card[data-status="available"] .table-name {
+      color: #fff;
+    }
+
+    #hero-demo-loop .table-card[data-status="available"] .capacity {
+      color: oklch(0.72 0.15 155);
+    }
+
+    #hero-demo-loop .table-card.is-selected {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    #hero-demo-loop .table-card[data-status="conflict"].is-selected,
+    #hero-demo-loop .table-card[data-status="occupied"].is-selected {
+      background: oklch(0.27 0.017 250);
+    }
+
+    #hero-demo-loop .table-card[data-status="conflict"].is-selected .table-name,
+    #hero-demo-loop .table-card[data-status="occupied"].is-selected .table-name {
+      color: oklch(0.85 0.005 250);
+    }
+
+    #hero-demo-loop .table-card[data-status="conflict"].is-selected .capacity,
+    #hero-demo-loop .table-card[data-status="occupied"].is-selected .capacity {
+      color: oklch(0.62 0.005 250);
+    }
+
+    #hero-demo-loop .table-card[data-status="conflict"].is-selected .table-sub,
+    #hero-demo-loop .table-card[data-status="occupied"].is-selected .table-sub {
+      color: oklch(0.58 0.005 250);
+    }
+
+    #hero-demo-loop .table-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    #hero-demo-loop .table-name {
+      font-size: 16px;
+      line-height: 19px;
+      font-weight: 700;
+      color: oklch(0.62 0.005 250);
+    }
+
+    #hero-demo-loop .capacity {
+      color: oklch(0.5 0.005 250);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    #hero-demo-loop .table-sub {
+      color: oklch(0.46 0.005 250);
+      font-size: 11px;
+      line-height: 16px;
+      letter-spacing: .4px;
+    }
+
+    #hero-demo-loop .footer {
+      padding-top: 4px;
+      border-top: 1px solid var(--line);
+    }
+
+    #hero-demo-loop .assign {
+      height: 40px;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 500;
+      letter-spacing: .4px;
+      width: 100%;
+      border: 0;
+      background: var(--brand-red);
+      color: #fff;
+    }
+
+    #hero-demo-loop .assign:disabled {
+      background: rgba(160, 174, 192, .24);
+      color: rgba(247, 249, 252, .5);
+    }
+
+    @media (max-width: 460px) {
+      #hero-demo-loop .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 380px) {
+      #hero-demo-loop .fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---------- demo-loop additions ---------- */
+
+    #hero-demo-loop .tablet-screen {
+      position: relative;
+    }
+
+    #hero-demo-loop .stage {
+      transition: opacity .35s ease;
+    }
+
+    #hero-demo-loop .stage.demo-fading {
+      opacity: 0;
+    }
+
+    #hero-demo-loop .day,
+    #hero-demo-loop .chip,
+    #hero-demo-loop .table-card {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      transition: outline-color .25s ease, background-color .25s ease, color .25s ease;
+    }
+
+    #hero-demo-loop .rest-banner,
+    #hero-demo-loop .warning {
+      transition: background-color .4s ease, border-color .4s ease, color .4s ease;
+    }
+
+    #hero-demo-loop .warning.is-visible {
+      animation: hero-banner-in .35s ease;
+    }
+
+    @keyframes hero-banner-in {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+    }
+
+    #hero-demo-loop .popover {
+      transition: opacity .28s ease, transform .28s ease, visibility .28s;
+    }
+
+    #hero-demo-loop .demo-cursor {
+      position: absolute;
+      z-index: 60;
+      left: 50%;
+      top: 82%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .28);
+      border: 1.5px solid rgba(255, 255, 255, .85);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: left .55s cubic-bezier(.4, .1, .2, 1), top .55s cubic-bezier(.4, .1, .2, 1), transform .15s ease;
+    }
+
+    #hero-demo-loop .demo-cursor.is-pressed {
+      transform: translate(-50%, -50%) scale(.72);
+    }
+  </style>
+
+  <div class="tablet">
+    <div class="tablet-screen">
+  <section class="stage">
+    <div class="date-strip" aria-label="Date selector" data-date-strip>
+      <button class="day" type="button"><span>S</span><span>10</span></button>
+      <button class="day" type="button"><span>M</span><span>11</span></button>
+      <button class="day outline" type="button"><span>T</span><span>12</span></button>
+      <button class="day" type="button"><span>W</span><span>13</span></button>
+      <button class="day" type="button" data-default-day><span>T</span><span>14</span></button>
+      <button class="day" type="button"><span>F</span><span>15</span></button>
+      <button class="day" type="button"><span>S</span><span>16</span></button>
+      <button class="calendar-icon" type="button" data-calendar-toggle aria-label="Open calendar"><i data-lucide="calendar-days" aria-hidden="true"></i></button>
+
+      <div class="popover calendar-popover is-hidden" data-calendar-popover>
+        <div class="popover-header">
+          <button type="button" class="popover-nav" data-cal-prev aria-label="Previous month"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+          <span data-cal-title></span>
+          <button type="button" class="popover-nav" data-cal-next aria-label="Next month"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+        </div>
+        <div class="calendar-weekdays">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="calendar-grid" data-cal-grid></div>
+      </div>
+    </div>
+
+    <div class="fields">
+      <div class="field-wrap">
+        <button class="field is-editable is-empty" type="button" data-field="time">
+          <i data-lucide="clock-3" aria-hidden="true"></i><span data-time-display>Select time</span>
+        </button>
+        <div class="popover time-popover is-hidden" data-time-popover></div>
+      </div>
+
+      <div class="field is-empty" data-field="guests">
+        <i data-lucide="users" aria-hidden="true"></i><span data-guests-display>Add guests</span>
+      </div>
+
+      <div class="field"><i data-lucide="timer" aria-hidden="true"></i><span>120</span><small>min</small></div>
+    </div>
+
+    <div class="party-chips" aria-label="Party size" data-party-chips>
+      <button class="chip" type="button" data-party="1">1</button>
+      <button class="chip" type="button" data-party="2">2</button>
+      <button class="chip" type="button" data-party="3">3</button>
+      <button class="chip" type="button" data-party="4">4</button>
+      <button class="chip" type="button" data-party="5">5</button>
+      <button class="chip" type="button" data-party="6">6</button>
+      <button class="chip" type="button" data-party="7">7</button>
+      <button class="chip" type="button" data-party="8">8+</button>
+    </div>
+
+    <div class="rest-banner" data-rest>
+      <i data-lucide="circle-dashed" aria-hidden="true" data-rest-icon-pending></i>
+      <i data-lucide="circle-x" aria-hidden="true" data-rest-icon-error style="display:none"></i>
+      <span data-rest-text>Not yet assigned</span>
+    </div>
+
+    <div class="warning" data-warning>
+      <strong data-warning-table>--</strong>
+      <div class="warning-note">
+        <i data-lucide="triangle-alert" aria-hidden="true" data-warning-icon-warn></i>
+        <i data-lucide="circle-check" aria-hidden="true" data-warning-icon-success style="display:none"></i>
+        <span data-warning-text></span>
+      </div>
+    </div>
+
+    <div class="picker" data-picker>
+      <div class="section">
+        <div class="section-title is-bright">Available</div>
+        <div class="cards">
+          <button class="table-card" type="button" data-table="A1" data-status="available" data-min="1" data-max="2">
+            <span class="table-top"><span class="table-name">A1</span><span class="capacity">1-2</span></span>
+          </button>
+          <button class="table-card" type="button" data-table="A2" data-status="available" data-min="1" data-max="2">
+            <span class="table-top"><span class="table-name">A2</span><span class="capacity">1-2</span></span>
+          </button>
+          <button class="table-card" type="button" data-table="A3" data-status="available" data-min="1" data-max="2">
+            <span class="table-top"><span class="table-name">A3</span><span class="capacity">1-2</span></span>
+          </button>
+          <button class="table-card" type="button" data-table="B1" data-status="available" data-min="2" data-max="4">
+            <span class="table-top"><span class="table-name">B1</span><span class="capacity">2-4</span></span>
+          </button>
+          <button class="table-card" type="button" data-table="B2" data-status="available" data-min="2" data-max="4">
+            <span class="table-top"><span class="table-name">B2</span><span class="capacity">2-4</span></span>
+          </button>
+          <button class="table-card" type="button" data-table="B4" data-status="available" data-min="2" data-max="4">
+            <span class="table-top"><span class="table-name">B4</span><span class="capacity">2-4</span></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Upcoming</div>
+        <div class="cards">
+          <button class="table-card" type="button" data-table="A4" data-status="conflict" data-min="2" data-max="4" data-warning-text="This table has a reservation at 7:00 PM">
+            <span class="table-top"><span class="table-name">A4</span><span class="capacity">2-4</span></span>
+            <span class="table-sub">at 7:00 PM</span>
+          </button>
+          <button class="table-card" type="button" data-table="A5" data-status="conflict" data-min="4" data-max="6" data-warning-text="This table has a reservation at 7:00 PM">
+            <span class="table-top"><span class="table-name">A5</span><span class="capacity">4-6</span></span>
+            <span class="table-sub">at 7:00 PM</span>
+          </button>
+          <button class="table-card" type="button" data-table="A6" data-status="conflict" data-min="4" data-max="6" data-warning-text="This table has a reservation at 7:00 PM">
+            <span class="table-top"><span class="table-name">A6</span><span class="capacity">4-6</span></span>
+            <span class="table-sub">at 7:00 PM</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Occupied</div>
+        <div class="cards">
+          <button class="table-card" type="button" data-table="A7" data-status="occupied" data-min="2" data-max="4" data-warning-text="This table is occupied until 8:30 PM">
+            <span class="table-top"><span class="table-name">A7</span><span class="capacity">2-4</span></span>
+            <span class="table-sub">until 8:30 PM</span>
+          </button>
+          <button class="table-card" type="button" data-table="B3" data-status="occupied" data-min="2" data-max="4" data-warning-text="This table is occupied until 8:30 PM">
+            <span class="table-top"><span class="table-name">B3</span><span class="capacity">2-4</span></span>
+            <span class="table-sub">until 8:30 PM</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="assign" type="button" data-assign>Assign</button>
+    </div>
+  </section>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.getElementById('hero-demo-loop');
+      const dayButtons = Array.from(root.querySelectorAll('[data-date-strip] .day'));
+      const timeField = root.querySelector('[data-field="time"]');
+      const timeDisplay = root.querySelector('[data-time-display]');
+      const guestsField = root.querySelector('[data-field="guests"]');
+      const guestsDisplay = root.querySelector('[data-guests-display]');
+      const restBanner = root.querySelector('[data-rest]');
+      const restText = root.querySelector('[data-rest-text]');
+      const warning = root.querySelector('[data-warning]');
+      const warningTable = root.querySelector('[data-warning-table]');
+      const warningText = root.querySelector('[data-warning-text]');
+
+      // Looked up fresh (not cached) because lucide.createIcons() replaces
+      // these <i> nodes with new <svg> elements after this script runs.
+      const restIconPending = () => root.querySelector('[data-rest-icon-pending]');
+      const restIconError = () => root.querySelector('[data-rest-icon-error]');
+      const warningIconWarn = () => root.querySelector('[data-warning-icon-warn]');
+      const warningIconSuccess = () => root.querySelector('[data-warning-icon-success]');
+      const assignButton = root.querySelector('[data-assign]');
+      const tableButtons = Array.from(root.querySelectorAll('[data-table]'));
+
+      let hasDate = false;
+      let hasTime = false;
+      let partySize = null;
+      let selectedTable = null;
+      let selectedStatus = null;
+      let selectionSource = null; // 'auto' | 'manual'
+
+      function hasGuests() {
+        return partySize !== null;
+      }
+
+      function guestCount() {
+        return partySize || 0;
+      }
+
+      function clearSelection() {
+        selectedTable = null;
+        selectedStatus = null;
+        selectionSource = null;
+        highlightSelection();
+      }
+
+      function highlightSelection() {
+        tableButtons.forEach((item) => {
+          const match = item.dataset.table === selectedTable;
+          item.classList.toggle('is-selected', match);
+          item.setAttribute('aria-pressed', match ? 'true' : 'false');
+        });
+      }
+
+      function findFittingAvailableTable(count) {
+        const match = tableButtons.find((item) => {
+          if (item.dataset.status !== 'available') return false;
+          return count >= Number(item.dataset.min) && count <= Number(item.dataset.max);
+        });
+        return match ? match.dataset.table : null;
+      }
+
+      function getWarningText(table) {
+        const button = tableButtons.find((item) => item.dataset.table === table);
+        return button ? button.dataset.warningText : '';
+      }
+
+      function renderRest(state) {
+        const isError = state === 'no-available';
+        restBanner.classList.remove('is-hidden');
+        restBanner.classList.toggle('is-error', isError);
+        restIconPending().style.display = isError ? 'none' : '';
+        restIconError().style.display = isError ? '' : 'none';
+        restText.textContent = isError ? 'No Available Table' : 'Not yet assigned';
+      }
+
+      function renderTableBanner(state, table) {
+        const isSuccess = state === 'assigned';
+        warning.classList.add('is-visible');
+        warning.classList.toggle('is-success', isSuccess);
+        warningIconWarn().style.display = isSuccess ? 'none' : '';
+        warningIconSuccess().style.display = isSuccess ? '' : 'none';
+        warningTable.textContent = table;
+        warningText.textContent = isSuccess ? 'Table Assigned' : getWarningText(table);
+      }
+
+      function recompute() {
+        // Manual table selection always gives immediate feedback, even before
+        // date/time/guests are complete — clicking a table should never be a no-op.
+        if (selectionSource === 'manual') {
+          if (selectedStatus === 'conflict' || selectedStatus === 'occupied') {
+            restBanner.classList.add('is-hidden');
+            renderTableBanner('warning', selectedTable);
+            assignButton.disabled = false;
+            assignButton.textContent = 'Assign Anyway';
+            return;
+          }
+          restBanner.classList.add('is-hidden');
+          renderTableBanner('assigned', selectedTable);
+          assignButton.disabled = false;
+          assignButton.textContent = 'Assign';
+          return;
+        }
+
+        const hasAllInputs = hasDate && hasTime && hasGuests();
+
+        if (!hasAllInputs) {
+          warning.classList.remove('is-visible');
+          renderRest('rest');
+          assignButton.disabled = true;
+          assignButton.textContent = 'Assign';
+          return;
+        }
+
+        const auto = findFittingAvailableTable(guestCount());
+        if (auto) {
+          selectedTable = auto;
+          selectedStatus = 'available';
+          selectionSource = 'auto';
+          highlightSelection();
+          restBanner.classList.add('is-hidden');
+          renderTableBanner('assigned', auto);
+          assignButton.disabled = false;
+          assignButton.textContent = 'Assign';
+        } else {
+          clearSelection();
+          warning.classList.remove('is-visible');
+          renderRest('no-available');
+          assignButton.disabled = true;
+          assignButton.textContent = 'Assign';
+        }
+      }
+
+      dayButtons.forEach((day) => {
+        day.addEventListener('click', () => {
+          const wasActive = day.classList.contains('active');
+          dayButtons.forEach((item) => item.classList.remove('active'));
+          if (wasActive) {
+            hasDate = false;
+          } else {
+            day.classList.add('active');
+            hasDate = true;
+          }
+          calendarSelectedDate = wasActive ? null : { year: 2026, month: 6, day: Number(day.querySelector('span:last-child').textContent) };
+          renderCalendar();
+          recompute();
+        });
+      });
+
+      function closePopovers() {
+        calendarPopover.classList.add('is-hidden');
+        timePopover.classList.add('is-hidden');
+      }
+
+      const calendarIconBtn = root.querySelector('[data-calendar-toggle]');
+      const calendarPopover = root.querySelector('[data-calendar-popover]');
+      const calGrid = root.querySelector('[data-cal-grid]');
+      const calTitle = root.querySelector('[data-cal-title]');
+      const calPrev = root.querySelector('[data-cal-prev]');
+      const calNext = root.querySelector('[data-cal-next]');
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      // The date-strip demo dates (10-16) live in July 2026, so the calendar opens there.
+      let calYear = 2026;
+      let calMonth = 6;
+      let calendarSelectedDate = null;
+
+      function renderCalendar() {
+        calTitle.textContent = `${monthNames[calMonth]} ${calYear}`;
+        calGrid.innerHTML = '';
+        const firstWeekday = new Date(calYear, calMonth, 1).getDay();
+        const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+        for (let i = 0; i < firstWeekday; i += 1) {
+          const blank = document.createElement('button');
+          blank.type = 'button';
+          blank.className = 'calendar-day';
+          blank.disabled = true;
+          calGrid.appendChild(blank);
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'calendar-day';
+          cell.textContent = day;
+          if (calYear === 2026 && calMonth === 6 && day === 14) {
+            cell.classList.add('is-today');
+          }
+          if (calendarSelectedDate && calendarSelectedDate.year === calYear && calendarSelectedDate.month === calMonth && calendarSelectedDate.day === day) {
+            cell.classList.add('is-selected');
+          }
+          cell.addEventListener('click', () => selectCalendarDate(calYear, calMonth, day));
+          calGrid.appendChild(cell);
+        }
+      }
+
+      function selectCalendarDate(year, month, day) {
+        calendarSelectedDate = { year, month, day };
+        hasDate = true;
+
+        // Sync the mini day-strip only when the picked date falls within its visible week.
+        const isVisibleWeek = year === 2026 && month === 6 && day >= 10 && day <= 16;
+        dayButtons.forEach((btn) => btn.classList.remove('active'));
+        if (isVisibleWeek) {
+          const match = dayButtons.find((btn) => btn.querySelector('span:last-child').textContent === String(day));
+          if (match) match.classList.add('active');
+        }
+
+        renderCalendar();
+        closePopovers();
+        recompute();
+      }
+
+      calendarIconBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = !calendarPopover.classList.contains('is-hidden');
+        closePopovers();
+        if (!isOpen) {
+          renderCalendar();
+          calendarPopover.classList.remove('is-hidden');
+        }
+      });
+
+      calPrev.addEventListener('click', (event) => {
+        event.stopPropagation();
+        calMonth -= 1;
+        if (calMonth < 0) {
+          calMonth = 11;
+          calYear -= 1;
+        }
+        renderCalendar();
+      });
+
+      calNext.addEventListener('click', (event) => {
+        event.stopPropagation();
+        calMonth += 1;
+        if (calMonth > 11) {
+          calMonth = 0;
+          calYear += 1;
+        }
+        renderCalendar();
+      });
+
+      function selectTime(label) {
+        hasTime = true;
+        timeField.classList.remove('is-empty');
+        timeDisplay.textContent = label;
+        closePopovers();
+        recompute();
+      }
+
+      function buildTimeOptions() {
+        const options = [];
+        for (let minutes = 11 * 60; minutes <= 22 * 60; minutes += 30) {
+          const hour24 = Math.floor(minutes / 60);
+          const min = minutes % 60;
+          const period = hour24 >= 12 ? 'PM' : 'AM';
+          const hour12 = ((hour24 + 11) % 12) + 1;
+          options.push(`${hour12}:${min === 0 ? '00' : min} ${period}`);
+        }
+        return options;
+      }
+
+      const timePopover = root.querySelector('[data-time-popover]');
+      buildTimeOptions().forEach((label) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'time-option';
+        option.textContent = label;
+        option.addEventListener('click', () => selectTime(label));
+        timePopover.appendChild(option);
+      });
+
+      function refreshTimeSelection() {
+        Array.from(timePopover.children).forEach((option) => {
+          option.classList.toggle('is-selected', hasTime && option.textContent === timeDisplay.textContent);
+        });
+      }
+
+      timeField.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = !timePopover.classList.contains('is-hidden');
+        closePopovers();
+        if (!isOpen) {
+          refreshTimeSelection();
+          timePopover.classList.remove('is-hidden');
+        }
+      });
+
+      const partyChips = Array.from(root.querySelectorAll('[data-party]'));
+
+      partyChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const value = Number(chip.dataset.party);
+          const wasActive = chip.classList.contains('is-active');
+          partyChips.forEach((item) => item.classList.remove('is-active'));
+          if (wasActive) {
+            partySize = null;
+          } else {
+            chip.classList.add('is-active');
+            partySize = value;
+          }
+          guestsField.classList.toggle('is-empty', !hasGuests());
+          guestsDisplay.textContent = hasGuests()
+            ? `${chip.textContent} guest${partySize === 1 ? '' : 's'}`
+            : 'Add guests';
+          recompute();
+        });
+      });
+
+      tableButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          selectedTable = button.dataset.table;
+          selectedStatus = button.dataset.status;
+          selectionSource = 'manual';
+          highlightSelection();
+          recompute();
+        });
+      });
+
+      assignButton.addEventListener('click', () => {
+        if (selectedStatus === 'conflict' || selectedStatus === 'occupied') {
+          selectedStatus = 'available';
+          recompute();
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (calendarPopover.contains(event.target) || calendarIconBtn.contains(event.target)) return;
+        if (timePopover.contains(event.target) || timeField.contains(event.target)) return;
+        closePopovers();
+      });
+
+      // Scale the tall stage down to fit inside the landscape tablet screen.
+      // transform doesn't affect offsetWidth/Height, so measuring is loop-safe.
+      const tabletScreen = root.querySelector('.tablet-screen');
+      const stage = root.querySelector('.stage');
+
+      function fitStage() {
+        const scale = Math.min(
+          1,
+          (tabletScreen.clientWidth - 24) / stage.offsetWidth,
+          (tabletScreen.clientHeight - 24) / stage.offsetHeight
+        );
+        stage.style.transform = `scale(${scale})`;
+      }
+
+      const fitObserver = new ResizeObserver(fitStage);
+      fitObserver.observe(tabletScreen);
+      fitObserver.observe(stage);
+      fitStage();
+
+      renderCalendar();
+      recompute();
+
+      // ---------- self-driving demo loop ----------
+
+      const cursor = document.createElement('div');
+      cursor.className = 'demo-cursor';
+      tabletScreen.appendChild(cursor);
+
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      function moveCursorTo(el) {
+        const screenRect = tabletScreen.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        cursor.style.left = `${rect.left + rect.width / 2 - screenRect.left}px`;
+        cursor.style.top = `${rect.top + rect.height / 2 - screenRect.top}px`;
+      }
+
+      async function tap(el, settle = 500) {
+        moveCursorTo(el);
+        await sleep(650);
+        cursor.classList.add('is-pressed');
+        await sleep(140);
+        cursor.classList.remove('is-pressed');
+        el.click();
+        await sleep(settle);
+      }
+
+      function resetDemo() {
+        hasDate = false;
+        hasTime = false;
+        partySize = null;
+        calendarSelectedDate = null;
+        dayButtons.forEach((btn) => btn.classList.remove('active'));
+        partyChips.forEach((chip) => chip.classList.remove('is-active'));
+        timeField.classList.add('is-empty');
+        timeDisplay.textContent = 'Select time';
+        guestsField.classList.add('is-empty');
+        guestsDisplay.textContent = 'Add guests';
+        clearSelection();
+        closePopovers();
+        renderCalendar();
+        recompute();
+      }
+
+      async function runLoop() {
+        await sleep(1200);
+        for (;;) {
+          await tap(root.querySelector('[data-default-day]'), 500);
+          await tap(timeField, 450);
+          const noonOption = Array.from(timePopover.children).find((option) => option.textContent === '12:00 PM');
+          await tap(noonOption, 500);
+          const chipTwo = partyChips.find((chip) => chip.dataset.party === '2');
+          await tap(chipTwo, 700);
+          await tap(assignButton, 400);
+          await sleep(2200);
+          stage.classList.add('demo-fading');
+          await sleep(380);
+          resetDemo();
+          await sleep(260);
+          stage.classList.remove('demo-fading');
+          await sleep(900);
+        }
+      }
+
+      runLoop();
+    })();
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</div>
+
+</body>
+</html>

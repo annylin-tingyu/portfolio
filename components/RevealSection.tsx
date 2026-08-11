@@ -20,6 +20,9 @@ export function RevealSection({ children, className = "" }: RevealSectionProps) 
       return;
     }
 
+    // threshold 0 so the reveal fires when the section's top edge enters the
+    // viewport, independent of section height. A percentage threshold delays
+    // tall sections (their 12% is a large scroll distance) and leaves a blank gap.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
@@ -27,7 +30,7 @@ export function RevealSection({ children, className = "" }: RevealSectionProps) 
           observer.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
 
     observer.observe(el);

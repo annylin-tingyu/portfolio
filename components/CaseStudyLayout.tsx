@@ -2,13 +2,19 @@ import Image from "next/image";
 import { RevealSection } from "@/components/RevealSection";
 import { PlatformShiftDiagram } from "@/components/PlatformShiftDiagram";
 import { InflectionPointTimeline } from "@/components/InflectionPointTimeline";
+import {
+  CaseStudyHeader,
+  caseStudyContentMax,
+  caseStudySectionGap,
+  caseStudyHeadingToBody,
+} from "@/components/CaseStudyHeader";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-const contentMax = "clamp(720px, 88vw, 880px)";
-const sectionGap = "clamp(72px, 10vw, 110px)";
+const contentMax = caseStudyContentMax;
+const sectionGap = caseStudySectionGap;
 const inSectionGap = "clamp(16px, 2vw, 24px)";
-const headingToBody = "clamp(12px, 1.5vw, 18px)";
+const headingToBody = caseStudyHeadingToBody;
 
 /** Paragraph labels for the Inflection Point section only */
 const INFLECTION_POINT_LABELS = [
@@ -322,61 +328,30 @@ export function CaseStudyLayout({
       className="mx-auto w-full bg-white px-6 pb-[clamp(96px,12vw,140px)]"
       style={{ maxWidth: contentMax, marginLeft: "auto", marginRight: "auto" }}
     >
-      {/* Case header — text-first (return is in reading-mode header) */}
-      <header
-        className="pt-[clamp(72px,10vw,100px)]"
-        style={{ paddingBottom: sectionGap }}
-      >
-        <p
-          className="mb-3 text-[12px] font-medium uppercase tracking-[0.06em] text-mid-gray"
-          style={{ letterSpacing: "0.06em", fontFamily: "var(--font-plex-mono), monospace" }}
-        >
-          {category}
-        </p>
-        <h1
-          className="font-bold leading-tight text-black"
-          style={{
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-            letterSpacing: "-0.4px",
-            lineHeight: 1.2,
-          }}
-        >
-          {title}
-        </h1>
-        <p
-          className="mt-[14px] text-mid-gray"
-          style={{
-            fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-            lineHeight: 1.6,
-          }}
-        >
-          {description}
-        </p>
-        <div className="relative pt-[40px] flex w-full justify-center">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-[40px] mx-auto h-[320px] max-w-[880px] blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 0%, rgba(15,23,42,0.14), transparent 60%)",
-            }}
-          />
-          <Image
-            src={`${basePath}/CRMhero.webp`}
-            alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
-            width={1920}
-            height={1230}
-            className="relative z-10 h-auto w-full max-w-[960px]"
-            unoptimized
-          />
-        </div>
-      </header>
-
-      {/* Optional subtle divider */}
-      <div
-        className="h-px w-full bg-accent opacity-20"
-        style={{ marginBottom: sectionGap }}
-        aria-hidden
+      <CaseStudyHeader
+        category={category}
+        title={title}
+        description={description}
+        media={
+          <div className="relative pt-[40px] flex w-full justify-center">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-[40px] mx-auto h-[320px] max-w-[880px] blur-3xl"
+              style={{
+                background:
+                  "radial-gradient(circle at 50% 0%, rgba(15,23,42,0.14), transparent 60%)",
+              }}
+            />
+            <Image
+              src={`${basePath}/CRMhero.webp`}
+              alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
+              width={1920}
+              height={1230}
+              className="relative z-10 h-auto w-full max-w-[960px]"
+              unoptimized
+            />
+          </div>
+        }
       />
 
       {/* Sections */}

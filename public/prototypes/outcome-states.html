@@ -1,0 +1,640 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><style>
+  /* embed shell overrides: light editorial chrome matching the portfolio page.
+     The UI mockup panels (.shot) keep their dark product styling. */
+  body { background: #ffffff !important; }
+  #outcome-states {
+    min-height: 0 !important; /* prevent vh feedback loop when auto-sizing the host iframe */
+    background: transparent !important;
+    padding: 8px 0 16px !important;
+    color: #111111 !important;
+  }
+  #outcome-states .eyebrow {
+    color: rgba(0, 0, 0, 0.55) !important;
+    font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.16em !important;
+    font-size: 11px !important;
+  }
+  #outcome-states h1 {
+    color: #3a3a3a !important;
+    font-weight: 600 !important;
+    font-size: clamp(22px, 3vw, 30px) !important;
+    letter-spacing: -0.01em !important;
+  }
+  #outcome-states .intro p {
+    color: rgba(0, 0, 0, 0.8) !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+  #outcome-states figcaption .num { color: rgba(0, 0, 0, 0.55) !important; }
+  #outcome-states figcaption strong { color: rgba(0, 0, 0, 0.9) !important; }
+  #outcome-states figcaption p { color: rgba(0, 0, 0, 0.6) !important; }
+  #outcome-states .shot {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;
+    /* constrain the single grid column to the panel so long lines (e.g. the
+       override warning) wrap instead of widening the column and overflowing. */
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  #outcome-states .warning-note span {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+  /* scale the reservation fields so values fit without truncating (no "...") */
+  #outcome-states .field {
+    font-size: 14px !important;
+    padding: 8px 7px !important;
+    gap: 5px !important;
+  }
+  #outcome-states .field small { font-size: 13px !important; }
+  #outcome-states .field svg { width: 16px !important; height: 16px !important; }
+</style></head>
+<body>
+<div id="outcome-states" aria-label="Auto table assignment result states, portfolio outcome board">
+  <style>
+    body {
+      margin: 0;
+      background: #131a23;
+    }
+
+    #outcome-states {
+      --page-bg: #131a23;
+      --modal-bg: #2f4054;
+      --modal-border: #5d728c;
+      --surface: #374b62;
+      --line: rgba(225, 235, 247, .2);
+      --line-strong: rgba(225, 235, 247, .34);
+      --text: #f7f9fc;
+      --text-soft: #d2dbea;
+      --text-muted: #a6b5c8;
+      --brand-red: #ff4f4f;
+      --success-strong: #65eca8;
+      --success-soft: rgba(57, 217, 138, .22);
+      --warning: #ffb94e;
+      --warning-soft: rgba(255, 185, 78, .24);
+      --pending-strong: #a9c5f5;
+      --pending-soft: rgba(124, 156, 214, .2);
+      --error-strong: #ff7474;
+      --error-soft: rgba(255, 90, 90, .2);
+      width: 100%;
+      min-height: 100vh;
+      padding: 64px 32px 96px;
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    #outcome-states * {
+      box-sizing: border-box;
+    }
+
+    #outcome-states .board {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    /* ---------- editorial chrome ---------- */
+
+    #outcome-states .eyebrow {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    #outcome-states h1 {
+      margin: 10px 0 8px;
+      font-size: clamp(26px, 3.4vw, 34px);
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    #outcome-states .intro p {
+      margin: 0;
+      max-width: 560px;
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    #outcome-states .frames {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+      margin-top: 44px;
+    }
+
+    #outcome-states .frame {
+      margin: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #outcome-states .frame.wide {
+      grid-column: 1 / -1;
+    }
+
+    #outcome-states figcaption {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    #outcome-states figcaption .num {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #outcome-states figcaption strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    #outcome-states figcaption p {
+      margin: 3px 0 0;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    #outcome-states .shot {
+      flex: 1;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 24px;
+      border: 1px solid var(--modal-border);
+      border-radius: 20px;
+      background: var(--modal-bg);
+      box-shadow: 0 18px 44px rgba(12, 18, 27, .38);
+    }
+
+    #outcome-states .frame.wide .shot {
+      padding: 28px;
+    }
+
+    /* ---------- shared components (mirrors the interactive prototype) ---------- */
+
+    #outcome-states .fields {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    #outcome-states .field {
+      width: 100%;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      overflow: hidden;
+    }
+
+    #outcome-states .field span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #outcome-states .field small {
+      color: var(--text-soft);
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    #outcome-states i {
+      color: var(--text-muted);
+      flex: 0 0 auto;
+    }
+
+    #outcome-states .party-chips {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+    }
+
+    #outcome-states .chip {
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    #outcome-states .chip.is-active {
+      color: #fff;
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    #outcome-states .rest-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 12px;
+      border: 1.5px solid rgba(124, 156, 214, .55);
+      border-radius: 8px;
+      background: var(--pending-soft);
+      color: var(--pending-strong);
+      font-weight: 600;
+    }
+
+    #outcome-states .rest-banner.is-error {
+      border-color: rgba(255, 90, 90, .55);
+      background: var(--error-soft);
+      color: var(--error-strong);
+    }
+
+    #outcome-states .warning {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+      padding: 12px;
+      border: 1px solid rgba(255, 185, 78, .52);
+      border-radius: 8px;
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    #outcome-states .warning.is-success {
+      border-color: rgba(57, 217, 138, .72);
+      background: var(--success-soft);
+      color: var(--success-strong);
+    }
+
+    #outcome-states .warning strong {
+      color: var(--text);
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 500;
+    }
+
+    #outcome-states .warning-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      font-weight: 600;
+    }
+
+    #outcome-states .warning.is-success .warning-note i {
+      color: var(--success-strong);
+    }
+
+    #outcome-states .warning-note span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #outcome-states .section {
+      display: grid;
+      gap: 4px;
+    }
+
+    #outcome-states .section-title {
+      color: oklch(0.5 0.01 250);
+      font-size: 13px;
+      line-height: 17px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    #outcome-states .section-title.is-bright {
+      color: oklch(0.75 0.01 250);
+    }
+
+    #outcome-states .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #outcome-states .table-card {
+      position: relative;
+      min-height: 59px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 12px 10px 12px 16px;
+      border-radius: 8px;
+      background: oklch(0.24 0.015 250);
+      color: oklch(0.62 0.005 250);
+      text-align: left;
+    }
+
+    #outcome-states .table-card::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 10px;
+      bottom: 10px;
+      width: 4px;
+      border-radius: 2px;
+      background: oklch(0.34 0.01 250);
+    }
+
+    #outcome-states .table-card[data-status="available"] {
+      background: oklch(0.29 0.02 250);
+    }
+
+    #outcome-states .table-card[data-status="available"]::before {
+      background: oklch(0.72 0.15 155);
+    }
+
+    #outcome-states .table-card[data-status="available"] .table-name {
+      color: #fff;
+    }
+
+    #outcome-states .table-card[data-status="available"] .capacity {
+      color: oklch(0.72 0.15 155);
+    }
+
+    #outcome-states .table-card.is-selected {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    #outcome-states .table-card[data-status="conflict"].is-selected {
+      background: oklch(0.27 0.017 250);
+    }
+
+    #outcome-states .table-card[data-status="conflict"].is-selected .table-name {
+      color: oklch(0.85 0.005 250);
+    }
+
+    #outcome-states .table-card[data-status="conflict"].is-selected .capacity {
+      color: oklch(0.62 0.005 250);
+    }
+
+    #outcome-states .table-card[data-status="conflict"].is-selected .table-sub {
+      color: oklch(0.58 0.005 250);
+    }
+
+    #outcome-states .table-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    #outcome-states .table-name {
+      font-size: 16px;
+      line-height: 19px;
+      font-weight: 700;
+      color: oklch(0.62 0.005 250);
+    }
+
+    #outcome-states .capacity {
+      color: oklch(0.5 0.005 250);
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+    }
+
+    #outcome-states .table-sub {
+      color: oklch(0.46 0.005 250);
+      font-size: 11px;
+      line-height: 16px;
+      letter-spacing: .4px;
+    }
+
+    #outcome-states .assign {
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      font-weight: 500;
+      letter-spacing: .4px;
+      width: 100%;
+      background: var(--brand-red);
+      color: #fff;
+    }
+
+    @media (max-width: 760px) {
+      #outcome-states .frames {
+        grid-template-columns: 1fr;
+      }
+
+      #outcome-states .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+
+  <div class="board">
+    <header class="intro">
+      <div class="eyebrow">Outcome &middot; Table Assignment</div>
+      <h1>Auto table assignment &mdash; result states</h1>
+      <p>Four staff-facing states shown after the system evaluates a party against the floor. The status banner always answers one question first: does this party have a table?</p>
+    </header>
+
+    <div class="frames">
+
+      <figure class="frame">
+        <figcaption>
+          <span class="num">01</span>
+          <div>
+            <strong>Clean assignment</strong>
+            <p>Date, time, and party size are set &mdash; the system finds a fitting table and surfaces it. One tap on Assign confirms.</p>
+          </div>
+        </figcaption>
+        <div class="shot">
+          <div class="fields">
+            <div class="field"><i data-lucide="clock-3" aria-hidden="true"></i><span>12:00 PM</span></div>
+            <div class="field"><i data-lucide="users" aria-hidden="true"></i><span>2 guests</span></div>
+            <div class="field"><i data-lucide="timer" aria-hidden="true"></i><span>120</span><small>min</small></div>
+          </div>
+          <div class="party-chips">
+            <span class="chip">1</span>
+            <span class="chip is-active">2</span>
+            <span class="chip">3</span>
+            <span class="chip">4</span>
+            <span class="chip">5</span>
+            <span class="chip">6</span>
+            <span class="chip">7</span>
+            <span class="chip">8+</span>
+          </div>
+          <div class="warning is-success">
+            <strong>A1</strong>
+            <div class="warning-note"><i data-lucide="circle-check" aria-hidden="true"></i><span>Table Assigned</span></div>
+          </div>
+          <div class="cards">
+            <div class="table-card is-selected" data-status="available">
+              <span class="table-top"><span class="table-name">A1</span><span class="capacity">1-2</span></span>
+            </div>
+            <div class="table-card" data-status="available">
+              <span class="table-top"><span class="table-name">A2</span><span class="capacity">1-2</span></span>
+            </div>
+            <div class="table-card" data-status="available">
+              <span class="table-top"><span class="table-name">A3</span><span class="capacity">1-2</span></span>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <figure class="frame">
+        <figcaption>
+          <span class="num">02</span>
+          <div>
+            <strong>No available table</strong>
+            <p>No table fits the party within the requested window. The system says so plainly &mdash; staff can adjust the time or override manually.</p>
+          </div>
+        </figcaption>
+        <div class="shot">
+          <div class="fields">
+            <div class="field"><i data-lucide="clock-3" aria-hidden="true"></i><span>10:00 PM</span></div>
+            <div class="field"><i data-lucide="users" aria-hidden="true"></i><span>10 guests</span></div>
+            <div class="field"><i data-lucide="timer" aria-hidden="true"></i><span>120</span><small>min</small></div>
+          </div>
+          <div class="party-chips">
+            <span class="chip">1</span>
+            <span class="chip">2</span>
+            <span class="chip">3</span>
+            <span class="chip">4</span>
+            <span class="chip">5</span>
+            <span class="chip">6</span>
+            <span class="chip">7</span>
+            <span class="chip is-active">10</span>
+          </div>
+          <div class="rest-banner is-error">
+            <i data-lucide="circle-x" aria-hidden="true"></i>
+            <span>No Available Table</span>
+          </div>
+        </div>
+      </figure>
+
+      <figure class="frame">
+        <figcaption>
+          <span class="num">03</span>
+          <div>
+            <strong>Table list &mdash; three status tiers</strong>
+            <p>Available tables carry the green accent and stay bright; Upcoming and Occupied share a muted treatment &mdash; both are unavailable, just for different reasons.</p>
+          </div>
+        </figcaption>
+        <div class="shot">
+          <div class="section">
+            <div class="section-title is-bright">Available</div>
+            <div class="cards">
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">A1</span><span class="capacity">1-2</span></span>
+              </div>
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">A2</span><span class="capacity">1-2</span></span>
+              </div>
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">A3</span><span class="capacity">1-2</span></span>
+              </div>
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">B1</span><span class="capacity">2-4</span></span>
+              </div>
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">B2</span><span class="capacity">2-4</span></span>
+              </div>
+              <div class="table-card" data-status="available">
+                <span class="table-top"><span class="table-name">B4</span><span class="capacity">2-4</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-title">Upcoming</div>
+            <div class="cards">
+              <div class="table-card" data-status="conflict">
+                <span class="table-top"><span class="table-name">A4</span><span class="capacity">2-4</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+              <div class="table-card" data-status="conflict">
+                <span class="table-top"><span class="table-name">A5</span><span class="capacity">4-6</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+              <div class="table-card" data-status="conflict">
+                <span class="table-top"><span class="table-name">A6</span><span class="capacity">4-6</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-title">Occupied</div>
+            <div class="cards">
+              <div class="table-card" data-status="occupied">
+                <span class="table-top"><span class="table-name">A7</span><span class="capacity">2-4</span></span>
+                <span class="table-sub">until 8:30 PM</span>
+              </div>
+              <div class="table-card" data-status="occupied">
+                <span class="table-top"><span class="table-name">B3</span><span class="capacity">2-4</span></span>
+                <span class="table-sub">until 8:30 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+
+      <figure class="frame">
+        <figcaption>
+          <span class="num">04</span>
+          <div>
+            <strong>Override in context</strong>
+            <p>Staff can pick any table, including one with an upcoming reservation. The system warns inline and asks for explicit confirmation &mdash; it never blocks.</p>
+          </div>
+        </figcaption>
+        <div class="shot">
+          <div class="warning">
+            <strong>A5</strong>
+            <div class="warning-note"><i data-lucide="triangle-alert" aria-hidden="true"></i><span>This table has a reservation at 7:00 PM</span></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Upcoming</div>
+            <div class="cards">
+              <div class="table-card" data-status="conflict">
+                <span class="table-top"><span class="table-name">A4</span><span class="capacity">2-4</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+              <div class="table-card is-selected" data-status="conflict">
+                <span class="table-top"><span class="table-name">A5</span><span class="capacity">4-6</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+              <div class="table-card" data-status="conflict">
+                <span class="table-top"><span class="table-name">A6</span><span class="capacity">4-6</span></span>
+                <span class="table-sub">at 7:00 PM</span>
+              </div>
+            </div>
+          </div>
+          <div class="assign">Assign Anyway</div>
+        </div>
+      </figure>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</div>
+
+</body>
+</html>

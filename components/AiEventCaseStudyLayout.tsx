@@ -7,10 +7,16 @@ import {
 } from "@/components/SolutionCards";
 import { ThreePathsDiagram } from "@/components/ThreePathsDiagram";
 import { RevealSection } from "@/components/RevealSection";
+import {
+  CaseStudyHeader,
+  caseStudyContentMax,
+  caseStudySectionGap,
+  caseStudyHeadingToBody,
+} from "@/components/CaseStudyHeader";
 
-const contentMax = "clamp(720px, 88vw, 880px)";
-const sectionGap = "clamp(72px, 10vw, 110px)";
-const headingToBody = "clamp(12px, 1.5vw, 18px)";
+const contentMax = caseStudyContentMax;
+const sectionGap = caseStudySectionGap;
+const headingToBody = caseStudyHeadingToBody;
 
 type SectionBlock =
   | { type: "p"; text: string }
@@ -177,45 +183,15 @@ export function AiEventCaseStudyLayout({
       className="mx-auto w-full bg-white px-6 pb-[clamp(96px,12vw,140px)]"
       style={{ maxWidth: contentMax, marginLeft: "auto", marginRight: "auto" }}
     >
-      <header
-        className="pt-[clamp(72px,10vw,100px)]"
-        style={{ paddingBottom: sectionGap }}
-      >
-        <p
-          className="mb-3 text-[12px] font-medium uppercase tracking-[0.06em] text-mid-gray"
-          style={{ letterSpacing: "0.06em", fontFamily: "var(--font-plex-mono), monospace" }}
-        >
-          {category}
-        </p>
-        <h1
-          className="font-bold leading-tight text-black"
-          style={{
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-            letterSpacing: "-0.4px",
-            lineHeight: 1.2,
-          }}
-        >
-          {title}
-        </h1>
-        <p
-          className="mt-[14px] text-mid-gray"
-          style={{
-            fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-            lineHeight: 1.6,
-          }}
-        >
-          {description}
-        </p>
-
-        <div className="relative pt-[34px]">
-          <AIEventHero />
-        </div>
-      </header>
-
-      <div
-        className="h-px w-full bg-accent opacity-20"
-        style={{ marginBottom: sectionGap }}
-        aria-hidden
+      <CaseStudyHeader
+        category={category}
+        title={title}
+        description={description}
+        media={
+          <div className="relative pt-[34px]">
+            <AIEventHero />
+          </div>
+        }
       />
 
       {SECTIONS.map((section, index) => (
