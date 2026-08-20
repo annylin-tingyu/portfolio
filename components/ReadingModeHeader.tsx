@@ -26,7 +26,7 @@ const AUTO_TABLE_CHAPTERS: Chapter[] = [
   { label: "Overview", targetId: "context" },
   { label: "The Core Tension", targetId: "the-inflection-point" },
   { label: "Strategy", targetId: "my-role" },
-  { label: "Outcome", targetId: "outcome" },
+  { label: "Behavior", targetId: "outcome" },
 ];
 
 const AUTO_TABLE_SECTION_TO_CHAPTER: SectionToChapter = {

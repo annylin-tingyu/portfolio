@@ -27,6 +27,7 @@
     color: rgba(0, 0, 0, 0.8) !important;
     font-size: 16px !important;
     line-height: 1.6 !important;
+    max-width: none !important;
   }
   #outcome-states figcaption .num { color: rgba(0, 0, 0, 0.55) !important; }
   #outcome-states figcaption strong { color: rgba(0, 0, 0, 0.9) !important; }
@@ -50,6 +51,39 @@
   }
   #outcome-states .field small { font-size: 13px !important; }
   #outcome-states .field svg { width: 16px !important; height: 16px !important; }
+
+  /* Two-lane outcome: automatic result vs. human takeover sequence */
+  #outcome-states .lane:first-of-type { margin-top: 44px; }
+  #outcome-states .lane + .lane { margin-top: 52px; }
+  #outcome-states .lane-head {
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(73,80,87,0.16);
+  }
+  #outcome-states .lane-label {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(0,0,0,0.72);
+  }
+  #outcome-states .lane-desc {
+    margin-top: 7px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0,0,0,0.6);
+    max-width: 680px;
+  }
+  /* each state is a full-width row: caption left, mockup right */
+  #outcome-states .lane .frames { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 0; }
+  #outcome-states .lane .frame { flex-direction: row !important; gap: 32px; align-items: start; }
+  #outcome-states .lane .frame > figcaption { flex: 0 0 32%; max-width: 300px; }
+  #outcome-states .lane .frame > .shot { flex: 1 1 auto; min-width: 0; }
+  @media (max-width: 720px) {
+    #outcome-states .lane .frame { flex-direction: column !important; gap: 14px; }
+    #outcome-states .lane .frame > figcaption { flex: none; max-width: none; }
+  }
 </style></head>
 <body>
 <div id="outcome-states" aria-label="Auto table assignment result states, portfolio outcome board">
@@ -448,19 +482,23 @@
 
   <div class="board">
     <header class="intro">
-      <div class="eyebrow">Outcome &middot; Table Assignment</div>
-      <h1>Auto table assignment &mdash; result states</h1>
-      <p>Four staff-facing states shown after the system evaluates a party against the floor. The status banner always answers one question first: does this party have a table?</p>
+      <div class="eyebrow">Behavior &middot; Table Assignment</div>
+      <h1>The happy path, and where it breaks</h1>
+      <p>Two paths. One is automatic: the system places the party and it&rsquo;s done. The other begins when it can&rsquo;t, and a person takes over, reading the floor and overriding when they know more than the system does.</p>
     </header>
 
-    <div class="frames">
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-label">Automatic</div>
+        <div class="lane-desc">The system assigns a fitting table with no human input. This is the outcome most reservations resolve to.</div>
+      </div>
+      <div class="frames">
 
       <figure class="frame">
         <figcaption>
           <span class="num">01</span>
           <div>
-            <strong>Clean assignment</strong>
-            <p>Date, time, and party size are set &mdash; the system finds a fitting table and surfaces it. One tap on Assign confirms.</p>
+            <strong>Clean assignment &middot; the happy path</strong>
           </div>
         </figcaption>
         <div class="shot">
@@ -496,13 +534,21 @@
           </div>
         </div>
       </figure>
+      </div>
+    </div>
+
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-label">When the system can&rsquo;t, staff take over</div>
+        <div class="lane-desc">Auto-assign returns nothing, so the floor opens up and a person makes the call, overriding an upcoming or occupied table when they know it&rsquo;s actually flexible.</div>
+      </div>
+      <div class="frames">
 
       <figure class="frame">
         <figcaption>
           <span class="num">02</span>
           <div>
-            <strong>No available table</strong>
-            <p>No table fits the party within the requested window. The system says so plainly &mdash; staff can adjust the time or override manually.</p>
+            <strong>No table fits &middot; fail loud, not silent</strong>
           </div>
         </figcaption>
         <div class="shot">
@@ -525,6 +571,21 @@
             <i data-lucide="circle-x" aria-hidden="true"></i>
             <span>No Available Table</span>
           </div>
+          <div class="section">
+            <div class="section-title">Upcoming</div>
+            <div class="cards">
+              <div class="table-card" data-status="conflict"><span class="table-top"><span class="table-name">A4</span><span class="capacity">2-4</span></span><span class="table-sub">at 7:00 PM</span></div>
+              <div class="table-card" data-status="conflict"><span class="table-top"><span class="table-name">A5</span><span class="capacity">4-6</span></span><span class="table-sub">at 7:00 PM</span></div>
+              <div class="table-card" data-status="conflict"><span class="table-top"><span class="table-name">A6</span><span class="capacity">4-6</span></span><span class="table-sub">at 7:00 PM</span></div>
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-title">Occupied</div>
+            <div class="cards">
+              <div class="table-card" data-status="occupied"><span class="table-top"><span class="table-name">A7</span><span class="capacity">2-4</span></span><span class="table-sub">until 8:30 PM</span></div>
+              <div class="table-card" data-status="occupied"><span class="table-top"><span class="table-name">B3</span><span class="capacity">2-4</span></span><span class="table-sub">until 8:30 PM</span></div>
+            </div>
+          </div>
         </div>
       </figure>
 
@@ -532,73 +593,8 @@
         <figcaption>
           <span class="num">03</span>
           <div>
-            <strong>Table list &mdash; three status tiers</strong>
-            <p>Available tables carry the green accent and stay bright; Upcoming and Occupied share a muted treatment &mdash; both are unavailable, just for different reasons.</p>
-          </div>
-        </figcaption>
-        <div class="shot">
-          <div class="section">
-            <div class="section-title is-bright">Available</div>
-            <div class="cards">
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">A1</span><span class="capacity">1-2</span></span>
-              </div>
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">A2</span><span class="capacity">1-2</span></span>
-              </div>
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">A3</span><span class="capacity">1-2</span></span>
-              </div>
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">B1</span><span class="capacity">2-4</span></span>
-              </div>
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">B2</span><span class="capacity">2-4</span></span>
-              </div>
-              <div class="table-card" data-status="available">
-                <span class="table-top"><span class="table-name">B4</span><span class="capacity">2-4</span></span>
-              </div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="section-title">Upcoming</div>
-            <div class="cards">
-              <div class="table-card" data-status="conflict">
-                <span class="table-top"><span class="table-name">A4</span><span class="capacity">2-4</span></span>
-                <span class="table-sub">at 7:00 PM</span>
-              </div>
-              <div class="table-card" data-status="conflict">
-                <span class="table-top"><span class="table-name">A5</span><span class="capacity">4-6</span></span>
-                <span class="table-sub">at 7:00 PM</span>
-              </div>
-              <div class="table-card" data-status="conflict">
-                <span class="table-top"><span class="table-name">A6</span><span class="capacity">4-6</span></span>
-                <span class="table-sub">at 7:00 PM</span>
-              </div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="section-title">Occupied</div>
-            <div class="cards">
-              <div class="table-card" data-status="occupied">
-                <span class="table-top"><span class="table-name">A7</span><span class="capacity">2-4</span></span>
-                <span class="table-sub">until 8:30 PM</span>
-              </div>
-              <div class="table-card" data-status="occupied">
-                <span class="table-top"><span class="table-name">B3</span><span class="capacity">2-4</span></span>
-                <span class="table-sub">until 8:30 PM</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </figure>
-
-      <figure class="frame">
-        <figcaption>
-          <span class="num">04</span>
-          <div>
-            <strong>Override in context</strong>
-            <p>Staff can pick any table, including one with an upcoming reservation. The system warns inline and asks for explicit confirmation &mdash; it never blocks.</p>
+            <strong>Override &middot; only a person can call it</strong>
+            <p>When staff override, the system flags the risk first: &ldquo;This table has a reservation at 7:00 PM.&rdquo; It warns, never blocks.</p>
           </div>
         </figcaption>
         <div class="shot">
@@ -627,6 +623,7 @@
         </div>
       </figure>
 
+      </div>
     </div>
   </div>
 

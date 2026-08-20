@@ -3,7 +3,7 @@
 /* Clean White Architectural — single warm terracotta accent */
 :root {
   --black: #111111;
-  --charcoal: #3a3a3a;
+  --charcoal: #495057;
   --mid-gray: #6b6b6b;
   --secondary: #6b7280;
   --light-gray: #e5e7eb;
@@ -22,6 +22,14 @@
   --motion-duration-fast: 140ms;
   --motion-duration-medium: 260ms;
   --motion-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* City (San Francisco) home page — Nordic Bakery palette */
+  --snow: #f8f9fa;
+  --silver: #e9ecef;
+  --sky: #90caf9;
+  --sky-dark: #64b5f6;
+  --honey: #f6c90e;
+  --frost: #ffffff;
 }
 
 @theme inline {
@@ -39,6 +47,17 @@
   --color-border: var(--border);
   --color-accent-hover: var(--accent-hover);
   --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* City home page — Nordic Bakery tokens */
+  --color-snow: var(--snow);
+  --color-silver: var(--silver);
+  --color-sky: var(--sky);
+  --color-sky-dark: var(--sky-dark);
+  --color-honey: var(--honey);
+  --color-frost: var(--frost);
+  --font-heading: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-manrope: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 body {
@@ -644,5 +663,54 @@ header.cursor-none button {
   .cabinet-card-title {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+/* ============================================================
+   City (San Francisco) home page — utilities + animations
+   Ported from the Lovable export (styles.css). Scoped by class,
+   used only on /city.
+   ============================================================ */
+
+@keyframes fog-drift {
+  0% { transform: translateX(-8%); opacity: 0.55; }
+  50% { opacity: 0.85; }
+  100% { transform: translateX(8%); opacity: 0.55; }
+}
+@keyframes fog-drift-slow {
+  0% { transform: translateX(10%); opacity: 0.4; }
+  50% { opacity: 0.7; }
+  100% { transform: translateX(-10%); opacity: 0.4; }
+}
+
+@utility animate-fog-drift {
+  animation: fog-drift 14s ease-in-out infinite;
+}
+@utility animate-fog-drift-slow {
+  animation: fog-drift-slow 20s ease-in-out infinite;
+}
+
+/* Drifting fog: clouds move left → right across the hero and loop */
+@keyframes city-fog-drift {
+  0% { transform: translateX(-48vw); }
+  100% { transform: translateX(116vw); }
+}
+.city-fog-cloud {
+  animation-name: city-fog-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .city-fog-cloud {
+    animation: none !important;
+    transform: translateX(20vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fog-drift,
+  .animate-fog-drift-slow {
+    animation: none !important;
   }
 }

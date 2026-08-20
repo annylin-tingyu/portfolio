@@ -31,7 +31,7 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
     "After rollout, hosts reported feeling less rushed during peak periods, and managers saw fewer sections running consistently behind.\n\nThe system didn’t replace judgment; it absorbed the repetitive decision-making so people could focus on exceptions and hospitality.",
   ],
   "what-i-learned": [
-    "The biggest reframe wasn’t a design decision. It was understanding what the override was actually for.\n\nGoing in, I thought of override as a safety net. A way for staff to correct the system when it got something wrong. But the cases where staff actually used it weren’t system failures. They were judgment calls the system had no visibility into. A walk-in willing to take a shorter dining window, a party of five willing to squeeze into a four-top. The system would turn that business away. The staff member didn’t have to.\n\nThat reframe changed how I thought about the whole feature. The system’s job wasn’t to make decisions. It was to make the right information visible so staff could.\n\nThe other thing this project reinforced: going back to users before building caught edge cases I would have missed at my desk. My first model felt complete until I tested it against how staff actually work. Getting that feedback early, before anything was built, is what changed the direction.",
+    "The biggest reframe wasn’t a design decision. It was understanding what the override was actually for.\n\nGoing in, I thought of override as a safety net. A way for staff to correct the system when it got something wrong. But the cases where staff actually used it weren’t system failures. They were judgment calls the system had no visibility into. A walk-in willing to take a shorter dining window, a party of five willing to squeeze into a four-top. The system would turn that business away. The staff member didn’t have to.\n\nThat reframe changed how I thought about the whole feature. The system’s job wasn’t to make decisions. It was to make the right information visible so staff could.\n\nThe other thing this project reinforced: going back to users before building caught edge cases I would have missed at my desk. My first model felt complete until I tested it against how staff actually work. Getting that feedback early, before anything was built, is what changed the direction.\n\nOne thing I’d do differently: this shipped without usage instrumentation, so I can’t point to how often staff override or how many assignments resolve cleanly. Next time I’d build those signals in from the start, so the model could be validated against real behavior, not just my read of it.",
   ],
 };
 
@@ -199,12 +199,107 @@ function AutoAssignmentFlowDiagram() {
   );
 }
 
+function StateModelDiagram() {
+  const label = "#3a3a3a";
+  const faint = "rgba(0,0,0,0.3)";
+  const mono = "var(--font-inter), system-ui, sans-serif";
+  // tier colours echo the Outcome board (available / upcoming / occupied)
+  const states = [
+    { name: "Available", cx: 52, color: "#4bbf87" },
+    { name: "Upcoming", cx: 150, color: "#e0a23c" },
+    { name: "Occupied", cx: 248, color: "#98a2ad" },
+  ];
+  const r = 30;
+
+  return (
+    <figure
+      className="w-full"
+      aria-label="The state model changed from a single 'available' state to three: available, upcoming, and occupied."
+    >
+      <svg viewBox="0 0 300 250" role="img" className="h-auto w-full" style={{ maxWidth: 300 }}>
+        <defs>
+          <marker id="sm-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill={faint} />
+          </marker>
+        </defs>
+
+        {/* Before: the single naive state (dashed = incomplete) */}
+        <circle cx={150} cy={36} r={r} fill="none" stroke={faint} strokeWidth={1.5} strokeDasharray="4 5" />
+        <text x={150} y={82} textAnchor="middle" dominantBaseline="central" fontSize={13} fontWeight={600} fill={label} fontFamily={mono}>
+          Available
+        </text>
+
+        {/* Arrow down */}
+        <line x1={150} y1={100} x2={150} y2={138} stroke={faint} strokeWidth={2} markerEnd="url(#sm-arrow)" />
+
+        {/* After: three honest states, labels below each */}
+        {states.map((s) => (
+          <g key={s.name}>
+            <circle cx={s.cx} cy={176} r={r} fill={s.color} fillOpacity={0.07} stroke={s.color} strokeWidth={2} />
+            <text x={s.cx} y={224} textAnchor="middle" dominantBaseline="central" fontSize={13} fontWeight={600} fill={label} fontFamily={mono}>
+              {s.name}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </figure>
+  );
+}
+
+function AlertComparisonDiagram() {
+  const amber = "#e0a23c";
+  const amberText = "#b97e28";
+  const label = "#3a3a3a";
+  const faint = "rgba(0,0,0,0.3)";
+  const mono = "var(--font-inter), system-ui, sans-serif";
+
+  // one warning bar; showX renders the dismiss control
+  function Bar(y: number, showX: boolean) {
+    return (
+      <>
+        <rect x={8} y={y} width={284} height={46} rx={11} fill={amber} fillOpacity={0.09} stroke={amber} strokeWidth={2} />
+        <path d={`M32 ${y + 14} L43 ${y + 33} L21 ${y + 33} Z`} fill="none" stroke={amberText} strokeWidth={1.8} strokeLinejoin="round" />
+        <line x1={32} y1={y + 21} x2={32} y2={y + 27} stroke={amberText} strokeWidth={1.8} strokeLinecap="round" />
+        <circle cx={32} cy={y + 30.5} r={1.1} fill={amberText} />
+        <text x={58} y={y + 24} dominantBaseline="central" fontSize={13} fontWeight={600} fill={amberText} fontFamily={mono}>
+          Reserved 7:00 PM
+        </text>
+        {showX && (
+          <text x={272} y={y + 23} textAnchor="middle" dominantBaseline="central" fontSize={17} fill={faint} fontFamily={mono}>
+            &times;
+          </text>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <figure
+      className="w-full"
+      aria-label="The conflict warning changed from a dismissible alert with a close button to a persistent state that cannot be dismissed."
+    >
+      <svg viewBox="0 0 300 250" role="img" className="h-auto w-full" style={{ maxWidth: 300 }}>
+        <defs>
+          <marker id="ac-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill={faint} />
+          </marker>
+        </defs>
+        {Bar(8, true)}
+        <text x={150} y={76} textAnchor="middle" fontSize={12} fontWeight={600} fill={label} fontFamily={mono}>Dismissible</text>
+        <line x1={150} y1={94} x2={150} y2={130} stroke={faint} strokeWidth={2} markerEnd="url(#ac-arrow)" />
+        {Bar(150, false)}
+        <text x={150} y={218} textAnchor="middle" fontSize={12} fontWeight={600} fill={label} fontFamily={mono}>Persistent</text>
+      </svg>
+    </figure>
+  );
+}
+
 const SECTIONS: { id: string; title: string }[] = [
   { id: "context", title: "Long Story Short" },
   { id: "the-inflection-point", title: "Automate the Predictable, Protect the Rest" },
   { id: "early-design", title: "Where the Design Got Pressure-Tested" },
   { id: "my-role", title: "Strategy" },
-  { id: "outcome", title: "Outcome" },
+  { id: "outcome", title: "How the System Behaves" },
   { id: "what-i-learned", title: "What I Learned" },
 ];
 
@@ -310,7 +405,7 @@ export function AutoTableCaseStudyLayout({
                   {/* Role cards */}
                   <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3" style={{ marginBottom: "clamp(56px, 8vw, 88px)" }}>
                     {[
-                      "I designed the auto-assignment logic, state model, and override flow for a staff-facing reservation system used by 30+ restaurants.",
+                      "I designed the auto-assignment rules, state model, and override flow for a staff-facing reservation system used by 30+ restaurants.",
                       "I ran research with restaurant operators to understand where automation earns trust and where human judgment has to take over.",
                       "I collaborated with the PM through multiple rounds of review, pressure-testing edge cases before anything shipped.",
                     ].map((text, i) => (
@@ -381,7 +476,7 @@ export function AutoTableCaseStudyLayout({
                   </p>
 
                   {/* Decision cards */}
-                  <div className="grid grid-cols-1 gap-12 md:grid-cols-2" style={{ marginBottom: "clamp(56px, 8vw, 88px)" }}>
+                  <div className="grid grid-cols-1 gap-16" style={{ marginBottom: "clamp(56px, 8vw, 88px)" }}>
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
                       <p
                         className="mb-3 text-[12px] font-bold uppercase tracking-[0.08em]"
@@ -389,15 +484,22 @@ export function AutoTableCaseStudyLayout({
                       >
                         Decision 01
                       </p>
-                      <h3
-                        className="font-semibold"
-                        style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
-                      >
-                        What "upcoming" needed to say
-                      </h3>
-                      <p style={{ color: "var(--mid-gray)", lineHeight: 1.75 }}>
-                        That operator's point, that on-site coordination still needs to be manual, stuck with me: if staff make the call, the system owes them the full picture. My early design showed a table that was open now but reserved in 45 minutes as simply "available," so staff would seat a walk-in and the conflict only surfaced when both parties arrived. I made "upcoming" carry a specific arrival time, so the system stopped answering "is this table free" and started answering "what is true about this table right now."
-                      </p>
+                      <div className="grid grid-cols-1 gap-6 md:grid-cols-[3fr_7fr] md:items-start md:gap-10">
+                        <div className="md:pt-1">
+                          <StateModelDiagram />
+                        </div>
+                        <div>
+                          <h3
+                            className="font-semibold"
+                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
+                          >
+                            Why &quot;available&quot; isn&apos;t enough
+                          </h3>
+                          <p style={{ color: "var(--mid-gray)", lineHeight: 1.75 }}>
+                            Research with five operators showed that a flat "available" hid too much. It only marked a table free if it could seat a full two-hour party, missing the real cases: a party that leaves early with no one updating the floor, or a guest willing to finish before the next reservation. The state had to show what was true right now, not just whether a table looked free.
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
@@ -407,15 +509,22 @@ export function AutoTableCaseStudyLayout({
                       >
                         Decision 02
                       </p>
-                      <h3
-                        className="font-semibold"
-                        style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
-                      >
-                        The X that hid the problem
-                      </h3>
-                      <p style={{ color: "var(--mid-gray)", lineHeight: 1.75 }}>
-                        My first version let staff dismiss a conflict warning with an X. Testing it against real scenarios, I saw the problem: dismissing didn't resolve the conflict, it just hid it. So I reframed what the alert should be. Instead of a dismissible warning, it became a persistent system state that clears only when the conflict is actually resolved. If staff override intentionally, the alert stays. The risk they accepted stays in front of them.
-                      </p>
+                      <div className="grid grid-cols-1 gap-6 md:grid-cols-[3fr_7fr] md:items-start md:gap-10">
+                        <div className="md:pt-1">
+                          <AlertComparisonDiagram />
+                        </div>
+                        <div>
+                          <h3
+                            className="font-semibold"
+                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
+                          >
+                            The X that hid the problem
+                          </h3>
+                          <p style={{ color: "var(--mid-gray)", lineHeight: 1.75 }}>
+                            My first design let staff dismiss a conflict warning with an X, and they did, on reflex, without reading it. Three reports and a few overbookings later, I made the alert un-dismissable: a persistent state that clears only when the conflict is actually resolved, so the risk stays in front of staff.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -436,24 +545,7 @@ export function AutoTableCaseStudyLayout({
                 </>
               ) : section.id === "outcome" ? (
                 <>
-                  <div>
-                    <p
-                      className="mb-1 text-[11px] uppercase tracking-[0.16em]"
-                      style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
-                    >
-                      How It Runs in Practice
-                    </p>
-                    <p>
-                      Staff open a reservation, confirm the party size, date, and time, and the system assigns a table. No floor scanning, no mental math, no conflicts from a table that looked available but wasn't.
-                    </p>
-                    <p className="mt-4">
-                      When the system can't find a match, it says why and gives staff the option to step in. They see the conflict, make the call, and move on. The whole interaction stays in one place.
-                    </p>
-                    <p className="mt-4">
-                      What changed: staff move faster on the straightforward cases and have the information they need to handle the ones that aren't.
-                    </p>
-                  </div>
-                  <div className="mt-7 w-full">
+                  <div className="w-full">
                     <PrototypeFrame
                       src={`${basePath}/prototypes/outcome-states.html`}
                       title="Table assignment result states"
