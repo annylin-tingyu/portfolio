@@ -24,8 +24,7 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
     "That's not a limitation to design around. It's the constraint that defined the system.",
   ],
   "my-role": [
-    "The goal wasn't automation. It was a system staff could trust. Predictable enough that they'd rely on it during peak hours. Explainable enough that when it failed, they'd know why. Flexible enough that when they disagreed with it, they could act.",
-    "My responsibility was defining the interaction model and state transitions: what the system should evaluate, when it should react, and how outcomes are communicated to staff. Four rules shaped everything that followed.",
+    "The goal wasn't automation. It was a system staff could trust. Predictable enough that they'd rely on it during peak hours. Explainable enough that when it failed, they'd know why. Flexible enough that when they disagreed with it, they could act.\n\nThree rules shaped everything that followed.",
   ],
   outcome: [
     "After rollout, hosts reported feeling less rushed during peak periods, and managers saw fewer sections running consistently behind.\n\nThe system didn’t replace judgment; it absorbed the repetitive decision-making so people could focus on exceptions and hospitality.",
@@ -116,28 +115,23 @@ function StrategyPillarGrid() {
   const rules = [
     {
       label: "Rule 01",
-      title: "Only run when the information is complete",
+      title: "Assign automatically once the inputs are complete",
       body: "Date, time, and party size are all required before the system attempts an assignment. Each input is load-bearing. Without all three, the system is guessing, and a guess in a live dining room creates exactly the kind of error automation was meant to prevent.",
     },
     {
       label: "Rule 02",
-      title: "Preserve continuity before optimizing",
-      body: "When party size increases, the system first checks whether adjacent tables can be merged before searching for a new placement. A party growing from four to six doesn't necessarily want to move. Stability comes before efficiency.",
-    },
-    {
-      label: "Rule 03",
-      title: "Every table should earn its space",
+      title: "Match each party to the right-sized table",
       body: "The system prioritizes exact capacity match first, then smallest sufficient capacity. Seating two guests at a six-top leaves revenue on the floor. When no ideal match exists, the system flags the mismatch so staff can make an informed call rather than an accidental one.",
     },
     {
-      label: "Rule 04",
-      title: "Never fail silently",
+      label: "Rule 03",
+      title: "Explain every outcome, including failure",
       body: "When the system cannot assign, it communicates why. Assigned, cannot assign with explanation, or manual required. A failure without context is noise. A failure with context is a handoff.",
     },
   ];
 
   return (
-    <div className="mt-12 grid w-full grid-cols-1 gap-8 md:grid-cols-2" style={{ maxWidth: "100%" }}>
+    <div className="mt-12 grid w-full grid-cols-1 gap-8" style={{ maxWidth: "100%" }}>
       {rules.map((rule) => (
         <div
           key={rule.label}
@@ -170,7 +164,7 @@ function AutoAssignmentFlowDiagram() {
     <section className="mt-12 w-full flex justify-center">
       <figure
         className="w-full"
-        aria-label="Flow of auto-assignment evaluation from input change to assigned or manual required."
+        aria-label="Auto-assignment evaluation flow. Reservation details are entered and checked for completeness, then the system checks table availability. If a table can be assigned, it is assigned automatically. If not, the system shows no available table and hands off to staff, who review the floor and either assign a table manually while the system flags the risk, or inform the customer when no table can be found."
       >
         <p
           className="text-[11px] uppercase tracking-[0.16em] mb-1"
@@ -186,10 +180,10 @@ function AutoAssignmentFlowDiagram() {
         </p>
         <div className="w-full max-w-[960px] overflow-x-auto">
           <Image
-            src={`${basePath}/table assign logic.svg`}
-            alt="Auto-assignment evaluation flow from input change through availability checks to tables assigned or manual handling."
-            width={1920}
-            height={1080}
+            src={`${basePath}/table_assign_flow.png`}
+            alt="Auto-assignment evaluation flow. Reservation details entered, then a check for complete inputs, then table availability. If a table can be assigned the system assigns it automatically. If not, it shows no available table and hands off to staff, who review the floor and either assign a table manually while the system flags the risk, or inform the customer when no table can be found."
+            width={5080}
+            height={2066}
             className="w-full h-auto"
             unoptimized
           />
@@ -297,7 +291,7 @@ function AlertComparisonDiagram() {
 const SECTIONS: { id: string; title: string }[] = [
   { id: "context", title: "Long Story Short" },
   { id: "the-inflection-point", title: "Automate the Predictable, Protect the Rest" },
-  { id: "early-design", title: "Where the Design Got Pressure-Tested" },
+  { id: "early-design", title: "Making the System Match Reality" },
   { id: "my-role", title: "Strategy" },
   { id: "outcome", title: "How the System Behaves" },
   { id: "what-i-learned", title: "What I Learned" },
@@ -469,10 +463,10 @@ export function AutoTableCaseStudyLayout({
                 <>
                   {/* Intro */}
                   <p style={{ marginBottom: "20px" }}>
-                    A restaurant running on faulty table information doesn't just slow down service. It creates double-booked tables, staff making assignment decisions without the full picture, and a system that looks functional while quietly producing conflicts. The design had to account for those operational failures, not just in the happy path, but in the moments where the system's view of availability and reality stopped matching.
+                    The hard part was the gap between what the system believed about a table and what was actually true on the floor.
                   </p>
                   <p className="font-semibold" style={{ marginBottom: "clamp(48px, 6vw, 72px)" }}>
-                    If staff were going to make the calls the system couldn't, the system had to give them the full picture. Two decisions followed.
+                    If staff were going to make the calls the system couldn't, they needed the full picture. Two decisions closed the gap.
                   </p>
 
                   {/* Decision cards */}
@@ -528,20 +522,6 @@ export function AutoTableCaseStudyLayout({
                     </div>
                   </div>
 
-                  {/* Pull quote */}
-                  <div className="mx-auto text-center" style={{ maxWidth: "720px", padding: "8px 0" }}>
-                    <div
-                      className="mx-auto mb-8"
-                      style={{ width: "40px", height: "3px", background: "var(--accent)" }}
-                      aria-hidden
-                    />
-                    <p
-                      className="font-medium"
-                      style={{ fontSize: "clamp(1.125rem, 2vw, 1.375rem)", lineHeight: 1.45, letterSpacing: "-0.005em", color: "var(--accent)" }}
-                    >
-                      Both decisions came from the same principle: the interface should reflect what's actually true about the system, not give staff a way to move past something that hasn't been resolved.
-                    </p>
-                  </div>
                 </>
               ) : section.id === "outcome" ? (
                 <>
@@ -596,10 +576,10 @@ export function AutoTableCaseStudyLayout({
                           );
                         })}
                         {section.id === "my-role" && i === 0 && (
-                          <StrategyPillarGrid />
-                        )}
-                        {section.id === "my-role" && i === 1 && (
-                          <AutoAssignmentFlowDiagram />
+                          <>
+                            <StrategyPillarGrid />
+                            <AutoAssignmentFlowDiagram />
+                          </>
                         )}
                       </div>
                     );
