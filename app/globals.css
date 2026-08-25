@@ -910,6 +910,18 @@ header.cursor-none button {
   .bento-card { min-height: 140px; }
   .bento-intro { min-height: 140px; }
   .bento-photo { min-height: 240px; }
+
+  /* Mobile stacking order (DOM order is: 1 Intro, 2 Resume, 3 Tools,
+     4 Quote1, 5 Quote2, 6 Photo, 7 LinkedIn, 8 Quote3).
+     Pull the photo up so it reads: … Quote1 → Photo → Quote2 → LinkedIn → Quote3. */
+  .about-bento > *:nth-child(1) { order: 1; }
+  .about-bento > *:nth-child(2) { order: 2; }
+  .about-bento > *:nth-child(3) { order: 3; }
+  .about-bento > *:nth-child(4) { order: 4; }
+  .about-bento > *:nth-child(6) { order: 5; } /* Photo */
+  .about-bento > *:nth-child(5) { order: 6; } /* Quote 2 */
+  .about-bento > *:nth-child(7) { order: 7; }
+  .about-bento > *:nth-child(8) { order: 8; }
 }
 
 @media (prefers-reduced-motion: reduce) {

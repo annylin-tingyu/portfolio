@@ -66,12 +66,15 @@ function scrollToSection(id: string) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
+// Frosted-glass chrome matching the /city + /about nav.
 const MONO = {
-  borderColor: "#EDEDED",
-  bg: "#ffffff",
+  borderColor: "rgba(117,115,114,0.15)",
+  bg: "rgba(255,255,255,0.55)",
   text: "#111111",
   textMuted: "#6B6B6B",
 } as const;
+
+const GLASS_BLUR = "blur(14px)";
 
 export function ReadingModeHeader() {
   const pathname = usePathname();
@@ -160,7 +163,7 @@ export function ReadingModeHeader() {
       {/* Back — always goes to home (consistent when opening case study via direct URL) */}
       <Link
         href="/"
-        className="link-underline link-underline--lift flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 text-[13px] text-[#6B6B6B] hover:text-accent-hover-text md:min-h-0 md:min-w-0 md:justify-start"
+        className="flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 text-[13px] text-[#6B6B6B] transition-colors hover:text-sky md:min-h-0 md:min-w-0 md:justify-start"
         style={{ fontFamily: "var(--font-plex-mono), monospace", display: "flex" }}
         aria-label="Back to home"
       >
@@ -182,6 +185,8 @@ export function ReadingModeHeader() {
             style={{
               border: `1px solid ${MONO.borderColor}`,
               backgroundColor: MONO.bg,
+              backdropFilter: GLASS_BLUR,
+              WebkitBackdropFilter: GLASS_BLUR,
               color: MONO.text,
               borderRadius: 10,
               fontFamily: "var(--font-plex-mono), monospace",
@@ -201,6 +206,8 @@ export function ReadingModeHeader() {
               style={{
                 border: `1px solid ${MONO.borderColor}`,
                 backgroundColor: MONO.bg,
+                backdropFilter: GLASS_BLUR,
+                WebkitBackdropFilter: GLASS_BLUR,
                 borderRadius: 10,
               }}
             >
@@ -227,9 +234,11 @@ export function ReadingModeHeader() {
         <div
           className="hidden md:flex md:items-center md:gap-2 md:rounded-lg md:border md:px-3 md:py-2"
           style={{
-            borderColor: "#EDEDED",
+            borderColor: MONO.borderColor,
             borderRadius: 10,
             backgroundColor: MONO.bg,
+            backdropFilter: GLASS_BLUR,
+            WebkitBackdropFilter: GLASS_BLUR,
             fontFamily: "var(--font-plex-mono), monospace",
           }}
         >
@@ -240,7 +249,7 @@ export function ReadingModeHeader() {
                 key={ch.targetId}
                 type="button"
                 onClick={() => handleChapterSelect(idx)}
-                className={`shrink-0 cursor-none whitespace-nowrap rounded px-2 py-1 text-[13px] transition-colors duration-[120ms] hover:text-accent-hover-text ${
+                className={`shrink-0 cursor-none whitespace-nowrap rounded px-2 py-1 text-[13px] transition-colors duration-[120ms] hover:text-sky ${
                   isActive ? "text-[#111111]" : "text-[#6B6B6B]"
                 }`}
               >
@@ -249,7 +258,7 @@ export function ReadingModeHeader() {
                   <span
                     className="pointer-events-none absolute left-0 right-0 bottom-0 h-0.5 origin-left"
                     style={{
-                      backgroundColor: "#C47A5B",
+                      backgroundColor: "#64b5f6",
                       transform: isActive ? "scaleX(1)" : "scaleX(0)",
                       transition: "transform var(--motion-duration-medium) var(--motion-ease-out)",
                     }}

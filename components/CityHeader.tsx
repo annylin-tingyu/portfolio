@@ -14,7 +14,7 @@ const FULL_NAV: NavItem[] = [
 
 // On /about the grid already surfaces Resume + LinkedIn (and About is the current
 // page), so the nav drops those and offers a single way back to the work.
-const ABOUT_NAV: NavItem[] = [{ label: "Work", href: "/#menu" }];
+const ABOUT_NAV: NavItem[] = [{ label: "Work", href: "/#work" }];
 
 /**
  * Floating pill nav for the /city home page. Fixed and centered so it overlays
@@ -41,6 +41,13 @@ export function CityHeader() {
       >
         <Link
           href="/"
+          onClick={(e) => {
+            // Already home: smooth-scroll to the hero instead of a no-op nav.
+            if (pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
           className="shrink-0 cursor-none text-[15px] font-semibold tracking-[-0.01em] text-charcoal transition-colors hover:text-sky"
           style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}
         >

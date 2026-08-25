@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const SIZE = 32;
+const SIZE = 22;
 
 export function CustomCursor() {
   const [visible, setVisible] = useState(false);
@@ -29,14 +29,18 @@ export function CustomCursor() {
 
   return (
     <div
-      className="pointer-events-none fixed left-0 top-0 z-[9999] mix-blend-difference"
+      className="pointer-events-none fixed left-0 top-0 z-[9999]"
       aria-hidden
       style={{
         transform: `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`,
         width: SIZE,
         height: SIZE,
         borderRadius: "50%",
-        background: "white",
+        background: "transparent",
+        // Two-tone outline so the ring stays visible on light and dark
+        // backgrounds without mix-blend (which breaks over backdrop-filter).
+        border: "1.5px solid rgba(17,17,17,0.7)",
+        boxShadow: "0 0 0 1.5px rgba(255,255,255,0.55)",
       }}
     />
   );
