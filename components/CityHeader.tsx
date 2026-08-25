@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { RESUME_PDF_HREF } from "@/lib/resume";
 
-const nav = [
+type NavItem = { label: string; href: string; external?: boolean };
+
+const FULL_NAV: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Resume", href: RESUME_PDF_HREF, external: true },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/atylin/", external: true },
 ];
+
+// On /about the grid already surfaces Resume + LinkedIn (and About is the current
+// page), so the nav drops those and offers a single way back to the work.
+const ABOUT_NAV: NavItem[] = [{ label: "Work", href: "/#menu" }];
 
 /**
  * Floating pill nav for the /city home page. Fixed and centered so it overlays
@@ -15,6 +22,8 @@ const nav = [
  * floating treatment of the case-study reading indicator with a 24px radius.
  */
 export function CityHeader() {
+  const pathname = usePathname();
+  const nav = pathname === "/about" ? ABOUT_NAV : FULL_NAV;
   return (
     <header className="pointer-events-none fixed inset-x-0 top-6 z-[100] flex cursor-none justify-center px-4">
       <nav

@@ -15,7 +15,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const isCaseStudy = pathname != null && CASE_STUDY_PATHS.includes(pathname);
 
-  if (pathname === "/city") {
+  if (pathname === "/city" || pathname === "/about") {
     return <CityHeader />;
   }
 

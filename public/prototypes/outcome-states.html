@@ -61,12 +61,14 @@
     border-bottom: 1px solid rgba(73,80,87,0.16);
   }
   #outcome-states .lane-label {
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 12px;
-    font-weight: 700;
-    color: rgba(0,0,0,0.72);
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    font-size: 19px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #3a3a3a;
   }
   #outcome-states .lane-desc {
     margin-top: 7px;
@@ -489,7 +491,7 @@
 
     <div class="lane">
       <div class="lane-head">
-        <div class="lane-label">Automatic</div>
+        <h3 class="lane-label">Automatic</h3>
         <div class="lane-desc">The system assigns a fitting table with no human input. This is the outcome most reservations resolve to.</div>
       </div>
       <div class="frames">
@@ -539,7 +541,7 @@
 
     <div class="lane">
       <div class="lane-head">
-        <div class="lane-label">When the system can&rsquo;t, staff take over</div>
+        <h3 class="lane-label">When the system can&rsquo;t, staff take over</h3>
         <div class="lane-desc">Auto-assign returns nothing, so the floor opens up and a person makes the call, overriding an upcoming or occupied table when they know it&rsquo;s actually flexible.</div>
       </div>
       <div class="frames">

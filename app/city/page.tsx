@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { BuiltWithBadge } from "@/components/city/BuiltWithBadge";
 import { CityFog } from "@/components/city/CityFog";
 import { TypewriterHeadline } from "@/components/city/TypewriterHeadline";
-import { Footer } from "@/components/Footer";
 import { CASE_STUDIES, type CaseStudy } from "@/lib/case-studies";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -41,12 +41,20 @@ export default function CityPage() {
         {/* Centered headline */}
         <div className="relative z-10 mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-6 text-center">
           <div className="-mt-[160px]">
-            <span className="mb-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-charcoal/60">
+            <span
+              className="mb-6 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium tracking-wide text-charcoal/60"
+              style={{
+                borderColor: "rgba(117,115,114,0.15)",
+                backgroundColor: "rgba(255,255,255,0.55)",
+                backdropFilter: "blur(14px)",
+                WebkitBackdropFilter: "blur(14px)",
+              }}
+            >
               <span className="size-1.5 rounded-full bg-sky" />
               Based in San Francisco
             </span>
 
-            <h1 className="min-h-[2.4em] text-[2.7rem] font-extrabold leading-[1.2] tracking-tight text-balance sm:text-[3.375rem] md:text-[4.05rem]" style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}>
+            <h1 className="min-h-[2.4em] text-[2.7rem] font-extrabold leading-[1.2] tracking-[-1px] text-balance sm:text-[3.375rem] md:text-[4.05rem]" style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}>
               <TypewriterHeadline />
             </h1>
 
@@ -82,7 +90,7 @@ export default function CityPage() {
         </div>
       </section>
 
-      <Footer />
+      <BuiltWithBadge />
     </div>
   );
 }

@@ -1,318 +1,168 @@
-"use client";
-
-import type { CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
-import SkillsBoard from "@/components/SkillsBoard";
+import { RESUME_PDF_HREF } from "@/lib/resume";
 
-// On mobile, keep 20px gutters: maxWidth = 100vw - 40px.
-// On larger screens, cap at 880px.
-const contentMax = "min(880px, calc(100vw - 40px))";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-const STACK_OFFSETS = [
-  { x: -12, y: -12, rotate: -4 },
-  { x: -6, y: -6, rotate: 2 },
-  { x: 0, y: 0, rotate: 0 },
-] as const;
+// Plain <a> below, so basePath is applied manually (unlike next/link elsewhere).
+const RESUME_URL = `${basePath}${RESUME_PDF_HREF}`;
+const LINKEDIN_URL = "https://www.linkedin.com/in/atylin/";
 
-type StackItem =
-  | { type: "image"; src: string; alt: string }
-  | { type: "placeholder"; label: string };
+// Core stack shown in the auto-scrolling marquee.
+const TOOLS: { src: string; alt: string }[] = [
+  { src: "figma.svg", alt: "Figma" },
+  { src: "lovable-color.svg", alt: "Lovable" },
+  { src: "claude.svg", alt: "Claude" },
+  { src: "cursor.png", alt: "Cursor" },
+  { src: "miro.svg", alt: "Miro" },
+  { src: "Jira Logomark.svg", alt: "Jira" },
+  { src: "tableau-software.svg", alt: "Tableau" },
+];
 
-const SHUFFLE_DURATION_MS = 900;
+const PHOTOS: { src: string; alt: string }[] = [
+  { src: "yoga-puppy.jpg", alt: "Anny holding a puppy at a yoga class" },
+  { src: "portrait-film.jpg", alt: "Anny, film portrait" },
+  { src: "golden-gate.jpg", alt: "Cyclist crossing the Golden Gate Bridge" },
+  { src: "uc-davis.jpg", alt: "The UC Davis water tower" },
+];
 
-function StackCard({
-  item,
-  stackPosition,
-  isFront,
-  isLeaving,
-  shuffleActive,
-}: {
-  item: StackItem;
-  stackPosition: 0 | 1 | 2;
-  isFront: boolean;
-  isLeaving: boolean;
-  shuffleActive: boolean;
-}) {
-  const { x, y, rotate } = STACK_OFFSETS[stackPosition];
-  // While dealing, z-index is driven by keyframes (high for peel-out, then rear slot for tuck-in)
-  const zIndex = stackPosition + 1;
+const QUOTES = [
+  "Automating everything isn't the answer. I keep users in control and clear on what the system is doing, even when AI runs it.",
+  "I keep the screen simple, so what matters is easy to find and act on.",
+  "I design the logic underneath before the screen on top.",
+];
 
-  const showFrontChrome = isFront || isLeaving;
-
-  const motionStyle = isLeaving
-    ? ({
-        willChange: "transform, z-index",
-        animation: `stack-card-deal-to-back ${SHUFFLE_DURATION_MS}ms ease-in-out forwards`,
-      } as CSSProperties)
-    : ({
-        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg)`,
-        zIndex,
-        willChange: "transform",
-      } as CSSProperties);
-
-  const motionClassName = isLeaving
-    ? "stack-card-deal-origin stack-card-dealing"
-    : `stack-card-stack-base${shuffleActive ? " stack-card-stack-follow" : ""}`;
-
+function ExternalLinkIcon() {
   return (
-    <div
-      className={`absolute inset-0 ${motionClassName}`}
-      style={motionStyle}
-      aria-hidden={!showFrontChrome}
+    <svg
+      className="bento-open-icon"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
     >
-      <div
-        className={`flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#F3F4F6] ${showFrontChrome ? "shadow-md" : "shadow-sm"}`}
-      >
-        {item.type === "image" ? (
-          <Image
-            src={item.src}
-            alt={item.alt}
-            width={450}
-            height={600}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <span
-            className="text-[13px] text-[#9CA3AF]"
-            style={{ fontFamily: "var(--font-plex-mono), monospace" }}
-          >
-            {item.label}
-          </span>
-        )}
-      </div>
-    </div>
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </svg>
   );
 }
 
-const SHUFFLE_INTERVAL_MS = 2400;
-/** First deal runs soon after mount; `setInterval` alone waits a full interval before the first tick. */
-const SHUFFLE_INITIAL_DELAY_MS = 750;
-
-function ShufflingImageStack({ items }: { items: StackItem[] }) {
-  const [frontIndex, setFrontIndex] = useState(0);
-  const [leavingIndex, setLeavingIndex] = useState<number | null>(null);
-  const frontRef = useRef(frontIndex);
-  frontRef.current = frontIndex;
-  const n = items.length;
-
-  useEffect(() => {
-    if (n <= 1) return;
-
-    const tick = () => {
-      setLeavingIndex(frontRef.current);
-      setFrontIndex((prev) => (prev + 1) % n);
-    };
-
-    let intervalId: ReturnType<typeof setInterval> | undefined;
-
-    const initialId = setTimeout(() => {
-      tick();
-      intervalId = setInterval(tick, SHUFFLE_INTERVAL_MS);
-    }, SHUFFLE_INITIAL_DELAY_MS);
-
-    return () => {
-      clearTimeout(initialId);
-      if (intervalId !== undefined) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [n]);
-
-  // After deal-to-back animation ends, clear leaving state so z-index matches stack order
-  useEffect(() => {
-    if (leavingIndex === null) return;
-    const t = setTimeout(() => setLeavingIndex(null), SHUFFLE_DURATION_MS);
-    return () => clearTimeout(t);
-  }, [leavingIndex]);
-
+function LinkedInLogo() {
   return (
-    <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
-      {items.map((item, i) => {
-        const pos = (i - frontIndex + n) % n;
-        const stackPosition = (2 - Math.min(pos, 2)) as 0 | 1 | 2;
-        return (
-          <StackCard
-            key={i}
-            item={item}
-            stackPosition={stackPosition}
-            isFront={stackPosition === 2}
-            isLeaving={leavingIndex === i}
-            shuffleActive={leavingIndex !== null}
-          />
-        );
-      })}
-    </div>
+    <svg width="52" height="52" viewBox="0 0 24 24" role="img" aria-label="LinkedIn">
+      <rect width="24" height="24" rx="5" fill="#3E6DC1" />
+      <path
+        fill="#ffffff"
+        d="M8 19H5v-9h3v9zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"
+      />
+    </svg>
+  );
+}
+
+function QuoteCard({ text, className }: { text: string; className: string }) {
+  return (
+    <section className={`bento-card bento-quote ${className}`}>
+      <span className="quote-mark" aria-hidden>
+        &ldquo;
+      </span>
+      <p className="quote-text">{text}</p>
+    </section>
   );
 }
 
 export default function AboutPage() {
   return (
-    <article
-      className="mx-auto flex w-full flex-col gap-[40px] bg-white px-0 sm:px-6 pb-[clamp(96px,12vw,140px)] pt-[clamp(48px,8vw,72px)]"
-      style={{ maxWidth: contentMax, marginLeft: "auto", marginRight: "auto" }}
-    >
-      {/* Hero — greeting + statement block */}
-      <header>
-        <p
-          className="mb-[60px] w-full text-center text-[13px] text-[#6B6B6B] sm:text-[14px]"
-          style={{ fontFamily: "var(--font-plex-mono), monospace" }}
+    <main className="about-bento-wrap">
+      <div className="about-bento">
+        {/* Intro */}
+        <section className="bento-card bento-intro bento-col-2">
+          <Image
+            src={`${basePath}/myavatar2.svg`}
+            alt="Illustration of Anny"
+            width={130}
+            height={130}
+            className="intro-avatar"
+            unoptimized
+          />
+          <div>
+            <p className="intro-eyebrow">Hey there!</p>
+            <p className="intro-name">I&apos;m Anny</p>
+          </div>
+        </section>
+
+        {/* Resume */}
+        <a
+          href={RESUME_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bento-card bento-link bento-col-1"
+          aria-label="Open Anny's resume (PDF, new tab)"
         >
-          I am curious. I enjoy working with people. I am motivated to make an impact.
-        </p>
-        <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-14">
-          <div className="min-w-0" style={{ maxWidth: "calc(100% - 0.2px)" }}>
-            <p
-              className="mb-2 text-[14px] text-[#6B6B6B]"
-              style={{ fontFamily: "var(--font-plex-mono), monospace" }}
-            >
-              Hey there!
-            </p>
-            <h1
-              className="font-bold text-black"
-              style={{
-                fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.2,
-              }}
-            >
-              I&apos;m Anny
-            </h1>
-            <p
-              className="mt-5 text-[16px] leading-relaxed text-[#3a3a3a]"
-              style={{ maxWidth: "52ch" }}
-            >
-              A Product Designer specializing in B2B2C platforms and operational systems, turning complex workflows into simple, reliable experiences.
-            </p>
-            <p
-              className="mt-6 text-[13px] text-[#6B6B6B]"
-              style={{ fontFamily: "var(--font-plex-mono), monospace" }}
-            >
-              Currently working at
-            </p>
-            <a
-              href="https://www.owting.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-2 rounded-md border border-[#E5E7EB] bg-white px-3 py-2 transition-colors hover:border-[#D1D5DB] hover:bg-[#F9FAFB]"
-              aria-label="Owting - Where Friends Meet"
-            >
-              <Image
-                src={`${basePath}/owting%20logo.svg`}
-                alt=""
-                width={24}
-                height={24}
-                className="h-6 w-6 object-contain"
-              />
-              <span className="text-[15px] font-medium text-[#3a3a3a]">Owting</span>
-            </a>
+          <ExternalLinkIcon />
+          <span className="link-label">Resume</span>
+        </a>
+
+        {/* Tools marquee */}
+        <section className="bento-card bento-tools bento-col-1" aria-label="Tools I work with">
+          <div className="bento-marquee" style={{ ["--marquee-duration" as string]: "20s" }}>
+            <div className="bento-marquee-track">
+              {[...TOOLS, ...TOOLS].map((t, i) => (
+                <img
+                  key={i}
+                  src={`${basePath}/tools logo/${t.src}`}
+                  alt={t.alt}
+                  className="tool-logo"
+                  aria-hidden={i >= TOOLS.length}
+                />
+              ))}
+            </div>
           </div>
-          <div className="shrink-0 scale-90 md:scale-100 origin-top md:w-[225px]">
-            <ShufflingImageStack
-              items={[
-                { type: "image", src: `${basePath}/about/about-1.png`, alt: "Anny with puppy" },
-                { type: "image", src: `${basePath}/about/about-2.png`, alt: "Anny" },
-                { type: "image", src: `${basePath}/about/about-3.png`, alt: "Golden Gate Bridge" },
-                { type: "image", src: `${basePath}/about/about-4.png`, alt: "Anny at UC Davis" },
-              ]}
-            />
+        </section>
+
+        {/* Quote 1 */}
+        <QuoteCard text={QUOTES[0]} className="bento-col-2" />
+
+        {/* Quote 2 */}
+        <QuoteCard text={QUOTES[1]} className="bento-col-2" />
+
+        {/* Photo marquee */}
+        <section className="bento-card bento-photo bento-col-1" aria-label="Photos of Anny">
+          <div className="bento-marquee">
+            <div className="bento-marquee-track">
+              {[...PHOTOS, ...PHOTOS].map((p, i) => (
+                <img
+                  key={i}
+                  src={`${basePath}/about/${p.src}`}
+                  alt={p.alt}
+                  className="photo-item"
+                  aria-hidden={i >= PHOTOS.length}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </header>
+        </section>
 
-      <section id="about-me" className="about-me-section">
-        <div className="about-between-divider" aria-hidden>
-          <span className="about-between-rule" />
-          <svg viewBox="0 0 24 24" className="about-between-cup" aria-hidden>
-            <path
-              d="M6 10 H16 L15 18 Q14.5 20 13 20 H9 Q7.5 20 7 18 Z M16 12 Q20 12 20 15 Q20 18 16 18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-            />
-          </svg>
-          <span className="about-between-rule" />
-        </div>
-      </section>
+        {/* LinkedIn */}
+        <a
+          href={LINKEDIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bento-card bento-link bento-col-1"
+          aria-label="Anny's LinkedIn profile (new tab)"
+        >
+          <ExternalLinkIcon />
+          <LinkedInLogo />
+        </a>
 
-      <section
-        className="about-skills-board-section hidden md:block"
-        aria-label="Skills and tools"
-      >
-        <SkillsBoard />
-      </section>
-
-      {/* Body copy */}
-      <section className="space-y-6 text-[15px] leading-relaxed text-[#3a3a3a]">
-      <p className="font-medium text-[#2a2a2a] text-xl md:text-2xl mb-6 md:text-left">
-        I design systems that stay simple for users while supporting complex real-world needs.
-      </p>
-
-      <div className="mb-6">
-        <h3 className="font-semibold text-[#2a2a2a] mb-2">What I Specialize In</h3>
-        <p>
-        B2B2C platforms and operational products such as reservations, payments, and service
-        workflows, serving businesses from independent operators to enterprise clients managing
-        multi-location operations, where clarity, speed, and reliability are
-        requirements, not nice-to-haves.
-        </p>
+        {/* Quote 3 */}
+        <QuoteCard text={QUOTES[2]} className="bento-col-2" />
       </div>
-
-      <div className="mb-6">
-        <h3 className="font-semibold text-[#2a2a2a] mb-2">How I Work</h3>
-        <p>
-        I collaborate closely with product managers and engineers to move from
-        ambiguous goals to clear, shippable solutions.
-        </p>
-      </div>
-      </section>
-      <style jsx>{`
-        .about-me-section {
-          margin-bottom: 0;
-          display: flex;
-          justify-content: center;
-          width: 100%;
-        }
-
-        .about-skills-board-section {
-          width: 100%;
-        }
-
-        .about-between-divider {
-          position: relative;
-          z-index: 1;
-          width: fit-content;
-          max-width: 100%;
-          margin: 16px auto 16px;
-          padding: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 18px;
-          color: rgba(196, 122, 91, 0.9);
-        }
-
-        .about-between-rule {
-          width: min(210px, 28vw);
-          height: 1px;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(17, 17, 17, 0.18),
-            transparent
-          );
-        }
-
-        .about-between-cup {
-          width: 14px;
-          height: 14px;
-          color: rgba(196, 122, 91, 0.78);
-        }
-
-      `}</style>
-    </article>
+    </main>
   );
 }

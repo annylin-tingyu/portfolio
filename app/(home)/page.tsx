@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatedAvatar } from "@/components/AnimatedAvatar";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
