@@ -79,7 +79,7 @@ export default function CityPage() {
       <section id="work" className="border-t border-charcoal/10 bg-snow px-6 py-24 sm:px-10 sm:py-32">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-16 text-center text-5xl font-bold sm:text-6xl" style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}>
-            Menu
+            Work
           </h2>
 
           <div className="flex flex-col">

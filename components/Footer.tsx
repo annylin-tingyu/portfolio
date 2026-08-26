@@ -12,7 +12,7 @@ export function Footer() {
           <div className="flex gap-6">
             <Link
               href="/about"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
+              className="text-[13px] text-[#6B7280] transition-colors hover:text-sky"
             >
               About
             </Link>
@@ -20,7 +20,7 @@ export function Footer() {
               href={RESUME_PDF_HREF}
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
+              className="text-[13px] text-[#6B7280] transition-colors hover:text-sky"
             >
               Resume
             </Link>
@@ -28,7 +28,7 @@ export function Footer() {
               href="https://www.linkedin.com/in/atylin/"
               target="_blank"
               rel="noopener noreferrer"
-              className="link-underline link-underline--lift text-[13px] text-[#6B7280] hover:text-[#C47A5B]"
+              className="text-[13px] text-[#6B7280] transition-colors hover:text-sky"
             >
               LinkedIn
             </Link>
