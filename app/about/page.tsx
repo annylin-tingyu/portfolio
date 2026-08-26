@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import Image from "next/image";
+import Link from "next/link";
 import { RESUME_PDF_HREF } from "@/lib/resume";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -65,13 +65,24 @@ function LinkedInLogo() {
   );
 }
 
-function QuoteCard({ text, className }: { text: string; className: string }) {
+function QuoteCard({
+  text,
+  source,
+  className,
+}: {
+  text: string;
+  source: { label: string; slug: string };
+  className: string;
+}) {
   return (
     <section className={`bento-card bento-quote ${className}`}>
       <span className="quote-mark" aria-hidden>
         &ldquo;
       </span>
       <p className="quote-text">{text}</p>
+      <Link href={`/projects/${source.slug}`} className="quote-source">
+        {source.label} &rarr;
+      </Link>
     </section>
   );
 }
@@ -82,18 +93,40 @@ export default function AboutPage() {
       <div className="about-bento">
         {/* Intro */}
         <section className="bento-card bento-intro bento-col-2">
-          <Image
-            src={`${basePath}/myavatar2.svg`}
-            alt="Illustration of Anny"
-            width={130}
-            height={130}
-            className="intro-avatar"
-            unoptimized
-          />
           <div>
-            <p className="intro-eyebrow">Hey there!</p>
-            <p className="intro-name">I&apos;m Anny</p>
+            <p className="intro-name">Hey there, I&apos;m Anny</p>
+            <p className="intro-role">Product Designer</p>
+            <p className="intro-lead">
+              I design for two sides at once: the reliability a business runs on and the simplicity its customers expect.
+            </p>
           </div>
+        </section>
+
+        {/* Photo marquee */}
+        <section className="bento-card bento-photo bento-col-1" aria-label="Photos of Anny">
+          <div className="bento-marquee">
+            <div className="bento-marquee-track">
+              {[...PHOTOS, ...PHOTOS].map((p, i) => (
+                <img
+                  key={i}
+                  src={`${basePath}/about/${p.src}`}
+                  alt={p.alt}
+                  className="photo-item"
+                  aria-hidden={i >= PHOTOS.length}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* What I do */}
+        <section className="bento-card bento-about bento-col-2" aria-label="What I do">
+          <p className="about-eyebrow">What I do</p>
+          <p className="about-copy">
+            I&apos;ve worked across operational tools and consumer apps, from restaurant systems to social
+            products. My day to day is partnering closely with PMs and engineers, taking a fuzzy idea and
+            shaping it into something clear enough to build and simple enough to use.
+          </p>
         </section>
 
         {/* Resume */}
@@ -108,6 +141,13 @@ export default function AboutPage() {
           <span className="link-label">Resume</span>
         </a>
 
+        {/* Quote 1 */}
+        <QuoteCard
+          text={QUOTES[0]}
+          source={{ label: "Auto Table Assignment", slug: "auto-table-assignment" }}
+          className="bento-col-2"
+        />
+
         {/* Tools marquee */}
         <section className="bento-card bento-tools bento-col-1" aria-label="Tools I work with">
           <div className="bento-marquee" style={{ ["--marquee-duration" as string]: "20s" }}>
@@ -119,29 +159,6 @@ export default function AboutPage() {
                   alt={t.alt}
                   className="tool-logo"
                   aria-hidden={i >= TOOLS.length}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Quote 1 */}
-        <QuoteCard text={QUOTES[0]} className="bento-col-2" />
-
-        {/* Quote 2 */}
-        <QuoteCard text={QUOTES[1]} className="bento-col-2" />
-
-        {/* Photo marquee */}
-        <section className="bento-card bento-photo bento-col-1" aria-label="Photos of Anny">
-          <div className="bento-marquee">
-            <div className="bento-marquee-track">
-              {[...PHOTOS, ...PHOTOS].map((p, i) => (
-                <img
-                  key={i}
-                  src={`${basePath}/about/${p.src}`}
-                  alt={p.alt}
-                  className="photo-item"
-                  aria-hidden={i >= PHOTOS.length}
                 />
               ))}
             </div>
@@ -161,7 +178,11 @@ export default function AboutPage() {
         </a>
 
         {/* Quote 3 */}
-        <QuoteCard text={QUOTES[2]} className="bento-col-2" />
+        <QuoteCard
+          text={QUOTES[2]}
+          source={{ label: "CRM Marketplace", slug: "crm-marketplace" }}
+          className="bento-col-2"
+        />
       </div>
     </main>
   );

@@ -746,13 +746,33 @@ header.cursor-none button {
   );
   display: grid;
   grid-template-columns: repeat(3, var(--unit));
-  grid-auto-rows: var(--unit);
+  grid-auto-rows: minmax(var(--unit), auto);
   gap: var(--gap);
   align-items: stretch;
 }
 
 .bento-col-2 { grid-column: span 2; }
 .bento-col-1 { grid-column: span 1; }
+.bento-col-3 { grid-column: 1 / -1; }
+
+/* Full-width "What I do" substance band */
+.bento-about {
+  justify-content: center;
+}
+.bento-about .about-eyebrow {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+}
+.bento-about .about-copy {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.82);
+  max-width: 64ch;
+}
 
 .bento-card {
   position: relative;
@@ -780,14 +800,7 @@ header.cursor-none button {
 
 /* Intro card: avatar + greeting */
 .bento-intro {
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(16px, 3vw, 28px);
-}
-.bento-intro .intro-avatar {
-  flex: none;
-  width: clamp(96px, 12vw, 130px);
-  height: auto;
+  justify-content: center;
 }
 .bento-intro .intro-eyebrow {
   font-size: 15px;
@@ -797,10 +810,24 @@ header.cursor-none button {
 .bento-intro .intro-name {
   font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
-  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: #111;
+}
+.bento-intro .intro-role {
+  margin-top: 8px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: rgba(0, 0, 0, 0.55);
+}
+.bento-intro .intro-lead {
+  margin-top: 10px;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.45;
+  color: rgba(0, 0, 0, 0.75);
+  max-width: 46ch;
 }
 
 /* Link cards (Resume, LinkedIn) */
@@ -847,7 +874,12 @@ header.cursor-none button {
   gap: var(--marquee-gap, 40px);
   animation: bento-marquee-x var(--marquee-duration, 24s) linear infinite;
 }
-.bento-marquee:hover .bento-marquee-track {
+/* Tools strip pauses on hover; the photo strip keeps scrolling on hover and
+   pauses only while pressed (click-and-hold). */
+.bento-tools .bento-marquee:hover .bento-marquee-track {
+  animation-play-state: paused;
+}
+.bento-photo .bento-marquee:active .bento-marquee-track {
   animation-play-state: paused;
 }
 @keyframes bento-marquee-x {
@@ -866,7 +898,7 @@ header.cursor-none button {
 
 /* Photo card — marquee absolutely fills the card so images don't dictate row height */
 .bento-photo { padding: 0; }
-.bento-photo .bento-marquee { position: absolute; inset: 0; }
+.bento-photo .bento-marquee { position: absolute; inset: 0; -webkit-mask-image: none; mask-image: none; }
 .bento-photo .bento-marquee-track { height: 100%; gap: 0; --marquee-duration: 28s; }
 .bento-photo .photo-item {
   height: 100%;
@@ -902,6 +934,21 @@ header.cursor-none button {
   letter-spacing: -0.01em;
   color: #1a1a1a;
 }
+.bento-quote .quote-source {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  margin-top: 14px;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+.bento-quote .quote-source:hover {
+  color: var(--sky-dark);
+}
 .bento-quote .quote-mark {
   position: relative;
   z-index: 1;
@@ -924,17 +971,17 @@ header.cursor-none button {
   .bento-intro { min-height: 140px; }
   .bento-photo { min-height: 240px; }
 
-  /* Mobile stacking order (DOM order is: 1 Intro, 2 Resume, 3 Tools,
-     4 Quote1, 5 Quote2, 6 Photo, 7 LinkedIn, 8 Quote3).
-     Pull the photo up so it reads: … Quote1 → Photo → Quote2 → LinkedIn → Quote3. */
-  .about-bento > *:nth-child(1) { order: 1; }
-  .about-bento > *:nth-child(2) { order: 2; }
-  .about-bento > *:nth-child(3) { order: 3; }
-  .about-bento > *:nth-child(4) { order: 4; }
-  .about-bento > *:nth-child(6) { order: 5; } /* Photo */
-  .about-bento > *:nth-child(5) { order: 6; } /* Quote 2 */
-  .about-bento > *:nth-child(7) { order: 7; }
-  .about-bento > *:nth-child(8) { order: 8; }
+  /* Mobile stacking order. DOM order is now: 1 Intro, 2 Photo, 3 WhatIDo,
+     4 Resume, 5 Quote1, 6 Tools, 7 LinkedIn, 8 Quote3.
+     Target reading order: Intro, What I do, Resume, Tools, Quote1, Photo, LinkedIn, Quote3. */
+  .about-bento > *:nth-child(1) { order: 1; } /* Intro */
+  .about-bento > *:nth-child(3) { order: 2; } /* What I do */
+  .about-bento > *:nth-child(4) { order: 3; } /* Resume */
+  .about-bento > *:nth-child(6) { order: 4; } /* Tools */
+  .about-bento > *:nth-child(5) { order: 5; } /* Quote 1 */
+  .about-bento > *:nth-child(2) { order: 6; } /* Photo */
+  .about-bento > *:nth-child(7) { order: 7; } /* LinkedIn */
+  .about-bento > *:nth-child(8) { order: 8; } /* Quote 3 */
 }
 
 @media (prefers-reduced-motion: reduce) {
