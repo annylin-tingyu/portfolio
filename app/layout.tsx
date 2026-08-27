@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono, Sora, Manrope } from "next/font/google";
+import { Inter, IBM_Plex_Mono, Sora, Manrope, Poppins } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -34,6 +34,14 @@ const manrope = Manrope({
   weight: ["400", "500", "600"],
 });
 
+// Owting event-card thumbnail — brand type
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Anny Lin",
   description: "Turning product complexity into clarity.",
@@ -45,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sora.variable} ${manrope.variable}`}>
+      <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sora.variable} ${manrope.variable} ${poppins.variable}`}>
       <body className="min-h-screen bg-white text-black font-sans antialiased">
         <CustomCursor />
         <SiteHeader />

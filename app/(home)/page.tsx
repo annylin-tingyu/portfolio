@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { AutoTableStateThumb } from "@/components/city/AutoTableStateThumb";
+import { OwtingEventThumb } from "@/components/city/OwtingEventThumb";
+import { CrmMarketplaceThumb } from "@/components/city/CrmMarketplaceThumb";
 import { BuiltWithBadge } from "@/components/city/BuiltWithBadge";
 import { CityFog } from "@/components/city/CityFog";
 import { TypewriterHeadline } from "@/components/city/TypewriterHeadline";
@@ -82,9 +85,9 @@ export default function CityPage() {
             Work
           </h2>
 
-          <div className="flex flex-col">
-            {CASE_STUDIES.map((cs) => (
-              <MenuRow key={cs.slug} cs={cs} />
+          <div className="flex flex-col gap-8">
+            {CASE_STUDIES.map((cs, idx) => (
+              <MenuRow key={cs.slug} cs={cs} flip={idx % 2 === 1} />
             ))}
           </div>
         </div>
@@ -95,44 +98,75 @@ export default function CityPage() {
   );
 }
 
-/* -------------------- Menu row -------------------- */
-function MenuRow({ cs }: { cs: CaseStudy }) {
+/* -------------------- Work card -------------------- */
+function MenuRow({ cs, flip }: { cs: CaseStudy; flip?: boolean }) {
+  const thumb =
+    cs.slug === "auto-table-assignment" ? (
+      <AutoTableStateThumb />
+    ) : cs.slug === "ai-event-planning" ? (
+      <OwtingEventThumb />
+    ) : cs.slug === "crm-marketplace" ? (
+      <CrmMarketplaceThumb />
+    ) : null;
+
   return (
     <Link
       href={`/projects/${cs.slug}`}
-      className="group border-b border-charcoal/10 py-10 first:border-t first:border-charcoal/10 sm:py-12"
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-charcoal/10 bg-white transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-charcoal/20 hover:shadow-[0_14px_34px_rgba(17,17,17,0.08)] ${
+        flip ? "md:flex-row-reverse" : "md:flex-row"
+      }`}
     >
-      <div className="flex items-baseline gap-4">
-        <h3 className="text-2xl font-semibold leading-tight transition-colors group-hover:text-sky sm:text-3xl" style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}>
-          {cs.title}
-        </h3>
-        <span
-          aria-hidden
-          className="hidden h-px flex-1 translate-y-[-2px] sm:block"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to right, currentColor 0 2px, transparent 2px 6px)",
-            color: "rgba(0,0,0,0.22)",
-          }}
-        />
-        <span className="ml-auto font-mono text-sm text-charcoal/55 sm:ml-0">
-          {`’${String(cs.year).slice(-2)}`}
-        </span>
+      {/* Media — states float above a soft gradient panel */}
+      <div
+        className="flex min-h-[288px] items-center justify-center overflow-hidden p-6 md:w-[420px] md:shrink-0"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(144,202,249,0.20) 0%, rgba(248,249,250,0.95) 55%, rgba(233,236,239,0.9) 100%)",
+        }}
+      >
+        {thumb ?? (
+          <div
+            className="h-[52px] w-full max-w-[300px] rounded-xl border border-dashed"
+            style={{ borderColor: "rgba(117,115,114,0.28)" }}
+            aria-hidden
+          />
+        )}
       </div>
 
-      <p className="mt-3 max-w-[80ch] text-base italic leading-relaxed text-charcoal/70 sm:text-lg">
-        <span dangerouslySetInnerHTML={{ __html: cs.tagline }} />
-      </p>
-
-      <div className="mt-5 flex flex-wrap gap-2">
-        {cs.tags.map((tag) => (
+      {/* Text */}
+      <div className="flex flex-1 flex-col justify-center p-6 sm:p-8">
+        <div className="flex items-baseline gap-4">
+          <h3 className="text-2xl font-semibold leading-tight transition-colors group-hover:text-sky sm:text-3xl" style={{ fontFamily: "var(--font-sora), ui-sans-serif, system-ui, sans-serif" }}>
+            {cs.title}
+          </h3>
           <span
-            key={tag}
-            className="rounded-full border border-charcoal/20 px-3 py-1 font-mono text-[11px] text-charcoal/65"
-          >
-            {tag}
+            aria-hidden
+            className="hidden h-px flex-1 translate-y-[-2px] sm:block"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(to right, currentColor 0 2px, transparent 2px 6px)",
+              color: "rgba(0,0,0,0.22)",
+            }}
+          />
+          <span className="ml-auto font-mono text-sm text-charcoal/55 sm:ml-0">
+            {`’${String(cs.year).slice(-2)}`}
           </span>
-        ))}
+        </div>
+
+        <p className="mt-3 max-w-[80ch] text-base italic leading-relaxed text-charcoal/70 sm:text-lg">
+          <span dangerouslySetInnerHTML={{ __html: cs.tagline }} />
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {cs.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-charcoal/20 px-3 py-1 font-mono text-[11px] text-charcoal/65"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
     </Link>
   );
