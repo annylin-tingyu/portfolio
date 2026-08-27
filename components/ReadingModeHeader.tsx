@@ -84,6 +84,43 @@ export function ReadingModeHeader() {
   /** When user clicks a chapter, we pin the indicator here until scroll reaches that section (avoids jump through intermediate sections). */
   const scrollTargetIndexRef = useRef<number | null>(null);
 
+  /** Mobile only: reveal the indicator while scrolling, hide it once reading (idle),
+   *  so it doesn't sit on top of the smaller reading area. */
+  const [hidden, setHidden] = useState(false);
+  const menuOpenRef = useRef(menuOpen);
+  menuOpenRef.current = menuOpen;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    let timer: ReturnType<typeof setTimeout>;
+    const scheduleHide = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (mq.matches && !menuOpenRef.current) setHidden(true);
+      }, 1100);
+    };
+    const onScroll = () => {
+      setHidden(false);
+      scheduleHide();
+    };
+    const onMqChange = () => {
+      if (!mq.matches) setHidden(false);
+    };
+    scheduleHide();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    mq.addEventListener?.("change", onMqChange);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+      mq.removeEventListener?.("change", onMqChange);
+    };
+  }, []);
+
+  // Never stay hidden while the chapter menu is open.
+  useEffect(() => {
+    if (menuOpen) setHidden(false);
+  }, [menuOpen]);
+
   const { chapters, sectionToChapter } = useMemo(() => {
     if (pathname === "/projects/auto-table-assignment") {
       return {
@@ -159,12 +196,25 @@ export function ReadingModeHeader() {
   return (
     <header
       className="sticky top-6 z-[100] mx-6 mt-6 flex min-h-[44px] cursor-none items-center justify-between overflow-visible px-4 py-3 md:px-6"
+      style={{
+        transition: "transform 260ms ease, opacity 260ms ease",
+        transform: hidden ? "translateY(-180%)" : "translateY(0)",
+        opacity: hidden ? 0 : 1,
+        pointerEvents: hidden ? "none" : undefined,
+      }}
     >
       {/* Back — always goes to home (consistent when opening case study via direct URL) */}
       <Link
         href="/"
-        className="flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 text-[13px] text-[#6B6B6B] transition-colors hover:text-sky md:min-h-0 md:min-w-0 md:justify-start"
-        style={{ fontFamily: "var(--font-plex-mono), monospace", display: "flex" }}
+        className="flex min-h-[44px] min-w-[44px] shrink-0 cursor-none items-center justify-center gap-1 px-3 py-2 text-[13px] text-[#6B6B6B] transition-colors hover:text-sky md:min-h-0 md:min-w-0 md:justify-start"
+        style={{
+          fontFamily: "var(--font-plex-mono), monospace",
+          border: `1px solid ${MONO.borderColor}`,
+          backgroundColor: MONO.bg,
+          backdropFilter: GLASS_BLUR,
+          WebkitBackdropFilter: GLASS_BLUR,
+          borderRadius: 10,
+        }}
         aria-label="Back to home"
       >
         <span aria-hidden>←</span>

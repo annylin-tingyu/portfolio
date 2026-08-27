@@ -643,6 +643,15 @@
       }
     }
 
+    /* "System is evaluating" beat: spin the pending icon while the auto-assign resolves */
+    #hero-demo-loop .rest-banner.is-working [data-rest-icon-pending] {
+      animation: hero-spin .8s linear infinite;
+      transform-origin: center;
+    }
+    @keyframes hero-spin {
+      to { transform: rotate(360deg); }
+    }
+
     #hero-demo-loop .popover {
       transition: opacity .28s ease, transform .28s ease, visibility .28s;
     }
@@ -794,7 +803,7 @@
     </div>
 
     <div class="footer">
-      <button class="assign" type="button" data-assign>Assign</button>
+      <button class="assign" type="button" data-assign>Confirm</button>
     </div>
   </section>
     </div>
@@ -885,7 +894,34 @@
         warningText.textContent = isSuccess ? 'Table Assigned' : getWarningText(table);
       }
 
+      // Short "system is evaluating" delay before an automatic assignment lands,
+      // so the auto-assign reads as the system working, not an instant snap.
+      const ASSIGN_DELAY_MS = 800;
+      let assignTimer = null;
+      function clearAssignTimer() {
+        if (assignTimer) {
+          clearTimeout(assignTimer);
+          assignTimer = null;
+        }
+      }
+
+      function renderFinding() {
+        restBanner.classList.remove('is-hidden');
+        restBanner.classList.remove('is-error');
+        restBanner.classList.add('is-working');
+        restIconPending().style.display = '';
+        restIconError().style.display = 'none';
+        restText.textContent = 'Finding a table…';
+        warning.classList.remove('is-visible');
+        assignButton.disabled = true;
+        assignButton.textContent = 'Confirm';
+      }
+
       function recompute() {
+        // Any state change cancels a pending auto-assign and stops the spinner.
+        clearAssignTimer();
+        restBanner.classList.remove('is-working');
+
         // Manual table selection always gives immediate feedback, even before
         // date/time/guests are complete — clicking a table should never be a no-op.
         if (selectionSource === 'manual') {
@@ -899,7 +935,7 @@
           restBanner.classList.add('is-hidden');
           renderTableBanner('assigned', selectedTable);
           assignButton.disabled = false;
-          assignButton.textContent = 'Assign';
+          assignButton.textContent = 'Confirm';
           return;
         }
 
@@ -909,26 +945,32 @@
           warning.classList.remove('is-visible');
           renderRest('rest');
           assignButton.disabled = true;
-          assignButton.textContent = 'Assign';
+          assignButton.textContent = 'Confirm';
           return;
         }
 
         const auto = findFittingAvailableTable(guestCount());
         if (auto) {
-          selectedTable = auto;
-          selectedStatus = 'available';
-          selectionSource = 'auto';
-          highlightSelection();
-          restBanner.classList.add('is-hidden');
-          renderTableBanner('assigned', auto);
-          assignButton.disabled = false;
-          assignButton.textContent = 'Assign';
+          // Inputs are complete: show the system evaluating, then commit the assignment.
+          renderFinding();
+          assignTimer = setTimeout(() => {
+            assignTimer = null;
+            restBanner.classList.remove('is-working');
+            selectedTable = auto;
+            selectedStatus = 'available';
+            selectionSource = 'auto';
+            highlightSelection();
+            restBanner.classList.add('is-hidden');
+            renderTableBanner('assigned', auto);
+            assignButton.disabled = false;
+            assignButton.textContent = 'Confirm';
+          }, ASSIGN_DELAY_MS);
         } else {
           clearSelection();
           warning.classList.remove('is-visible');
           renderRest('no-available');
           assignButton.disabled = true;
-          assignButton.textContent = 'Assign';
+          assignButton.textContent = 'Confirm';
         }
       }
 

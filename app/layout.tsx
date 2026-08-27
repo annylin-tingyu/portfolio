@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono, Source_Serif_4, Caveat, Architects_Daughter, Sora, Manrope, JetBrains_Mono } from "next/font/google";
+import { Inter, IBM_Plex_Mono, Sora, Manrope } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -19,27 +19,6 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400"],
 });
 
-const sourceSerif = Source_Serif_4({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
-
-const caveat = Caveat({
-  variable: "--font-handwritten",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
-
-const architectsDaughter = Architects_Daughter({
-  variable: "--font-skills",
-  subsets: ["latin"],
-  display: "swap",
-  weight: "400",
-});
-
 // City (San Francisco) home page — Nordic Bakery type system
 const sora = Sora({
   variable: "--font-sora",
@@ -55,13 +34,6 @@ const manrope = Manrope({
   weight: ["400", "500", "600"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500"],
-});
-
 export const metadata: Metadata = {
   title: "Anny Lin",
   description: "Turning product complexity into clarity.",
@@ -73,13 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sourceSerif.variable} ${caveat.variable} ${architectsDaughter.variable} ${sora.variable} ${manrope.variable} ${jetbrainsMono.variable}`}>
-      <head>
-        <link
-          href="https://fonts.cdnfonts.com/css/sometype-mono"
-          rel="stylesheet"
-        />
-      </head>
+      <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${sora.variable} ${manrope.variable}`}>
       <body className="min-h-screen bg-white text-black font-sans antialiased">
         <CustomCursor />
         <SiteHeader />

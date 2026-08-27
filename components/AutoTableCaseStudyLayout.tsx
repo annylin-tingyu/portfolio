@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import { PrototypeFrame } from "@/components/PrototypeFrame";
 import { RevealSection } from "@/components/RevealSection";
 import {
@@ -116,12 +117,12 @@ function StrategyPillarGrid() {
     {
       label: "Rule 01",
       title: "Assign automatically once the inputs are complete",
-      body: "Date, time, and party size are all required before the system attempts an assignment. Each input is load-bearing. Without all three, the system is guessing, and a guess in a live dining room creates exactly the kind of error automation was meant to prevent.",
+      body: "Date, time, and party size are all required before the system attempts an assignment. Each input is load-bearing. Until all three are set, the system holds rather than assigning against incomplete information.",
     },
     {
       label: "Rule 02",
       title: "Match each party to the right-sized table",
-      body: "The system prioritizes exact capacity match first, then smallest sufficient capacity. Seating two guests at a six-top leaves revenue on the floor. When no ideal match exists, the system flags the mismatch so staff can make an informed call rather than an accidental one.",
+      body: "The system prioritizes exact capacity match first, then smallest sufficient capacity. Seating two guests at a six-top leaves revenue on the floor. When no ideal match exists, the system still seats the party but flags that the table is larger than they need, so staff can make an informed call rather than an accidental one.",
     },
     {
       label: "Rule 03",
@@ -144,7 +145,7 @@ function StrategyPillarGrid() {
           >
             {rule.label}
           </p>
-          <h3 className="font-semibold" style={{ fontSize: "clamp(0.9375rem, 1.2vw, 1.0625rem)", color: "var(--accent)" }}>
+          <h3 className="font-semibold" style={{ fontSize: "clamp(0.9375rem, 1.2vw, 1.0625rem)", color: "#111111" }}>
             {rule.title}
           </h3>
           <p className="mt-4 text-[15px]" style={{ color: "rgba(0,0,0,0.75)", lineHeight: 1.6 }}>
@@ -178,14 +179,12 @@ function AutoAssignmentFlowDiagram() {
         >
           Auto-assignment evaluation
         </p>
-        <div className="w-full max-w-[960px] overflow-x-auto">
-          <Image
+        <div className="w-full max-w-[960px]">
+          <ImageLightbox
             src={`${basePath}/table_assign_flow.png`}
             alt="Auto-assignment evaluation flow. Reservation details entered, then a check for complete inputs, then table availability. If a table can be assigned the system assigns it automatically. If not, it shows no available table and hands off to staff, who review the floor and either assign a table manually while the system flags the risk, or inform the customer when no table can be found."
             width={5080}
             height={2066}
-            className="w-full h-auto"
-            unoptimized
           />
         </div>
       </figure>
@@ -207,7 +206,7 @@ function StateModelDiagram() {
 
   return (
     <figure
-      className="w-full"
+      className="flex w-full justify-center md:block"
       aria-label="The state model changed from a single 'available' state to three: available, upcoming, and occupied."
     >
       <svg viewBox="0 0 300 250" role="img" className="h-auto w-full" style={{ maxWidth: 300 }}>
@@ -269,7 +268,7 @@ function AlertComparisonDiagram() {
 
   return (
     <figure
-      className="w-full"
+      className="flex w-full justify-center md:block"
       aria-label="The conflict warning changed from a dismissible alert with a close button to a persistent state that cannot be dismissed."
     >
       <svg viewBox="0 0 300 250" role="img" className="h-auto w-full" style={{ maxWidth: 300 }}>
@@ -325,6 +324,7 @@ export function AutoTableCaseStudyLayout({
               src={`${basePath}/prototypes/hero-demo-loop.html`}
               title="Table assignment product demo"
               initialHeight={656}
+              scaleToFitWidth={620}
               style={{ maxWidth: 1080, marginLeft: "auto", marginRight: "auto", pointerEvents: "none" }}
             />
           </div>
@@ -343,7 +343,7 @@ export function AutoTableCaseStudyLayout({
             {section.id === "my-role" ? (
               <h2
                 className="font-bold"
-                style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", lineHeight: 1.15, letterSpacing: "-0.02em", color: "var(--accent)" }}
+                style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", lineHeight: 1.15, letterSpacing: "-0.02em", color: "#111111" }}
               >
                 I designed the rules before I{" "}
                 <em style={{ fontStyle: "italic" }}>designed</em>{" "}
@@ -351,12 +351,11 @@ export function AutoTableCaseStudyLayout({
               </h2>
             ) : (
               <h2
-                className="font-semibold"
+                className="font-semibold text-black"
                 style={{
-                  fontSize: "clamp(1.375rem, 3vw, 1.875rem)",
+                  fontSize: "clamp(1.125rem, 2.5vw, 1.375rem)",
                   letterSpacing: "-0.01em",
                   lineHeight: 1.3,
-                  color: "var(--accent)",
                 }}
               >
                 {section.title}
@@ -437,8 +436,8 @@ export function AutoTableCaseStudyLayout({
                     </blockquote>
                   </div>
 
-                  {/* Closing statement */}
-                  <p className="text-center italic text-mid-gray" style={{ fontSize: "clamp(1.0625rem, 1.75vw, 1.25rem)", lineHeight: 1.6 }}>
+                  {/* Closing statement — its own beat, balanced space above and below */}
+                  <p className="text-center italic text-mid-gray" style={{ marginTop: sectionGap, fontSize: "clamp(1.0625rem, 1.75vw, 1.25rem)", lineHeight: 1.6 }}>
                     That distinction became the foundation of everything that followed.
                   </p>
                 </>
@@ -449,7 +448,7 @@ export function AutoTableCaseStudyLayout({
                     The obvious solution was full automation. Feed in party size, date, and time, the system assigns a table. No manual scanning, no guesswork, no mistakes from a staff member handling three things at once. That's what the product instinct pushed toward.
                   </p>
                   <p className="mt-4">
-                    But restaurants don't operate in perfect blocks. Consider a walk-in during peak hours. The system scans availability and returns nothing. Every open slot conflicts with an upcoming reservation within the standard two-hour dining window. From the system's perspective, the restaurant is full. But a staff member can see something the system can't: this walk-in is willing to finish in an hour. That table is available if both parties agree. A rigid system turns that revenue away. A staff member doesn't have to.
+                    But restaurants don't operate in perfect time blocks. Consider a walk-in during peak hours. The system scans availability and returns nothing. Every open slot conflicts with an upcoming reservation within the standard two-hour dining window. From the system's perspective, the restaurant is full. But a staff member can see something the system can't: this walk-in is willing to finish in an hour. That table is available if both parties agree. A rigid system turns that revenue away. A staff member doesn't have to.
                   </p>
                   <p className="mt-4">
                     Full automation handles the predictable cases cleanly and fails silently on everything else. I designed toward a different model: the system evaluates what it can verify. Staff handle what happens in conversation, not in a database.
@@ -474,7 +473,7 @@ export function AutoTableCaseStudyLayout({
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
                       <p
                         className="mb-3 text-[12px] font-bold uppercase tracking-[0.08em]"
-                        style={{ color: "var(--accent)", fontFamily: "var(--font-plex-mono), monospace" }}
+                        style={{ color: "#111111", fontFamily: "var(--font-plex-mono), monospace" }}
                       >
                         Decision 01
                       </p>
@@ -485,7 +484,7 @@ export function AutoTableCaseStudyLayout({
                         <div>
                           <h3
                             className="font-semibold"
-                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
+                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
                           >
                             Why &quot;available&quot; isn&apos;t enough
                           </h3>
@@ -499,7 +498,7 @@ export function AutoTableCaseStudyLayout({
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
                       <p
                         className="mb-3 text-[12px] font-bold uppercase tracking-[0.08em]"
-                        style={{ color: "var(--accent)", fontFamily: "var(--font-plex-mono), monospace" }}
+                        style={{ color: "#111111", fontFamily: "var(--font-plex-mono), monospace" }}
                       >
                         Decision 02
                       </p>
@@ -510,7 +509,7 @@ export function AutoTableCaseStudyLayout({
                         <div>
                           <h3
                             className="font-semibold"
-                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "var(--accent)" }}
+                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
                           >
                             The X that hid the problem
                           </h3>

@@ -400,6 +400,7 @@ export function CaseStudyLayout({
                                   letterSpacing: "0.1em",
                                   marginBottom: 14,
                                   color: "rgba(0,0,0,0.6)",
+                                  fontFamily: "var(--font-plex-mono), monospace",
                                 }}
                               >
                                 {MY_ROLE_LABELS[i]}
@@ -446,6 +447,7 @@ export function CaseStudyLayout({
                                     letterSpacing: "0.1em",
                                     marginBottom: 14,
                                     color: "rgba(0,0,0,0.6)",
+                                    fontFamily: "var(--font-plex-mono), monospace",
                                   }}
                                 >
                                   {label}
@@ -497,6 +499,7 @@ export function CaseStudyLayout({
                                     letterSpacing: "0.1em",
                                     marginBottom: 14,
                                     color: "rgba(0,0,0,0.6)",
+                                    fontFamily: "var(--font-plex-mono), monospace",
                                   }}
                                 >
                                   {label}
@@ -582,6 +585,7 @@ export function CaseStudyLayout({
                                     letterSpacing: "0.1em",
                                     marginBottom: 14,
                                     color: "rgba(0,0,0,0.6)",
+                                    fontFamily: "var(--font-plex-mono), monospace",
                                   }}
                                 >
                                   {label}
