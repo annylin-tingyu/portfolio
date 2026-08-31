@@ -67,11 +67,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Archived mono home: no site footer (wrapper class is SSR-visible; see archive-home/layout) */
-body:has(.archive-home-root) footer {
-  display: none;
-}
-
 /* New Home: steaming cup utility */
 .nh-barSteam {
   position: absolute;

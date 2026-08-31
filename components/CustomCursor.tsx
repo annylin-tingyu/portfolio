@@ -5,14 +5,11 @@ import { useEffect, useState } from "react";
 const SIZE = 22;
 
 export function CustomCursor() {
-  const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ x: -100, y: -100 });
 
   useEffect(() => {
     const hasHover = window.matchMedia("(hover: hover)").matches;
     if (!hasHover) return;
-
-    setVisible(true);
 
     const onMove = (e: MouseEvent) => {
       setPos({ x: e.clientX, y: e.clientY });

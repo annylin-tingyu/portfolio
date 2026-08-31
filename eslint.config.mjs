@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Node deploy tooling (CommonJS, not app code):
+    "scripts/**",
   ]),
   ...storybook.configs["flat/recommended"]
 ]);

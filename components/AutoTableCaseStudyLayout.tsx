@@ -158,9 +158,6 @@ function StrategyPillarGrid() {
 }
 
 function AutoAssignmentFlowDiagram() {
-  const stroke = "#E5E7EB";
-  const textColor = "#111111";
-
   return (
     <section className="mt-12 w-full flex justify-center">
       <figure
