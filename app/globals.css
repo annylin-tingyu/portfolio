@@ -735,18 +735,20 @@ header.cursor-none button {
     #ffffff;
 }
 
-/* Square base unit (1:1 for a single column, 2:1 for a double).
-   The unit is driven by viewport height so the grid fills the screen,
-   but capped by width so it never overflows horizontally. */
+/* Landscape base unit: columns fill the available width (up to a max), rows
+   are sized to fit four in the viewport height. Boxes are gently landscape
+   rather than square, so the grid fills the page without scrolling. */
 .about-bento {
   --gap: 16px;
-  --unit: min(
-    calc((100svh - var(--nav-clear, 84px) - 20px - 3 * var(--gap)) / 4),
-    calc((960px - 2 * var(--gap)) / 3)
+  /* Match the nav pill width (w-1/2 inside a px-4 header ≈ 50vw − 16px). */
+  --col: calc((50vw - 16px - 2 * var(--gap)) / 3);
+  --row: max(
+    172px,
+    calc((100svh - var(--nav-clear, 84px) - 20px - 3 * var(--gap)) / 4)
   );
   display: grid;
-  grid-template-columns: repeat(3, var(--unit));
-  grid-auto-rows: minmax(var(--unit), auto);
+  grid-template-columns: repeat(3, var(--col));
+  grid-auto-rows: minmax(var(--row), auto);
   gap: var(--gap);
   align-items: stretch;
 }
