@@ -1,8 +1,10 @@
-:HL["/portfolio/_next/static/chunks/00abd907d5115e52.css","style"]
-:HL["/portfolio/_next/static/media/68d403cf9f2c68c5-s.p.f9f15f61.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/chunks/fd6a81b3d63a4111.css","style"]
+:HL["/portfolio/_next/static/media/47fe1b7cd6e6ed85-s.p.855a563b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/6bd983bd58a87a3d-s.p.cf80dd39.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/portfolio/_next/static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/portfolio/_next/static/media/95accdfe7438af8b-s.p.8ebe058a.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/8e6fa89aa22d24ec-s.p.3aec397d.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/portfolio/_next/static/media/99e609270109b47d-s.p.64b9304e.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/portfolio/_next/static/media/a85fe84266768609-s.p.e658778d.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["https://fonts.cdnfonts.com/css/sometype-mono","style"]
-0:{"buildId":"QbVcrTPMW9pnHwTjumkLb","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"projects","paramType":null,"paramKey":"projects","hasRuntimePrefetch":false,"slots":{"children":{"name":"slug","paramType":"d","paramKey":"auto-table-assignment","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+:HL["/portfolio/_next/static/media/a218039a3287bcfd-s.p.4a23d71b.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/a343f882a40d2cc9-s.p.71e1367e.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/e2334d715941921e-s.p.d82a9aff.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"buildId":"QujLdsQ0Hv8f-buw5IGWO","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"projects","paramType":null,"paramKey":"projects","hasRuntimePrefetch":false,"slots":{"children":{"name":"slug","paramType":"d","paramKey":"auto-table-assignment","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
