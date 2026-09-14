@@ -140,15 +140,15 @@ function StrategyPillarGrid() {
           style={{ borderColor: cardBorder, borderRadius: cardRadius }}
         >
           <p
-            className="mb-2 text-[11px] uppercase tracking-[0.16em]"
+            className="mb-2 text-[11px] font-medium uppercase tracking-[0.14em]"
             style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
           >
             {rule.label}
           </p>
-          <h3 className="font-semibold" style={{ fontSize: "clamp(0.9375rem, 1.2vw, 1.0625rem)", color: "#111111" }}>
+          <h3 className="font-semibold" style={{ fontSize: "clamp(1rem, 1.3vw, 1.0625rem)", color: "#111111", lineHeight: 1.35 }}>
             {rule.title}
           </h3>
-          <p className="mt-4 text-[15px]" style={{ color: "rgba(0,0,0,0.75)", lineHeight: 1.6 }}>
+          <p className="mt-4 text-[16px]" style={{ color: "rgba(0,0,0,0.75)", lineHeight: 1.6 }}>
             {rule.body}
           </p>
         </div>
@@ -171,8 +171,8 @@ function AutoAssignmentFlowDiagram() {
           Flow
         </p>
         <p
-          className="mb-4 text-[14px]"
-          style={{ color: "rgba(0,0,0,0.9)" }}
+          className="mb-4 text-[16px] font-semibold"
+          style={{ color: "#111111" }}
         >
           Auto-assignment evaluation
         </p>
@@ -284,13 +284,13 @@ function AlertComparisonDiagram() {
   );
 }
 
-const SECTIONS: { id: string; title: string }[] = [
-  { id: "context", title: "Long Story Short" },
-  { id: "the-inflection-point", title: "Automate the Predictable, Protect the Rest" },
-  { id: "early-design", title: "Making the System Match Reality" },
-  { id: "my-role", title: "Strategy" },
-  { id: "outcome", title: "How the System Behaves" },
-  { id: "what-i-learned", title: "What I Learned" },
+const SECTIONS: { id: string; title: string; kicker: string }[] = [
+  { id: "context", title: "Long Story Short", kicker: "Overview" },
+  { id: "the-inflection-point", title: "Automate the Predictable, Protect the Rest", kicker: "The Core Tension" },
+  { id: "early-design", title: "Making the System Match Reality", kicker: "Design Decisions" },
+  { id: "my-role", title: "Strategy", kicker: "Strategy" },
+  { id: "outcome", title: "How the System Behaves", kicker: "" },
+  { id: "what-i-learned", title: "What I Learned", kicker: "Reflection" },
 ];
 
 type AutoTableCaseStudyLayoutProps = {
@@ -333,24 +333,32 @@ export function AutoTableCaseStudyLayout({
           <section
             id={section.id}
             style={{
-              marginBottom: section.id === "my-role" ? "90px" : sectionGap,
+              marginBottom: sectionGap,
               paddingTop: index === 0 ? 0 : undefined,
             }}
           >
+            {section.kicker && (
+              <p
+                className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em]"
+                style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
+              >
+                {section.kicker}
+              </p>
+            )}
             {section.id === "my-role" ? (
               <h2
-                className="font-bold"
-                style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", lineHeight: 1.15, letterSpacing: "-0.02em", color: "#111111" }}
+                className="font-semibold text-black"
+                style={{ fontSize: "clamp(1.5rem, 3.5vw, 2rem)", lineHeight: 1.3, letterSpacing: "-0.01em" }}
               >
                 I designed the rules before I{" "}
                 <em style={{ fontStyle: "italic" }}>designed</em>{" "}
                 the screens.
               </h2>
-            ) : (
+            ) : section.id === "outcome" ? null : (
               <h2
                 className="font-semibold text-black"
                 style={{
-                  fontSize: "clamp(1.125rem, 2.5vw, 1.375rem)",
+                  fontSize: "clamp(1.5rem, 3.5vw, 2rem)",
                   letterSpacing: "-0.01em",
                   lineHeight: 1.3,
                 }}
@@ -469,8 +477,8 @@ export function AutoTableCaseStudyLayout({
                   <div className="grid grid-cols-1 gap-16" style={{ marginBottom: "clamp(56px, 8vw, 88px)" }}>
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
                       <p
-                        className="mb-3 text-[12px] font-bold uppercase tracking-[0.08em]"
-                        style={{ color: "#111111", fontFamily: "var(--font-plex-mono), monospace" }}
+                        className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em]"
+                        style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
                       >
                         Decision 01
                       </p>
@@ -481,7 +489,7 @@ export function AutoTableCaseStudyLayout({
                         <div>
                           <h3
                             className="font-semibold"
-                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
+                            style={{ fontSize: "clamp(1rem, 1.3vw, 1.0625rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
                           >
                             Why &quot;available&quot; isn&apos;t enough
                           </h3>
@@ -494,8 +502,8 @@ export function AutoTableCaseStudyLayout({
 
                     <div style={{ borderTop: "3px solid var(--accent)", paddingTop: "24px" }}>
                       <p
-                        className="mb-3 text-[12px] font-bold uppercase tracking-[0.08em]"
-                        style={{ color: "#111111", fontFamily: "var(--font-plex-mono), monospace" }}
+                        className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em]"
+                        style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
                       >
                         Decision 02
                       </p>
@@ -506,7 +514,7 @@ export function AutoTableCaseStudyLayout({
                         <div>
                           <h3
                             className="font-semibold"
-                            style={{ fontSize: "clamp(1.0625rem, 1.5vw, 1.25rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
+                            style={{ fontSize: "clamp(1rem, 1.3vw, 1.0625rem)", lineHeight: 1.35, marginBottom: "14px", color: "#111111" }}
                           >
                             The X that hid the problem
                           </h3>
