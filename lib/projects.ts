@@ -21,10 +21,10 @@ export const projects: Project[] = [
   },
   {
     slug: "crm-marketplace",
-    title: "CRM Marketplace Platform",
+    title: "CRM Marketplace",
     category: "Case 02",
     description:
-      "Scaling a CRM from Reservations to a Loyalty and Commerce Platform",
+      "Designing a commerce layer for businesses that sell online and serve in person.",
     image: "https://picsum.photos/800/400?random=11",
     year: "—",
   },

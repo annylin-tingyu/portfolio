@@ -9,7 +9,7 @@ type SectionToChapter = Record<string, number>;
 
 const CRM_CHAPTERS: Chapter[] = [
   { label: "Overview", targetId: "context" },
-  { label: "Inflection Point", targetId: "the-inflection-point-marketplace" },
+  { label: "The Shift", targetId: "the-inflection-point-marketplace" },
   { label: "Strategy", targetId: "my-role" },
   { label: "Outcome", targetId: "outcome" },
 ];

@@ -19,11 +19,11 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "crm-marketplace",
-    title: "CRM marketplace feature",
+    title: "CRM marketplace",
     year: "2023",
     tagline:
-      "Deposit rules, prepaid bundles, and loyalty features built within a B2B CRM.",
-    tags: ["CRM", "B2B", "Enterprise"],
+      "A manual loyalty tool rebuilt into a commerce layer, now running across beauty, retail, and fuel.",
+    tags: ["CRM", "Commerce", "B2B"],
   },
   {
     slug: "ai-event-planning",

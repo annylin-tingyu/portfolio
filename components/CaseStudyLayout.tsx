@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { RevealSection } from "@/components/RevealSection";
-import { PlatformShiftDiagram } from "@/components/PlatformShiftDiagram";
-import { InflectionPointTimeline } from "@/components/InflectionPointTimeline";
 import {
   CaseStudyHeader,
   caseStudyContentMax,
@@ -13,301 +11,669 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const contentMax = caseStudyContentMax;
 const sectionGap = caseStudySectionGap;
-const inSectionGap = "clamp(16px, 2vw, 24px)";
 const headingToBody = caseStudyHeadingToBody;
 
-/** Paragraph labels for the Inflection Point section only */
-const INFLECTION_POINT_LABELS = [
-  "01 — The Realization",
-  "02 — The Strategic Bet",
-  "03 — The Repositioning",
-] as const;
+const MONO = "var(--font-plex-mono), monospace";
+const HAIRLINE = "rgba(0,0,0,0.12)";
+const CHARCOAL = "#3a3a3a";
+const CARD_BORDER = "rgba(0,0,0,0.12)";
+const WELL = "#f4f4f3";
+const INK = "#111111";
 
-/** Paragraph labels for the Strategy (my-role) section */
-const MY_ROLE_LABELS = [
-  "01 — Design Patterns That Extend Across Verticals",
-  "02 — Progressive Setup for Complex Campaign Logic",
-  "03 — Real-Time Entitlement Governance Across Locations",
-  "04 — Align Refund Responsibility with Offline Fulfillment",
-] as const;
-
-/** Section body copy by section id. Use string for paragraphs, { list: string[] } for bullet lists. */
-const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
-  context: [
-    "The product began as a reservation and CRM tool serving beauty businesses. Merchants could offer loyalty bundles (e.g., buy 10 sessions, get 3 free) and stored-value credits, but these were managed largely through offline workflows. Promotions were configured manually, redeemed in person, and tracked by staff.",
-    "As the company evaluated its long-term growth strategy, it became clear that a reservation-led model limited revenue expansion. While loyalty features demonstrated clear merchant demand, the value capture remained tied to in-store interactions.",
-    "To support a broader monetization ambition and expand across fitness, lifestyle, and retail, the product needed to evolve beyond appointment management. The opportunity was to transform the CRM from an operational tool into a scalable commerce layer, enabling digital distribution, online purchase, and standardized loyalty infrastructure across industries.",
-  ],
-  "the-inflection-point-marketplace": [
-    "Loyalty demand was already validated. Merchants were willing to sell bundles, credits, and prepaid packages. But value capture remained tied to offline workflows. Promotions required staff coordination, fulfillment happened in-store, and revenue was constrained by physical visits.\n\nScaling across industries would multiply this operational complexity.",
-    "Instead of expanding loyalty features incrementally, the team chose to introduce a system-led marketplace layer. Promotion creation, payment processing, and redemption would move inside the product not remain dependent on manual distribution.\n\nThis shifted the system from supporting transactions to enabling them.",
-    "Marketplace transformed the CRM from a reservation tool into a commerce infrastructure. Digital packages, e-tickets, and campaign-based offers could now be created, sold, and tracked end-to-end, unlocking online revenue and cross-vertical scalability.",
-  ],
-  "my-role": [
-    "The platform expanded from beauty into fitness, lifestyle, and retail. Marketplace needed to support different campaign types without becoming industry-specific.\n\nInstead of designing custom logic for each vertical, we defined flexible product patterns that could adapt across industries.\n\nBundles, subscriptions, and vouchers shared a consistent structural model, allowing businesses with different operational models to use the same underlying system.\n\nThis ensured:\n- Cross-industry scalability\n- Reduced system fragmentation\n- Long-term extensibility\n\nThe goal was not rigid standardization, but reusable structure.",
-    "Marketplace needed to support multiple campaign types with different rules and constraints. Some products could be transferred as gifts (e.g., vouchers), while others could not (e.g., stored-value credits). On top of that, promotions included stacked structures like Buy X Get Y with tiered thresholds (Buy 1 → A, Buy 3 → B) and different calculation bases (by order total vs quantity).\n\nThese rules are easy to describe but easy to misconfigure.\n\nInstead of exposing all logic at once, we designed a step-by-step setup flow that let merchants configure one decision at a time and validate outcomes as they went.\n\nKey decisions:",
-    {
-      list: [
-        "Progressive disclosure (one rule per step)",
-        "Clear eligibility constraints (e.g., giftable vs non-giftable)",
-        '"What you see is what you get" preview to confirm final behavior',
-        "Review state before publishing to catch conflicts",
-      ],
-    },
-    "Goal: help operators build correct campaigns confidently, without needing to understand every rule upfront.",
-    "Customers could redeem vouchers across multiple store locations. Although the CRM was not directly integrated with POS systems, redemption status updated in real time inside the CRM.\n\nThis required a clear entitlement governance model.\n\nStrategy decisions:",
-    {
-      list: [
-        "Each purchase generated a uniquely tracked entitlement",
-        "Redemption state updated instantly within CRM",
-        "Entitlements were valid across all eligible store locations",
-        "Exportable order reports supported financial reconciliation",
-      ],
-    },
-    "Instead of tightly coupling to POS infrastructure, the system centralized truth within the CRM while allowing operational flexibility at the store level.\n\nThis ensured:",
-    {
-      list: [
-        "Cross-location portability",
-        "Real-time visibility",
-        "Centralized audit trail",
-        "Reduced dependency on external systems",
-      ],
-    },
-    "Marketplace enabled online purchases, but fulfillment occurred in physical locations. This created edge cases such as partial redemption, cross-location usage, and service-based delivery.\n\nAutomating refunds directly inside the platform would introduce accounting complexity and platform-level liability.\n\nInstead of embedding automated refund flows, refund handling remained merchant-managed.\n\nStrategy decisions:",
-    {
-      list: [
-        "Refund requests required direct merchant involvement",
-        "No automatic reversal of entitlements without review",
-        "Platform maintained transaction record but did not assume financial liability",
-      ],
-    },
-    "This approach:",
-    {
-      list: [
-        "Reduced systemic refund abuse",
-        "Prevented accounting inconsistencies across locations",
-        "Preserved merchant control over service-based fulfillment",
-        "Aligned financial responsibility with the party delivering the service",
-      ],
-    },
-    "The goal was not to block refunds, but to ensure accountability remained aligned with offline operations.",
-  ],
-  "constraints-that-shaped-the-design": [
-    "Several constraints had a direct impact on design decisions:",
-    {
-      list: [
-        "Transactions were irreversible within the system, as in-platform refunds were not supported.",
-        "Misconfiguration could result in financial loss or trust issues for merchants and customers.",
-        "Customer service teams relied on clear system states to resolve payment-related questions efficiently.",
-      ],
-    },
-    "These constraints required careful attention to transparency, error prevention, and expectation-setting throughout the experience.",
-  ],
-  "design-strategy": [
-    "Rather than relying on warnings or reactive fixes, I focused on preventing problems through structure:",
-    {
-      list: [
-        "Merchant setup flows were designed with guardrails—using defaults, validation, and clear sequencing to reduce misconfiguration.",
-        "Monetary information was made explicit in both merchant and customer experiences to ensure shared understanding.",
-        "Status communication was designed to minimize ambiguity for customers and reduce investigation work for customer service teams.",
-      ],
-    },
-    "Earlier in the product's evolution, I had worked on a deposit feature to address no-shows in appointment-based services. That experience informed my approach to payment UX, transparency, and trust in Marketplace.",
-  ],
-  "merchant-setup-guardrails": [
-    "Marketplace needed to support different campaign types—bundles, stored-value credits, and subscriptions—without exposing merchants to unnecessary complexity. I designed structured setup flows that guided merchants into safe configurations using defaults and system constraints, rather than relying on warnings after errors occurred.",
-  ],
-  "customer-purchase-clarity": [
-    "On the customer side, I focused on making purchases easy to understand and track. The experience clearly communicated what was purchased, how it could be used, and the current status of remaining value or sessions, reducing confusion and follow-up questions.",
-  ],
-  "designing-for-irreversible-actions": [
-    "Because refunds were not supported in the system, irreversible actions required careful handling. Refund limitations and usage rules were surfaced at key decision points before purchase, setting expectations early and reducing post-transaction disputes.",
-  ],
-  outcome: [
-    "Marketplace became foundational to supporting both cross-vertical expansion and scaling within existing industries.\n\nAs existing clients such as 夏沐妍 (Eartha Nature Skin Care, Taiwan-based multi-location skincare brand) expanded their operations, the structured commerce layer enabled standardized bundles, cross-location redemption, and centralized campaign management across stores.\n\nBeyond beauty, Marketplace expanded the platform into retail and service-based environments, including Cremia (premium soft-serve retail brand) and 勝利加油站 (Victory Gas Station, Taiwan-based fuel retail chain).\n\nThe system supported operators with 15+ locations under unified management, enabling digital purchase, real-time entitlement tracking, and cross-store redemption without POS dependency.\n\nThis shift expanded the platform’s addressable market and repositioned it from a vertical reservation tool to a scalable commerce infrastructure capable of supporting multi-location and multi-industry business models.",
-  ],
-  "what-i-learned": [
-    "This project marked my shift from thinking like a UX designer to thinking like a product designer.\n\nAs a UX designer, I focused on clarity and reducing friction. Through Marketplace, I learned that product decisions must also account for revenue protection, liability, operational reality, and long-term scalability.\n\nA choice like limiting automated refunds may seem counter to conventional UX principles, but in an OMO system tied to real-world service fulfillment, it reflects responsible product governance.\n\nI now approach design by balancing usability with business impact, understanding that interface decisions shape financial and operational outcomes.",
-  ],
-};
-
-const SECTIONS: { id: string; title: string; dominantVisual?: boolean; supportingVisual?: boolean }[] = [
-  { id: "context", title: "Context", supportingVisual: true },
-  { id: "the-inflection-point-marketplace", title: "The Inflection Point" },
-  { id: "my-role", title: "Strategy", supportingVisual: true },
-  { id: "outcome", title: "Outcome", supportingVisual: false },
-  { id: "what-i-learned", title: "What I Learned", supportingVisual: false },
+const SECTIONS: { id: string; title: string; kicker: string }[] = [
+  { id: "context", title: "Loyalty That Lived at the Counter", kicker: "Overview" },
+  { id: "the-inflection-point-marketplace", title: "Sell Online, Serve in Person", kicker: "The Shift" },
+  { id: "my-role", title: "Designing the Commerce Layer", kicker: "Strategy" },
+  { id: "outcome", title: "One System, Many Industries", kicker: "Outcome" },
+  { id: "what-i-learned", title: "What I Learned", kicker: "Reflection" },
 ];
 
-function TextPlaceholder() {
+/* -------------------- Small inline icons (editorial, monochrome) -------------------- */
+function StoreIcon() {
   return (
-    <div className="space-y-2" aria-hidden>
-      <div className="h-4 w-full max-w-[100%] rounded-sm bg-light-gray/60" style={{ maxWidth: "85%" }} />
-      <div className="h-4 w-full max-w-[95%] rounded-sm bg-light-gray/50" />
-      <div className="h-4 w-full max-w-[70%] rounded-sm bg-light-gray/40" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 9l1-5h14l1 5" />
+      <path d="M5 9v11h14V9" />
+      <path d="M9 20v-6h6v6" />
+    </svg>
+  );
+}
+
+function DiagLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.55)", fontFamily: MONO }}>
+      {children}
+    </p>
+  );
+}
+
+/* -------------------- Diagrams -------------------- */
+
+// Section 2: the shift, shown as a flow. Before = a manual staff relay;
+// after = one hub the business and customer both connect to.
+function IconBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: INK, color: "#fff" }}>
+      {children}
+    </span>
+  );
+}
+function BriefcaseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7" />
+      <path d="M3 12h18" />
+    </svg>
+  );
+}
+function UserPlusIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="9.5" cy="8" r="3.2" />
+      <path d="M4 20c0-3.3 2.5-5.2 5.5-5.2 1 0 1.9.2 2.7.6" />
+      <path d="M17.5 14.5v5M15 17h5" />
+    </svg>
+  );
+}
+
+function FlowKicker({ strong, muted }: { strong: string; muted: string }) {
+  return (
+    <p className="text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ fontFamily: MONO }}>
+      <span style={{ color: INK }}>{strong}</span>{"  "}
+      <span className="font-medium" style={{ color: "rgba(0,0,0,0.35)" }}>{muted}</span>
+    </p>
+  );
+}
+
+function FlowTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h4 className="mt-2 font-semibold text-black" style={{ fontSize: "clamp(1.5rem, 2.2vw, 1.75rem)", letterSpacing: "-0.01em", lineHeight: 1.2 }}>
+      {children}
+    </h4>
+  );
+}
+
+// Field that mimics a product input, with optional trailing affordance.
+function Field({ placeholder, trailing, muted = false }: { placeholder: string; trailing?: React.ReactNode; muted?: boolean }) {
+  return (
+    <span className="flex flex-1 items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2.5 text-[13px]" style={{ borderColor: "rgba(0,0,0,0.14)" }}>
+      <span className="truncate" style={{ color: muted ? "rgba(0,0,0,0.38)" : "rgba(0,0,0,0.72)" }}>{placeholder}</span>
+      {trailing}
+    </span>
+  );
+}
+
+// A before-state step card: STAFF label + step number, title, product-ish body.
+function StepCard({ n, title, children }: { n: string; title: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <div className="flex h-full flex-col rounded-2xl border bg-white p-4" style={{ borderColor: CARD_BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>Staff</span>
+        <span className="text-[11px] font-medium tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.28)", fontFamily: MONO }}>{n}</span>
+      </div>
+      <p className="mt-3 text-[16px] font-semibold" style={{ color: INK }}>{title}</p>
+      <div className="mt-auto pt-5">{children}</div>
     </div>
   );
 }
 
-function MarketplaceArchitectureDiagram() {
-  // Geometry constants (in px) to keep spacing precise and repeatable
-  const CORE_WIDTH = 330;
-  const CORE_HEIGHT = 190;
-  const LABEL_GAP = 120; // distance from core border to label anchor
-  const LINE_CLEARANCE = 16; // space between line end and label
-  const LINE_LENGTH = LABEL_GAP - LINE_CLEARANCE;
-  const LINE_THICKNESS = 1;
-  const LINE_COLOR = "#E0E0E0";
-  const CORE_BORDER_COLOR = "#E5E5E5";
-  // Constrain side labels so long names wrap predictably (e.g., "Service &" / "Experience")
-  const SIDE_LABEL_MAX_WIDTH = 96;
-
-  const monoLabelStyle = {
-    fontFamily: "var(--font-plex-mono), monospace",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase" as const,
-    color: "rgba(107, 107, 107, 0.8)",
-  };
-
-  const centerCoreStyles = {
-    left: "50%",
-    top: "50%",
-    width: CORE_WIDTH,
-    height: CORE_HEIGHT,
-    transform: "translate(-50%, -50%)",
-  } as const;
-
+// "By hand" connector between the manual steps.
+function HandConnector({ vertical = false }: { vertical?: boolean }) {
   return (
-    <div className="flex w-full justify-center">
-      <div
-        className="relative w-full max-w-[560px]"
-        style={{ aspectRatio: "4/3", minHeight: 480 }}
-      >
-        {/* Core box at intersection of center axes */}
-        <div
-          className="absolute flex flex-col items-stretch rounded-lg border bg-white px-5 py-4"
-          style={{
-            ...centerCoreStyles,
-            borderColor: CORE_BORDER_COLOR,
-            fontFamily: "var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-          }}
-        >
-          <p className="mb-2 text-center text-[11px] font-medium tracking-[0.12em] text-[#6B6B6B] uppercase">
-            Marketplace Core
-          </p>
-          <ul className="mt-1.5 space-y-1.5 text-[13px] text-[#3F3F3F]">
-            <li>Product Types (Bundle / Subscription / Voucher)</li>
-            <li>Pricing Logic</li>
-            <li>Entitlement Model</li>
-            <li>Redemption States</li>
-          </ul>
-        </div>
+    <div className={`flex items-center justify-center gap-1.5 self-center ${vertical ? "flex-row py-1" : "flex-col px-1"}`}>
+      <span className="text-center text-[9.5px] font-medium uppercase leading-[1.25] tracking-[0.12em]" style={{ color: "rgba(0,0,0,0.32)", fontFamily: MONO }}>
+        By<br />Hand
+      </span>
+      <svg width={vertical ? 12 : 34} height={vertical ? 34 : 12} viewBox="0 0 44 12" fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={vertical ? "rotate-90" : ""} aria-hidden>
+        <path d="M1 6h38" />
+        <path d="M35 2l5 4-5 4" />
+      </svg>
+    </div>
+  );
+}
 
-        {/* Center axes (implicit): connector lines run exactly along these axes */}
-        {/* Vertical connectors */}
-        <div
-          className="absolute"
-          style={{
-            left: "50%",
-            width: LINE_THICKNESS,
-            backgroundColor: LINE_COLOR,
-            top: `calc(50% - ${CORE_HEIGHT / 2 + LINE_LENGTH}px)`,
-            height: LINE_LENGTH,
-            transform: "translateX(-50%)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            left: "50%",
-            width: LINE_THICKNESS,
-            backgroundColor: LINE_COLOR,
-            top: `calc(50% + ${CORE_HEIGHT / 2}px)`,
-            height: LINE_LENGTH,
-            transform: "translateX(-50%)",
-          }}
-        />
+// Solid arrow used in the after-state; className controls direction per breakpoint.
+function SolidArrow({ className = "" }: { className?: string }) {
+  return (
+    <span className={`flex shrink-0 items-center justify-center self-center ${className}`} style={{ color: INK }} aria-hidden>
+      <svg width="46" height="12" viewBox="0 0 56 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 6h50" />
+        <path d="M46 2l5 4-5 4" />
+      </svg>
+    </span>
+  );
+}
 
-        {/* Horizontal connectors */}
-        <div
-          className="absolute"
-          style={{
-            top: "50%",
-            height: LINE_THICKNESS,
-            backgroundColor: LINE_COLOR,
-            left: `calc(50% - ${CORE_WIDTH / 2 + LINE_LENGTH}px)`,
-            width: LINE_LENGTH,
-            transform: "translateY(-50%)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "50%",
-            height: LINE_THICKNESS,
-            backgroundColor: LINE_COLOR,
-            left: `calc(50% + ${CORE_WIDTH / 2}px)`,
-            width: LINE_LENGTH,
-            transform: "translateY(-50%)",
-          }}
-        />
+function SideLabel({ role, children, align }: { role: string; children: React.ReactNode; align: "left" | "right" }) {
+  return (
+    <div className={align === "right" ? "text-center sm:text-right" : "text-center sm:text-left"}>
+      <p className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>{role}</p>
+      <p className="mt-1.5 whitespace-nowrap text-[16px] font-semibold" style={{ color: INK }}>{children}</p>
+    </div>
+  );
+}
 
-        {/* Vertical labels — placed so gap to connector equals LINE_CLEARANCE */}
-        <span
-          className="absolute"
-          style={{
-            ...monoLabelStyle,
-            top: `calc(50% - ${CORE_HEIGHT / 2 + LINE_LENGTH + LINE_CLEARANCE}px)`,
-            left: "50%",
-            transform: "translate(-50%, -100%)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Beauty
-        </span>
-        <span
-          className="absolute block text-left"
-          style={{
-            ...monoLabelStyle,
-            top: "50%",
-            left: `calc(50% + ${CORE_WIDTH / 2 + LABEL_GAP}px)`,
-            transform: "translateY(-50%)",
-            maxWidth: SIDE_LABEL_MAX_WIDTH,
-            whiteSpace: "normal",
-            lineHeight: 1.15,
-          }}
-        >
-          Fitness
-        </span>
-        <span
-          className="absolute block text-center"
-          style={{
-            ...monoLabelStyle,
-            top: "50%",
-            left: `calc(50% - ${CORE_WIDTH / 2 + LABEL_GAP}px)`,
-            transform: "translate(-100%, -50%)",
-            maxWidth: SIDE_LABEL_MAX_WIDTH,
-            whiteSpace: "normal",
-            lineHeight: 1.15,
-            textAlign: "center",
-          }}
-        >
-          Service & Experience
-        </span>
-        <span
-          className="absolute"
-          style={{
-            ...monoLabelStyle,
-            top: `calc(50% + ${CORE_HEIGHT / 2 + LABEL_GAP}px)`,
-            left: "50%",
-            transform: "translateX(-50%)",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Retail
-        </span>
+// Card bodies, reused across the desktop grid and the mobile stack.
+function Body1() {
+  return (
+    <div className="flex min-h-[60px] items-center gap-3 rounded-xl px-3" style={{ backgroundColor: WELL }}>
+      <IconBadge><BriefcaseIcon /></IconBadge>
+      <span className="whitespace-nowrap text-[14px]" style={{ color: INK }}>Buy 10 get 2 free</span>
+    </div>
+  );
+}
+function Body2() {
+  return (
+    <div className="flex min-h-[60px] items-center gap-3">
+      <IconBadge><UserPlusIcon /></IconBadge>
+      <Field placeholder="Buy 10 get 2 free" trailing={<span style={{ color: "rgba(0,0,0,0.35)" }}>+</span>} />
+    </div>
+  );
+}
+function Body3() {
+  return (
+    <div className="flex min-h-[60px] items-center gap-2">
+      <Field placeholder="Enter a number" muted />
+      <span className="shrink-0 rounded-lg px-4 py-2.5 text-[13px] font-medium text-white" style={{ backgroundColor: "#2e2e2e" }}>Confirm</span>
+    </div>
+  );
+}
+
+function ShiftFlow() {
+  return (
+    <div className="mt-12">
+      {/* BEFORE: manual staff relay */}
+      <FlowKicker strong="BEFORE" muted="Manual handoff" />
+      <FlowTitle>The offer lived outside the experience.</FlowTitle>
+
+      {/* Desktop: cards + dashed connectors, notes aligned beneath each card */}
+      <div className="mt-8 hidden sm:grid" style={{ gridTemplateColumns: "1fr auto 1fr auto 1fr", columnGap: "6px" }}>
+        <StepCard n="01" title="Create a set"><Body1 /></StepCard>
+        <HandConnector />
+        <StepCard n="02" title="Find the user, add a set"><Body2 /></StepCard>
+        <HandConnector />
+        <StepCard n="03" title="Deduct the visit"><Body3 /></StepCard>
       </div>
+
+      {/* Mobile: stacked cards with vertical connectors */}
+      <div className="mt-6 flex flex-col gap-4 sm:hidden">
+        <StepCard n="01" title="Create a set"><Body1 /></StepCard>
+        <HandConnector vertical />
+        <StepCard n="02" title="Find the user, add a set"><Body2 /></StepCard>
+        <HandConnector vertical />
+        <StepCard n="03" title="Deduct the visit"><Body3 /></StepCard>
+      </div>
+
+      <div className="mt-14 sm:mt-16" aria-hidden />
+
+      {/* AFTER: one connected hub */}
+      <FlowKicker strong="AFTER" muted="Connected in-product" />
+      <FlowTitle>The product connects both sides.</FlowTitle>
+      <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-6">
+        <SideLabel role="Business" align="right">Build + promote</SideLabel>
+        <SolidArrow className="rotate-90 sm:rotate-0" />
+        <div className="relative w-full max-w-[340px] shrink-0 rounded-2xl border-2 bg-white px-5 py-5 text-left sm:w-[340px]" style={{ borderColor: INK, boxShadow: "0 6px 20px rgba(0,0,0,0.08)" }}>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>Staff</span>
+            <span className="text-[11px] font-medium tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.28)", fontFamily: MONO }}>01</span>
+          </div>
+          <p className="mt-3 text-[16px]" style={{ color: INK }}>
+            <span className="font-semibold">Create a set</span>{" "}
+            <span style={{ color: "rgba(0,0,0,0.5)" }}>on Marketplace</span>
+          </p>
+          <div className="mt-4 flex min-h-[60px] items-center gap-3 rounded-xl px-3" style={{ backgroundColor: WELL }}>
+            <IconBadge><StoreIcon /></IconBadge>
+            <span className="whitespace-nowrap text-[14px]" style={{ color: INK }}>Buy 10 get 2 free</span>
+          </div>
+        </div>
+        <SolidArrow className="-rotate-90 sm:rotate-180" />
+        <SideLabel role="Customer" align="left">Buy on Marketplace</SideLabel>
+      </div>
+      <p className="mt-8 text-center text-[11px] font-medium uppercase tracking-[0.18em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>
+        One offer &middot; Live in the product
+      </p>
+    </div>
+  );
+}
+
+// Section 2: the shift as a chain of reasoning, on a numbered spine.
+function ShiftBeats() {
+  const beats: { label: string; body: React.ReactNode }[] = [
+    {
+      label: "The gap",
+      body: (
+        <>
+          This wasn&apos;t one business improvising. Every business ran loyalty by hand because the product left no other way. A workaround everyone reinvents the same way isn&apos;t an edge case, it&apos;s the product telling you what&apos;s missing.
+        </>
+      ),
+    },
+    {
+      label: "The decision",
+      body: (
+        <>
+          The easy fix was to smooth the manual flow. But that keeps loyalty one-sided: the business deducts, the customer just watches a number drop. So the team went further, bringing the whole loop, selling, promoting, redeeming, inside the product and making it work for both sides.
+        </>
+      ),
+    },
+    {
+      label: "What it changed",
+      body: (
+        <>
+          That changed what the product was: not a booking tool with a manual pass tracker, but a commerce layer. Every decision after answered one question: how do you let customers browse and choose the offer that fits them, instead of deciding on the spot mid-conversation, while taking the manual work off both sides?
+        </>
+      ),
+    },
+  ];
+  return (
+    <div className="mt-4">
+      {beats.map((beat, i) => {
+        const isLast = i === beats.length - 1;
+        return (
+          <div key={beat.label} className="flex gap-5 sm:gap-6">
+            {/* Left rail: number marker + connecting line */}
+            <div className="flex flex-col items-center">
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold"
+                style={{ backgroundColor: CHARCOAL, color: "#fff", fontFamily: MONO }}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {!isLast && <span className="w-px flex-1" style={{ backgroundColor: "rgba(0,0,0,0.16)" }} />}
+            </div>
+            {/* Beat content */}
+            <div className={isLast ? "pt-1" : "pt-1 pb-9"}>
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.55)", fontFamily: MONO }}>
+                {beat.label}
+              </p>
+              <p className="mt-2">{beat.body}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Pillar 1: four building blocks, recombined per business.
+// Industry glyphs for the building-block examples.
+function DumbbellIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" />
+    </svg>
+  );
+}
+function SparkleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8L12 4Z" />
+    </svg>
+  );
+}
+function LotusIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 19c-1.8-4-1.8-9.5 0-13.5 1.8 4 1.8 9.5 0 13.5Z" />
+      <path d="M12 19c-4.2-2-7.2-6-7.2-10 4 .6 6.8 3.9 7.2 10Z" />
+      <path d="M12 19c4.2-2 7.2-6 7.2-10-4 .6-6.8 3.9-7.2 10Z" />
+    </svg>
+  );
+}
+function CoffeeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z" />
+      <path d="M17 9h2a2 2 0 0 1 0 4h-2" />
+      <path d="M8 3v2M12 3v2" />
+    </svg>
+  );
+}
+
+// Pillar 1: define the four building blocks, each with a real example from a
+// different vertical (so the same four visibly cover very different businesses).
+function BuildingBlocks() {
+  const blocks: { n: string; name: string; what: string; example: string; icon: React.ReactNode }[] = [
+    { n: "01", name: "Bundle", what: "Prepaid sessions, as a set", example: "A studio: buy 10 classes, get 2 free", icon: <DumbbellIcon /> },
+    { n: "02", name: "Voucher", what: "Redeem for one thing", example: "A nail salon: free gel removal", icon: <SparkleIcon /> },
+    { n: "03", name: "Account credit", what: "A prepaid balance", example: "A spa: add $500, get $50", icon: <LotusIcon /> },
+    { n: "04", name: "Subscription", what: "Recurring, auto-renews", example: "A cafe: 30 cups a month", icon: <CoffeeIcon /> },
+  ];
+  return (
+    <div className="mt-8 w-full">
+      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.55)", fontFamily: MONO }}>The system</p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
+        {blocks.map((b) => (
+          <div key={b.name} className="flex flex-col rounded-2xl border bg-white p-4" style={{ borderColor: CARD_BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-medium tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.28)", fontFamily: MONO }}>{b.n}</span>
+              <span style={{ color: "rgba(0,0,0,0.4)" }}>{b.icon}</span>
+            </div>
+            <h5 className="mt-2 text-[15px] font-bold uppercase tracking-[0.01em]" style={{ color: INK }}>{b.name}</h5>
+            <p className="mt-2 text-[13px] font-medium" style={{ color: "rgba(0,0,0,0.7)" }}>{b.what}</p>
+            <p className="mt-1.5 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.45)" }}>{b.example}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Pillar 2: setup as a sequence; the preview is the safety gate before a
+// misconfigured rule can lose real money in a live store.
+function StepArrow({ className = "" }: { className?: string }) {
+  return (
+    <span className={`flex shrink-0 items-center justify-center self-center ${className}`} style={{ color: "rgba(0,0,0,0.3)" }} aria-hidden>
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 6h16" /><path d="M13 2l4 4-4 4" />
+      </svg>
+    </span>
+  );
+}
+function TypeUI() {
+  const opt = (label: string) => (
+    <span className="rounded-md border px-1.5 py-2 text-center text-[10px]" style={{ borderColor: HAIRLINE, color: "rgba(0,0,0,0.5)" }}>{label}</span>
+  );
+  return (
+    <div className="grid grid-cols-2 gap-1.5">
+      <span className="relative rounded-md border px-1.5 py-2 text-center text-[10px] font-semibold" style={{ borderColor: INK, borderWidth: 1.5, color: INK }}>
+        Bundle
+        <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full" style={{ background: INK }} />
+      </span>
+      {opt("Voucher")}
+      {opt("Account credit")}
+      {opt("Subscription")}
+    </div>
+  );
+}
+function RuleUI() {
+  const pill = (n: string) => (
+    <span className="rounded border px-2 py-0.5 text-[11px] font-semibold" style={{ borderColor: "rgba(0,0,0,0.18)", color: INK }}>{n}</span>
+  );
+  return (
+    <>
+      <span className="w-fit rounded px-2 py-0.5 text-[10px] font-semibold text-white" style={{ background: INK }}>BUNDLE</span>
+      <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}><span>Buy</span>{pill("10")}<span>classes</span></span>
+      <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}><span>Get</span>{pill("2")}<span>free</span></span>
+      <span className="h-1 rounded-full" style={{ width: "70%", background: "#ededed" }} />
+    </>
+  );
+}
+function PreviewUI() {
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex gap-1 border-b px-2.5 py-2" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
+        {[0, 1, 2].map((i) => <span key={i} className="h-1.5 w-1.5 rounded-full" style={{ background: "rgba(0,0,0,0.18)" }} />)}
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-3">
+        <span className="rounded-md" style={{ height: 40, background: "repeating-linear-gradient(45deg,#f4f4f4,#f4f4f4 6px,#fafafa 6px,#fafafa 12px)" }} />
+        <span className="text-[11px] font-bold" style={{ color: INK }}>10 classes + 2 free</span>
+        <span className="h-1 rounded-full" style={{ width: "60%", background: "#ededed" }} />
+        <span className="mt-0.5 w-fit rounded px-2.5 py-1 text-[10px] text-white" style={{ background: INK }}>Buy now</span>
+      </div>
+    </div>
+  );
+}
+function PublishUI() {
+  const check = (
+    <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border text-[8px]" style={{ borderColor: INK, borderWidth: 1.5, color: INK }}>&#10003;</span>
+  );
+  return (
+    <>
+      <span className="flex items-center gap-2 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}>{check}<span>Rule saved</span></span>
+      <span className="flex items-center gap-2 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}>{check}<span>Preview reviewed</span></span>
+      <span className="mt-1 flex items-center gap-2">
+        <span className="relative inline-block h-4 w-7 rounded-full" style={{ background: INK }}>
+          <span className="absolute right-[2px] top-[2px] h-3 w-3 rounded-full bg-white" />
+        </span>
+        <span className="text-[11px] font-semibold" style={{ color: INK }}>Live</span>
+      </span>
+    </>
+  );
+}
+function StepCardFrame({ emphasis = false, flush = false, children }: { emphasis?: boolean; flush?: boolean; children: React.ReactNode }) {
+  return (
+    <div
+      className={`flex flex-col rounded-xl bg-white ${flush ? "overflow-hidden" : "justify-center gap-2.5 p-3.5"}`}
+      style={{ minHeight: 168, border: `${emphasis ? 1.5 : 1}px solid ${emphasis ? INK : CARD_BORDER}`, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+    >
+      {children}
+    </div>
+  );
+}
+function StepLabel({ n, label, emphasis = false }: { n: string; label: string; emphasis?: boolean }) {
+  return (
+    <p className="text-[11px] uppercase tracking-[0.08em]" style={{ fontFamily: MONO, color: emphasis ? INK : "rgba(0,0,0,0.5)", fontWeight: emphasis ? 600 : 500 }}>
+      {n} &middot; {label}
+    </p>
+  );
+}
+const STEPS: { n: string; label: string; Ui: () => React.ReactElement; emphasis: boolean; flush: boolean }[] = [
+  { n: "01", label: "Choose a type", Ui: TypeUI, emphasis: false, flush: false },
+  { n: "02", label: "Set the rule", Ui: RuleUI, emphasis: false, flush: false },
+  { n: "03", label: "Preview", Ui: PreviewUI, emphasis: false, flush: true },
+  { n: "04", label: "Publish", Ui: PublishUI, emphasis: false, flush: false },
+];
+function SetupStepper() {
+  return (
+    <div className="mt-8 w-full">
+      <DiagLabel>Building an offer, one decision at a time</DiagLabel>
+
+      {/* Desktop: four steps in a row, arrows between, labels beneath */}
+      <div className="hidden md:grid" style={{ gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr", columnGap: "6px", rowGap: "12px" }}>
+        {STEPS.flatMap((s, i) => {
+          const Ui = s.Ui;
+          const cells = [<StepCardFrame key={s.n} emphasis={s.emphasis} flush={s.flush}><Ui /></StepCardFrame>];
+          if (i < STEPS.length - 1) cells.push(<StepArrow key={s.n + "a"} />);
+          return cells;
+        })}
+        {STEPS.flatMap((s, i) => {
+          const cells = [<StepLabel key={s.n + "l"} n={s.n} label={s.label} emphasis={s.emphasis} />];
+          if (i < STEPS.length - 1) cells.push(<span key={s.n + "s"} />);
+          return cells;
+        })}
+      </div>
+
+      {/* Mobile/tablet: stacked with down arrows */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {STEPS.flatMap((s, i) => {
+          const Ui = s.Ui;
+          const items = [
+            <div key={s.n} className="flex flex-col gap-2.5">
+              <StepCardFrame emphasis={s.emphasis} flush={s.flush}><Ui /></StepCardFrame>
+              <StepLabel n={s.n} label={s.label} emphasis={s.emphasis} />
+            </div>,
+          ];
+          if (i < STEPS.length - 1) items.push(<StepArrow key={s.n + "a"} className="rotate-90" />);
+          return items;
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Pillar: where the work lives. Frequent, safe moves stay inline in Marketplace;
+// the one risky move, editing a definition, goes back to the module.
+function SurfaceRisk() {
+  const pill = (label: string) => (
+    <span key={label} className="rounded-full border px-3 py-1.5 text-[13px]" style={{ borderColor: HAIRLINE, color: INK }}>{label}</span>
+  );
+  return (
+    <div className="mt-8 w-full">
+      <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-4">
+        {/* Marketplace: selling, all inline */}
+        <div className="rounded-2xl border bg-white p-5 md:flex-[1.4]" style={{ borderColor: INK, borderWidth: 1.5 }}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: INK, fontFamily: MONO }}>Marketplace &middot; Selling</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {["Create", "Select", "Activate", "Price"].map((p) => pill(p))}
+          </div>
+          <p className="mt-3 text-[12px]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>all inline, no leaving the flow</p>
+        </div>
+        {/* Connector */}
+        <div className="flex flex-col items-center justify-center gap-1 md:px-1">
+          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>edit definition</span>
+          <StepArrow className="rotate-90 md:rotate-0" />
+          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>ripples to every offer</span>
+        </div>
+        {/* Module: defining, kept separate on purpose */}
+        <div className="rounded-2xl border border-dashed p-5 md:flex-1" style={{ borderColor: "rgba(0,0,0,0.3)", background: "rgba(0,0,0,0.015)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>Module &middot; Defining</p>
+          <span className="mt-3 inline-block rounded-full border px-4 py-1.5 text-[13px] font-semibold" style={{ borderColor: INK, color: INK }}>Edit definition</span>
+          <p className="mt-3 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.5)" }}>changes ripple to every offer that uses it, and can&apos;t touch what a customer already bought</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Industry glyphs for the Outcome client roster.
+function LeafIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M5 19C5 11 11 5 19 5c0 8-6 14-14 14Z" />
+      <path d="M5 19c5-5 9-8 13-10" />
+    </svg>
+  );
+}
+function HangerIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 9.2c0-1 .7-1.7 1.7-1.7s1.6.7 1.6 1.6" />
+      <path d="M12 9.2 4.8 15c-.7.6-.3 1.8.6 1.8h13.2c.9 0 1.3-1.2.6-1.8L12 9.2Z" />
+    </svg>
+  );
+}
+function IceCreamIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M7.5 11a4.5 4.5 0 0 1 9 0Z" />
+      <path d="M8 11l4 9 4-9" />
+    </svg>
+  );
+}
+function FuelIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="5" y="4" width="8" height="16" rx="1.5" />
+      <path d="M4 20.5h10" />
+      <rect x="7.5" y="7" width="3" height="2.5" rx="0.4" />
+      <path d="M13 11h2.3a1.2 1.2 0 0 1 1.2 1.2v3.6a1.4 1.4 0 0 0 2.8 0V10l-2-2" />
+    </svg>
+  );
+}
+
+// Outcome: the real client roster, proof of range across industries.
+function OutcomeClients() {
+  const clients: { industry: string; name: string; use: string; icon: React.ReactNode }[] = [
+    { industry: "Skincare", name: "Eartha", use: "Session bundles", icon: <LeafIcon /> },
+    { industry: "Dry cleaning", name: "SparKlean", use: "Account credit", icon: <HangerIcon /> },
+    { industry: "Soft-serve", name: "Cremia", use: "Retail offers", icon: <IceCreamIcon /> },
+    { industry: "Fuel", name: "Victory", use: "Points per liter", icon: <FuelIcon /> },
+  ];
+  return (
+    <div className="mt-8 w-full">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {clients.map((c) => (
+          <div key={c.name} className="flex flex-col rounded-2xl border bg-white p-4" style={{ borderColor: CARD_BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.45)", fontFamily: MONO }}>{c.industry}</span>
+              <span style={{ color: "rgba(0,0,0,0.4)" }}>{c.icon}</span>
+            </div>
+            <p className="mt-2 text-[15px] font-bold" style={{ color: INK }}>{c.name}</p>
+            <p className="mt-1 text-[12px]" style={{ color: "rgba(0,0,0,0.5)" }}>{c.use}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------- Strategy pillars -------------------- */
+function PillarTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h3
+      className="font-semibold text-black"
+      style={{ fontSize: "clamp(1rem, 1.3vw, 1.0625rem)", lineHeight: 1.35 }}
+    >
+      {children}
+    </h3>
+  );
+}
+
+function Strategy() {
+  return (
+    <div className="mt-2">
+      {/* Pillar 1 */}
+      <div>
+        <PillarTitle>One set of building blocks</PillarTitle>
+        <p className="mt-4">
+          Every business sold something different, and I couldn&apos;t build a separate product for each. So I broke every offer into four building blocks that recombine.
+        </p>
+        <BuildingBlocks />
+        <p className="mt-6">
+          Adding a new business is configuration, not new code.
+        </p>
+      </div>
+
+      {/* Pillar: create/edit surface */}
+      <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
+        <PillarTitle>Build without leaving Marketplace</PillarTitle>
+        <p className="mt-4">
+          Marketplace pulls every kind of item into one place to sell, and the plan had operators leave for every gap. I pushed to keep the frequent moves inline, and to keep one out on purpose: editing a definition ripples to every offer it&apos;s in, so it stays in the module.
+        </p>
+        <SurfaceRisk />
+      </div>
+
+      {/* Pillar 2 */}
+      <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
+        <PillarTitle>Building offers without breaking them</PillarTitle>
+        <p className="mt-4">
+          Combined into promotions, buy a bundle get a voucher, buy three for a better tier, these rules are easy to misconfigure, and a mistake loses real money in a live store. So I built setup as a sequence: one decision at a time, a preview of exactly what the customer will see, and a review before it goes live.
+        </p>
+        <SetupStepper />
+      </div>
+
+      {/* A standalone thesis: digital sale, physical settlement, kept in agreement. */}
+      <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
+        <p
+          className="font-medium italic"
+          style={{ fontSize: "clamp(1.0625rem, 1.75vw, 1.25rem)", lineHeight: 1.5, color: "#111", borderLeft: `3px solid ${CHARCOAL}`, paddingLeft: "1rem" }}
+        >
+          The sale is digital, the settlement is physical, and the system&apos;s only job is to keep the two in agreement.
+        </p>
+      </div>
+
+      {/* Pillar 4 */}
+      <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
+        <PillarTitle>Why refunds stayed manual</PillarTitle>
+        <p className="mt-4">
+          The obvious move was a one-click refund. I argued against it: a refund is part of the offline settlement, so it stays with the business, not the platform. The platform kept the record, not the liability.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Hero: the real consumer app (My Purchases + pass detail) paired with an
+// NDA-safe recreation of the operator's product builder. Desktop shows the full
+// composite; mobile falls back to the real consumer wallet alone.
+function HeroMockup() {
+  return (
+    <div className="relative mx-auto w-full max-w-[960px]">
+      {/* Full composite — recreated operator console + real consumer screens */}
+      <Image
+        src={`${basePath}/crm_hero.png`}
+        alt="A business creates the Signature Skin Bundle in the operator console while the customer holds it in their My Purchases wallet and opens the pass to redeem"
+        width={2672}
+        height={2067}
+        className="h-auto w-full"
+        priority
+        unoptimized
+      />
+      {/* NDA note — refers to the operator console on the left */}
+      <p className="mt-2 pr-1 text-right text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>
+        Operator console &middot; recreated for confidentiality
+      </p>
     </div>
   );
 }
@@ -318,11 +684,7 @@ type CaseStudyLayoutProps = {
   description: string;
 };
 
-export function CaseStudyLayout({
-  category,
-  title,
-  description,
-}: CaseStudyLayoutProps) {
+export function CaseStudyLayout({ category, title, description }: CaseStudyLayoutProps) {
   return (
     <article
       className="mx-auto w-full bg-white px-6 pb-[clamp(96px,12vw,140px)]"
@@ -333,309 +695,99 @@ export function CaseStudyLayout({
         title={title}
         description={description}
         media={
-          <div className="relative pt-[40px] flex w-full justify-center">
+          <div className="relative flex w-full justify-center pt-[40px]">
             <div
               aria-hidden
               className="pointer-events-none absolute inset-x-0 top-[40px] mx-auto h-[320px] max-w-[880px] blur-3xl"
-              style={{
-                background:
-                  "radial-gradient(circle at 50% 0%, rgba(15,23,42,0.14), transparent 60%)",
-              }}
+              style={{ background: "radial-gradient(circle at 50% 0%, rgba(47,111,237,0.12), transparent 60%)" }}
             />
-            <Image
-              src={`${basePath}/CRMhero.webp`}
-              alt="CRM Marketplace Platform - Product management dashboard and mobile product detail view"
-              width={1920}
-              height={1230}
-              className="relative z-10 h-auto w-full max-w-[960px]"
-              unoptimized
-            />
+            <div className="relative z-10 w-full">
+              <HeroMockup />
+            </div>
           </div>
         }
       />
 
-      {/* Sections */}
       {SECTIONS.map((section, index) => (
         <RevealSection key={section.id}>
           <section
             id={section.id}
-            style={{
-              marginTop: section.dominantVisual ? "clamp(48px, 6vw, 72px)" : undefined,
-              marginBottom: section.dominantVisual ? "clamp(96px, 14vw, 140px)" : sectionGap,
-              paddingTop: index === 0 ? 0 : undefined,
-            }}
+            style={{ marginBottom: sectionGap, paddingTop: index === 0 ? 0 : undefined }}
           >
+            {section.kicker && (
+              <p
+                className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em]"
+                style={{ color: "rgba(0,0,0,0.55)", fontFamily: "var(--font-plex-mono), monospace" }}
+              >
+                {section.kicker}
+              </p>
+            )}
             <h2
               className="font-semibold text-black"
-              style={{
-                fontSize: "clamp(1.125rem, 2.5vw, 1.375rem)",
-                letterSpacing: "-0.01em",
-                lineHeight: 1.3,
-              }}
+              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2rem)", letterSpacing: "-0.01em", lineHeight: 1.3 }}
             >
               {section.title}
             </h2>
-            {section.id === "the-inflection-point-marketplace" && <InflectionPointTimeline />}
-            {SECTION_CONTENT[section.id] ? (
-              <>
-                {section.id === "my-role" ? (
-                  <>
-                    <div
-                      className="text-black"
-                      style={{
-                        marginTop: headingToBody,
-                        fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {SECTION_CONTENT[section.id].slice(0, 1).map((block, idx) => {
-                        const i = idx;
-                        if (typeof block === "string") {
-                          return (
-                            <div key={i} style={{ marginTop: 0 }}>
-                              <p
-                                className="font-medium uppercase text-mid-gray"
-                                style={{
-                                  fontSize: "clamp(12px, 1.2vw, 14px)",
-                                  letterSpacing: "0.1em",
-                                  marginBottom: 14,
-                                  color: "rgba(0,0,0,0.6)",
-                                  fontFamily: "var(--font-plex-mono), monospace",
-                                }}
-                              >
-                                {MY_ROLE_LABELS[i]}
-                              </p>
-                              <p style={{ whiteSpace: "pre-line" }}>{block}</p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
+
+            <div
+              className="text-black"
+              style={{ marginTop: headingToBody, fontSize: "clamp(1rem, 1.25vw, 1.125rem)", lineHeight: 1.6 }}
+            >
+              {section.id === "context" ? (
+                <>
+                  <p className="mt-4">
+                    The product began as a booking and CRM tool for appointment businesses. Loyalty existed, but barely.
+                  </p>
+                  <div className="mb-6 mt-8 flex w-full justify-center">
+                    <div className="overflow-hidden rounded-sm bg-white" style={{ maxWidth: 560, aspectRatio: "16/10", maxHeight: 320, minHeight: 220, borderRadius: "0.125rem" }}>
+                      <Image
+                        src={`${basePath}/crmstory.png`}
+                        alt="Customer and staff at a counter with a POS and product display in a beauty or retail setting"
+                        width={1600}
+                        height={1067}
+                        className="h-full w-full object-contain"
+                        unoptimized
+                      />
                     </div>
-                    <div
-                      className="mt-8"
-                      style={{
-                        marginTop: "calc(clamp(16px, 2vw, 24px) + 16px)",
-                      }}
-                    >
-                      <MarketplaceArchitectureDiagram />
-                    </div>
-                    <div
-                      className="text-black"
-                      style={{
-                        marginTop: 48,
-                        fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {SECTION_CONTENT[section.id].slice(1, 4).map((block, idx) => {
-                        const i = idx + 1;
-                        if (typeof block === "string") {
-                          const label = i === 1 ? MY_ROLE_LABELS[1] : null;
-                          return (
-                            <div
-                              key={i}
-                              style={{
-                                marginTop: i === 1 ? 0 : 24,
-                              }}
-                            >
-                              {label != null && (
-                                <p
-                                  className="font-medium uppercase text-mid-gray"
-                                  style={{
-                                    fontSize: "clamp(12px, 1.2vw, 14px)",
-                                    letterSpacing: "0.1em",
-                                    marginBottom: 14,
-                                    color: "rgba(0,0,0,0.6)",
-                                    fontFamily: "var(--font-plex-mono), monospace",
-                                  }}
-                                >
-                                  {label}
-                                </p>
-                              )}
-                              <p
-                                className={i > 1 ? "mt-6" : undefined}
-                                style={i === 1 ? { whiteSpace: "pre-line" } : undefined}
-                              >
-                                {block}
-                              </p>
-                            </div>
-                          );
-                        }
-                        return (
-                          <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
-                            {block.list.map((item, j) => (
-                              <li key={j}>{item}</li>
-                            ))}
-                          </ul>
-                        );
-                      })}
-                    </div>
-                    <div
-                      className="text-black"
-                      style={{
-                        marginTop: 48,
-                        fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {SECTION_CONTENT[section.id].slice(4).map((block, idx) => {
-                        const i = idx + 4;
-                        if (typeof block === "string") {
-                          const label =
-                            i === 4 ? MY_ROLE_LABELS[2] : i === 8 ? MY_ROLE_LABELS[3] : null;
-                          return (
-                            <div
-                              key={i}
-                              style={{
-                                marginTop: i === 4 ? 0 : i === 8 ? 48 : 24,
-                              }}
-                            >
-                              {label != null && (
-                                <p
-                                  className="font-medium uppercase text-mid-gray"
-                                  style={{
-                                    fontSize: "clamp(12px, 1.2vw, 14px)",
-                                    letterSpacing: "0.1em",
-                                    marginBottom: 14,
-                                    color: "rgba(0,0,0,0.6)",
-                                    fontFamily: "var(--font-plex-mono), monospace",
-                                  }}
-                                >
-                                  {label}
-                                </p>
-                              )}
-                              <p
-                                className={i === 6 || i === 10 || i === 12 ? "mt-6" : undefined}
-                                style={
-                                  (i === 4 || i === 6 || i === 8 || i === 10 || i === 12)
-                                    ? { whiteSpace: "pre-line" }
-                                    : undefined
-                                }
-                              >
-                                {block}
-                              </p>
-                            </div>
-                          );
-                        }
-                        return (
-                          <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
-                            {block.list.map((item, j) => (
-                              <li key={j}>{item}</li>
-                            ))}
-                          </ul>
-                        );
-                      })}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div
-                      className="text-black"
-                      style={{
-                        marginTop: section.id === "the-inflection-point-marketplace" ? 0 : headingToBody,
-                        fontSize: "clamp(1rem, 1.25vw, 1.125rem)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {SECTION_CONTENT[section.id].map((block, i) => {
-                        if (typeof block === "string") {
-                          const isInflectionPoint = section.id === "the-inflection-point-marketplace";
-                          const label = isInflectionPoint
-                            ? INFLECTION_POINT_LABELS[i]
-                            : section.id === "my-role" && i <= 1
-                              ? MY_ROLE_LABELS[i]
-                              : null;
-                          return (
-                            <div
-                              key={i}
-                              style={{
-                                marginTop:
-                                  i === 0 ? 0 : isInflectionPoint ? 48 : section.id === "my-role" && i === 1 ? 48 : 24,
-                              }}
-                            >
-                              {section.id === "context" && i === 0 && (
-                                <div className="mb-6 flex w-full justify-center">
-                                  <div
-                                    className="overflow-hidden rounded-sm bg-white"
-                                    style={{
-                                      maxWidth: 560,
-                                      aspectRatio: "16/10",
-                                      maxHeight: 320,
-                                      minHeight: 220,
-                                      borderRadius: "0.125rem",
-                                    }}
-                                  >
-                                    <Image
-                                      src={`${basePath}/crmstory.png`}
-                                      alt="Customer and staff at counter with POS and product display in a beauty or retail setting"
-                                      width={1600}
-                                      height={1067}
-                                      className="h-full w-full object-contain"
-                                      unoptimized
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                              {label != null && (
-                                <p
-                                  className="font-medium uppercase text-mid-gray"
-                                  style={{
-                                    fontSize: "clamp(12px, 1.2vw, 14px)",
-                                    letterSpacing: "0.1em",
-                                    marginBottom: 14,
-                                    color: "rgba(0,0,0,0.6)",
-                                    fontFamily: "var(--font-plex-mono), monospace",
-                                  }}
-                                >
-                                  {label}
-                                </p>
-                              )}
-                              <p
-                                className={!isInflectionPoint && i > 0 ? "mt-6" : undefined}
-                                style={
-                                  isInflectionPoint ||
-                                  (section.id === "my-role" && (i === 0 || i === 1)) ||
-                                  section.id === "outcome" ||
-                                  section.id === "what-i-learned"
-                                    ? { whiteSpace: "pre-line" }
-                                    : undefined
-                                }
-                              >
-                                {block}
-                              </p>
-                            </div>
-                          );
-                        }
-                        return (
-                          <ul key={i} className="mt-6 list-disc pl-6 space-y-2">
-                            {block.list.map((item, j) => (
-                              <li key={j}>{item}</li>
-                            ))}
-                          </ul>
-                        );
-                      })}
-                    </div>
-                    {section.id === "context" && <PlatformShiftDiagram />}
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                <div
-                  className="mt-[14px]"
-                  style={{ marginTop: headingToBody }}
-                >
-                  <TextPlaceholder />
-                </div>
-                <div
-                  className="mt-6"
-                  style={{ marginTop: inSectionGap }}
-                >
-                  <TextPlaceholder />
-                </div>
-              </>
-            )}
+                  </div>
+                  <p className="mt-6">
+                    Staff set up a prepaid bundle on a customer&apos;s profile, then deducted each visit by hand at the counter while the customer waited. Both selling and redeeming happened in conversation, tracked in someone&apos;s head.
+                  </p>
+                  <p className="mt-4">
+                    Businesses sold prepaid because it put cash in the register before a service was delivered. The demand was never in doubt; what was missing was a system to carry it.
+                  </p>
+                </>
+              ) : section.id === "the-inflection-point-marketplace" ? (
+                <>
+                  <ShiftBeats />
+                  <ShiftFlow />
+                </>
+              ) : section.id === "my-role" ? (
+                <Strategy />
+              ) : section.id === "outcome" ? (
+                <>
+                  <p className="mt-4">
+                    The same four building blocks carried businesses that share almost nothing, one account spanning 15+ locations, with no POS integration.
+                  </p>
+                  <OutcomeClients />
+                  <p className="mt-8">
+                    It grew past the first release, too. Because offers were building blocks, not fixed rules, the system took on earned rewards without a rebuild, points and cashback, switched on per business.
+                  </p>
+                  <p className="mt-4">
+                    That is the payoff of designing structure instead of features: one commerce layer running a cafe&apos;s subscription, a studio&apos;s bundles, and a gas station&apos;s points, without splitting into separate products.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="mt-4">
+                    The biggest lesson: in an online-to-offline product, the design that matters most happens before the screen. Reducing a messy catalog to four building blocks did more for usability than any layout, and the least frictionless choice, not automating refunds, was the right one once I weighed liability, revenue, and who delivers the service.
+                  </p>
+                  <p className="mt-4">
+                    That is how I approach product design: start with the model, the incentives, and the offline reality, then design the screen that fits.
+                  </p>
+                </>
+              )}
+            </div>
           </section>
         </RevealSection>
       ))}
