@@ -50,7 +50,7 @@ function DiagLabel({ children }: { children: React.ReactNode }) {
 /* -------------------- Diagrams -------------------- */
 
 // Section 2: the shift, shown as a flow. Before = a manual staff relay;
-// after = one hub the business and customer both connect to.
+// after = a Venn where staff and customer each do their part, meeting at Marketplace.
 function IconBadge({ children }: { children: React.ReactNode }) {
   return (
     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: INK, color: "#fff" }}>
@@ -133,24 +133,49 @@ function HandConnector({ vertical = false }: { vertical?: boolean }) {
   );
 }
 
-// Solid arrow used in the after-state; className controls direction per breakpoint.
-function SolidArrow({ className = "" }: { className?: string }) {
-  return (
-    <span className={`flex shrink-0 items-center justify-center self-center ${className}`} style={{ color: INK }} aria-hidden>
-      <svg width="46" height="12" viewBox="0 0 56 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M1 6h50" />
-        <path d="M46 2l5 4-5 4" />
-      </svg>
-    </span>
-  );
-}
-
-function SideLabel({ role, children, align }: { role: string; children: React.ReactNode; align: "left" | "right" }) {
-  return (
-    <div className={align === "right" ? "text-center sm:text-right" : "text-center sm:text-left"}>
-      <p className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>{role}</p>
-      <p className="mt-1.5 whitespace-nowrap text-[16px] font-semibold" style={{ color: INK }}>{children}</p>
+// After-state Venn: staff and customer each do only their part, overlapping at
+// Marketplace. Translucent fills stack, so the overlap reads darker on its own.
+// Circles are 320 units across a 520-unit span: overlap is the middle 120.
+function VennHub() {
+  const circle = { border: "1px solid rgba(0,0,0,0.22)", background: "rgba(0,0,0,0.035)" };
+  const at = (left: string, top: string): React.CSSProperties => ({ position: "absolute", left, top, transform: "translate(-50%, -50%)" });
+  const Side = ({ role, verbs }: { role: string; verbs: string[] }) => (
+    <div className="text-center">
+      <p className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.45)", fontFamily: MONO }}>{role}</p>
+      <div className="mt-2 space-y-0.5">
+        {verbs.map((v) => (
+          <p key={v} className="text-[15px] font-semibold leading-snug" style={{ color: INK }}>{v}</p>
+        ))}
+      </div>
     </div>
+  );
+  const staff = <Side role="Staff" verbs={["Create", "Price", "Promote"]} />;
+  const customer = <Side role="Customer" verbs={["Browse", "Buy", "Redeem"]} />;
+  const hub = (
+    <div className="flex flex-col items-center gap-2">
+      <IconBadge><StoreIcon /></IconBadge>
+      <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: INK, fontFamily: MONO }}>Marketplace</span>
+    </div>
+  );
+  return (
+    <>
+      {/* Desktop: side by side */}
+      <div className="relative mx-auto mt-10 hidden w-full max-w-[520px] sm:block" style={{ aspectRatio: "520 / 320" }}>
+        <span aria-hidden className="absolute left-0 top-0 h-full rounded-full" style={{ width: "61.54%", ...circle }} />
+        <span aria-hidden className="absolute right-0 top-0 h-full rounded-full" style={{ width: "61.54%", ...circle }} />
+        <div style={at("19.2%", "50%")}>{staff}</div>
+        <div style={at("50%", "50%")}>{hub}</div>
+        <div style={at("80.8%", "50%")}>{customer}</div>
+      </div>
+      {/* Mobile: stacked top to bottom */}
+      <div className="relative mx-auto mt-8 w-full max-w-[300px] sm:hidden" style={{ aspectRatio: "320 / 520" }}>
+        <span aria-hidden className="absolute left-0 top-0 w-full rounded-full" style={{ height: "61.54%", ...circle }} />
+        <span aria-hidden className="absolute bottom-0 left-0 w-full rounded-full" style={{ height: "61.54%", ...circle }} />
+        <div style={at("50%", "19.2%")}>{staff}</div>
+        <div style={at("50%", "50%")}>{hub}</div>
+        <div style={at("50%", "80.8%")}>{customer}</div>
+      </div>
+    </>
   );
 }
 
@@ -185,51 +210,32 @@ function ShiftFlow() {
     <div className="mt-12">
       {/* BEFORE: manual staff relay */}
       <FlowKicker strong="BEFORE" muted="Manual handoff" />
-      <FlowTitle>Loyalty lived outside the experience.</FlowTitle>
+      <FlowTitle>Every step ran through staff.</FlowTitle>
 
       {/* Desktop: cards + dashed connectors, notes aligned beneath each card */}
       <div className="mt-8 hidden sm:grid" style={{ gridTemplateColumns: "1fr auto 1fr auto 1fr", columnGap: "6px" }}>
-        <StepCard n="01" title="Create a set"><Body1 /></StepCard>
+        <StepCard n="01" title="Create a bundle"><Body1 /></StepCard>
         <HandConnector />
-        <StepCard n="02" title="Find the user, add a set"><Body2 /></StepCard>
+        <StepCard n="02" title="Find the customer, add the bundle"><Body2 /></StepCard>
         <HandConnector />
         <StepCard n="03" title="Deduct the visit"><Body3 /></StepCard>
       </div>
 
       {/* Mobile: stacked cards with vertical connectors */}
       <div className="mt-6 flex flex-col gap-4 sm:hidden">
-        <StepCard n="01" title="Create a set"><Body1 /></StepCard>
+        <StepCard n="01" title="Create a bundle"><Body1 /></StepCard>
         <HandConnector vertical />
-        <StepCard n="02" title="Find the user, add a set"><Body2 /></StepCard>
+        <StepCard n="02" title="Find the customer, add the bundle"><Body2 /></StepCard>
         <HandConnector vertical />
         <StepCard n="03" title="Deduct the visit"><Body3 /></StepCard>
       </div>
 
       <div className="mt-14 sm:mt-16" aria-hidden />
 
-      {/* AFTER: one connected hub */}
+      {/* AFTER: each side does only its part, meeting at Marketplace */}
       <FlowKicker strong="AFTER" muted="Connected in-product" />
-      <FlowTitle>The product connects both sides.</FlowTitle>
-      <div className="mt-10 flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-6">
-        <SideLabel role="Business" align="right">Build + promote</SideLabel>
-        <SolidArrow className="rotate-90 sm:rotate-0" />
-        <div className="relative w-full max-w-[340px] shrink-0 rounded-2xl border-2 bg-white px-5 py-5 text-left sm:w-[340px]" style={{ borderColor: INK, boxShadow: "0 6px 20px rgba(0,0,0,0.08)" }}>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>Staff</span>
-            <span className="text-[11px] font-medium tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.28)", fontFamily: MONO }}>01</span>
-          </div>
-          <p className="mt-3 text-[16px]" style={{ color: INK }}>
-            <span className="font-semibold">Create a set</span>{" "}
-            <span style={{ color: "rgba(0,0,0,0.5)" }}>on Marketplace</span>
-          </p>
-          <div className="mt-4 flex min-h-[60px] items-center gap-3 rounded-xl px-3" style={{ backgroundColor: WELL }}>
-            <IconBadge><StoreIcon /></IconBadge>
-            <span className="whitespace-nowrap text-[14px]" style={{ color: INK }}>Buy 10 get 2 free</span>
-          </div>
-        </div>
-        <SolidArrow className="-rotate-90 sm:rotate-180" />
-        <SideLabel role="Customer" align="left">Buy on Marketplace</SideLabel>
-      </div>
+      <FlowTitle>Staff build it. Customers take it from there.</FlowTitle>
+      <VennHub />
       <p className="mt-8 text-center text-[11px] font-medium uppercase tracking-[0.18em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>
         One product &middot; Live in the Marketplace
       </p>
@@ -241,10 +247,10 @@ function ShiftFlow() {
 function ShiftBeats() {
   const beats: { label: string; body: React.ReactNode }[] = [
     {
-      label: "The gap",
+      label: "The limit",
       body: (
         <>
-          This wasn&apos;t one business improvising. Every business ran loyalty by hand because the product left no other way. A workaround everyone reinvents the same way isn&apos;t an edge case. It&apos;s the product telling you what&apos;s missing.
+          Outside a salon, the manual flow broke. At a busy soft-serve counter, staff can&apos;t hold up the line to deduct each visit by hand. It also capped who the product could serve: a larger chain or a new vertical wants loyalty that runs itself, not more work for staff.
         </>
       ),
     },
@@ -252,15 +258,15 @@ function ShiftBeats() {
       label: "The decision",
       body: (
         <>
-          The easy fix was to smooth the manual flow. But that keeps loyalty one-sided: the business deducts, the customer just watches a number drop. So the team went further, bringing the whole loop (selling, promoting, redeeming) inside the product, and making it work for both sides.
+          We&apos;d known the manual flow was a weak spot, but as a startup we spent that time rounding out the rest of the product. Clients from new verticals made it the priority, and the moment to rebuild rather than patch: a commerce layer where businesses sell prepaid value online, customers buy it on their own, and the product carries the loop from selling to redeeming.
         </>
       ),
     },
     {
-      label: "What it changed",
+      label: "Why online",
       body: (
         <>
-          That changed what the product was: not a booking tool with a manual pass tracker, but a commerce layer. Every decision after answered one question: how do you let customers browse and choose the product that fits them, instead of deciding on the spot mid-conversation?
+          We had seen this work before. Once booking moved online, many appointments came in between 10 PM and midnight, when people finally had time to rest and treat themselves. Customers stopped calling during business hours, and staff stopped waiting by the phone. So every decision after answered one question: how do you let customers browse and choose what fits them, instead of deciding on the spot mid-conversation?
         </>
       ),
     },
@@ -295,8 +301,8 @@ function ShiftBeats() {
   );
 }
 
-// Pillar 1: four building blocks, recombined per business.
-// Industry glyphs for the building-block examples.
+// Pillar 1: three building blocks, combined per business.
+// Industry glyph for the gym example; the leaf and hanger live with the Outcome icons.
 function DumbbellIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -304,45 +310,19 @@ function DumbbellIcon() {
     </svg>
   );
 }
-function SparkleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 4l1.8 5.2L19 11l-5.2 1.8L12 18l-1.8-5.2L5 11l5.2-1.8L12 4Z" />
-    </svg>
-  );
-}
-function LotusIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 19c-1.8-4-1.8-9.5 0-13.5 1.8 4 1.8 9.5 0 13.5Z" />
-      <path d="M12 19c-4.2-2-7.2-6-7.2-10 4 .6 6.8 3.9 7.2 10Z" />
-      <path d="M12 19c4.2-2 7.2-6 7.2-10-4 .6-6.8 3.9-7.2 10Z" />
-    </svg>
-  );
-}
-function CoffeeIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M4 8h13v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z" />
-      <path d="M17 9h2a2 2 0 0 1 0 4h-2" />
-      <path d="M8 3v2M12 3v2" />
-    </svg>
-  );
-}
 
-// Pillar 1: define the four building blocks, each with a real example from a
-// different vertical (so the same four visibly cover very different businesses).
+// Pillar 1: define the three building blocks, each with a real example from a
+// different vertical (so the same three visibly cover very different businesses).
 function BuildingBlocks() {
   const blocks: { n: string; name: string; what: string; example: string; icon: React.ReactNode }[] = [
-    { n: "01", name: "Bundle", what: "Prepaid sessions, as a set", example: "A studio: buy 10 classes, get 2 free", icon: <DumbbellIcon /> },
-    { n: "02", name: "Voucher", what: "Redeem for one thing", example: "A nail salon: free gel removal", icon: <SparkleIcon /> },
-    { n: "03", name: "Account credit", what: "A prepaid balance", example: "A spa: add $500, get $50", icon: <LotusIcon /> },
-    { n: "04", name: "Subscription", what: "Recurring, auto-renews", example: "A cafe: 30 cups a month", icon: <CoffeeIcon /> },
+    { n: "01", name: "Bundle", what: "Prepaid sessions, as a set", example: "A skincare studio: buy 10 sessions, get 2 free", icon: <LeafIcon /> },
+    { n: "02", name: "Voucher", what: "A perk to redeem", example: "A gym: a free trial class for new members", icon: <DumbbellIcon /> },
+    { n: "03", name: "Account credit", what: "A prepaid balance", example: "A dry cleaner: add $200, get $50", icon: <HangerIcon /> },
   ];
   return (
     <div className="mt-8 w-full">
       <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em]" style={{ color: "rgba(0,0,0,0.55)", fontFamily: MONO }}>The system</p>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {blocks.map((b) => (
           <div key={b.name} className="flex flex-col rounded-2xl border bg-white p-4" style={{ borderColor: CARD_BORDER, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
             <div className="flex items-center justify-between">
@@ -375,14 +355,13 @@ function TypeUI() {
     <span className="rounded-md border px-1.5 py-2 text-center text-[10px]" style={{ borderColor: HAIRLINE, color: "rgba(0,0,0,0.5)" }}>{label}</span>
   );
   return (
-    <div className="grid grid-cols-2 gap-1.5">
+    <div className="flex flex-col gap-1.5">
       <span className="relative rounded-md border px-1.5 py-2 text-center text-[10px] font-semibold" style={{ borderColor: INK, borderWidth: 1.5, color: INK }}>
         Bundle
         <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full" style={{ background: INK }} />
       </span>
       {opt("Voucher")}
       {opt("Account credit")}
-      {opt("Subscription")}
     </div>
   );
 }
@@ -393,7 +372,7 @@ function RuleUI() {
   return (
     <>
       <span className="w-fit rounded px-2 py-0.5 text-[10px] font-semibold text-white" style={{ background: INK }}>BUNDLE</span>
-      <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}><span>Buy</span>{pill("10")}<span>classes</span></span>
+      <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}><span>Buy</span>{pill("10")}<span>sessions</span></span>
       <span className="flex items-center gap-1.5 text-[11px]" style={{ color: "rgba(0,0,0,0.7)" }}><span>Get</span>{pill("2")}<span>free</span></span>
       <span className="h-1 rounded-full" style={{ width: "70%", background: "#ededed" }} />
     </>
@@ -407,7 +386,7 @@ function PreviewUI() {
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3">
         <span className="rounded-md" style={{ height: 40, background: "repeating-linear-gradient(45deg,#f4f4f4,#f4f4f4 6px,#fafafa 6px,#fafafa 12px)" }} />
-        <span className="text-[11px] font-bold" style={{ color: INK }}>10 classes + 2 free</span>
+        <span className="text-[11px] font-bold" style={{ color: INK }}>10 sessions + 2 free</span>
         <span className="h-1 rounded-full" style={{ width: "60%", background: "#ededed" }} />
         <span className="mt-0.5 w-fit rounded px-2.5 py-1 text-[10px] text-white" style={{ background: INK }}>Buy now</span>
       </div>
@@ -607,11 +586,11 @@ function Strategy() {
       <div>
         <PillarTitle>One set of building blocks</PillarTitle>
         <p className="mt-4">
-          The client base kept widening past beauty and wellness, into retail, food, and fuel. Every business sold something different, and building a separate system for each one wasn&apos;t practical. So I reduced every product to four building blocks that recombine.
+          Each vertical played the loyalty game differently. Underneath, it was one pattern: give customers something now that brings them back later. Building a new feature for every client wasn&apos;t going to scale, so I designed three building blocks that combine to fit each use case.
         </p>
         <BuildingBlocks />
-        <p className="mt-6">
-          Adding a new business is configuration, not new code.
+        <p className="mt-6 font-semibold" style={{ color: INK }}>
+          New vertical, same blocks. Only the combination changes.
         </p>
       </div>
 
@@ -619,7 +598,7 @@ function Strategy() {
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
         <PillarTitle>Build without leaving Marketplace</PillarTitle>
         <p className="mt-4">
-          Marketplace pulls every kind of item into one place to sell, and the plan had operators leave for every gap. I pushed to keep the frequent moves inline, and to keep one out on purpose: editing a definition ripples to every product it&apos;s in, so it stays in the module.
+          Marketplace was first scoped for selecting, not creating. To list a bundle, staff picked from bundles already set up in the bundle module. Picture Thanksgiving: staff are listing a batch of holiday promotions, and one voucher doesn&apos;t exist yet. They&apos;d have to drop the listing, leave for the voucher module, build it, and come back. So I brought creation inline: create, select, activate, price, all without leaving Marketplace. I kept one move out on purpose. Editing a definition changes every product that uses it, so it stays in its module.
         </p>
         <SurfaceRisk />
       </div>
@@ -628,7 +607,7 @@ function Strategy() {
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
         <PillarTitle>Building products without breaking them</PillarTitle>
         <p className="mt-4">
-          Combined into promotions, buy a bundle get a voucher, buy three for a better tier, these rules are easy to misconfigure, and a mistake loses real money in a live store. So I built setup as a sequence: one decision at a time, a preview of exactly what the customer will see, and a review before it goes live.
+          Staff can combine products into offers, like buy a bundle and get a voucher. Those rules are easy to misconfigure, and a mistake loses real money in a live store. So I built setup as a sequence: one decision at a time, a preview of exactly what the customer will see, and a review before it goes live.
         </p>
         <SetupStepper />
       </div>
@@ -647,7 +626,7 @@ function Strategy() {
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
         <PillarTitle>Why refunds stayed manual</PillarTitle>
         <p className="mt-4">
-          The obvious move was a one-click refund. I argued against it: a refund is part of the offline settlement, so it stays with the business, not the platform. The platform kept the record, not the liability.
+          The obvious move was a one-click refund. I recommended keeping it manual. People rarely buy a bundle from a place they don&apos;t know, so a refund request usually comes from a regular, and the business may want to refund them or offer a different service instead. That&apos;s a relationship call, not a system one. The platform kept the record; the business kept the call.
         </p>
       </div>
     </div>
@@ -663,7 +642,7 @@ function HeroMockup() {
       {/* Full composite — recreated operator console + real consumer screens */}
       <Image
         src={`${basePath}/crm_hero.png`}
-        alt="A business creates the Signature Skin Bundle in the operator console while the customer holds it in their My Purchases wallet and opens the pass to redeem"
+        alt="Staff create the Signature Skin Bundle in the operator console while the customer holds it in their My Purchases wallet and opens the pass to redeem"
         width={2672}
         height={2067}
         className="h-auto w-full"
@@ -736,7 +715,7 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
               {section.id === "context" ? (
                 <>
                   <p className="mt-4">
-                    The product began as a booking and CRM tool for appointment businesses. It already had the basics of loyalty. What it didn&apos;t have was a way to grow them.
+                    The product began as a booking and CRM tool for beauty and wellness businesses. Loyalty came built in: salons and spas sold prepaid bundles and account credit, which put cash in the register and brought customers back.
                   </p>
                   <div className="mb-6 mt-8 flex w-full justify-center">
                     <div className="overflow-hidden rounded-sm bg-white" style={{ maxWidth: 560, aspectRatio: "16/10", maxHeight: 320, minHeight: 220, borderRadius: "0.125rem" }}>
@@ -751,13 +730,10 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
                     </div>
                   </div>
                   <p className="mt-6">
-                    Staff set up a prepaid bundle on a customer&apos;s profile, then deducted each visit by hand at the counter while the customer waited. The system stored the balance and nothing more; the selling and the redeeming still ran on conversation.
+                    It all ran at the counter. Staff added a bundle to the customer&apos;s profile, then deducted each visit by hand while the customer waited. At a salon&apos;s pace, that worked.
                   </p>
                   <p className="mt-4">
-                    Businesses sold prepaid because it put cash in the register before a service was delivered. The demand was there. The product just hadn&apos;t caught up to it.
-                  </p>
-                  <p className="mt-4">
-                    Closing that gap would carry the product far past the businesses it began with.
+                    Then the product expanded beyond beauty and wellness, into fitness, food, retail, and fuel. Loyalty had to work for all of them.
                   </p>
                 </>
               ) : section.id === "the-inflection-point-marketplace" ? (
@@ -770,20 +746,20 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
               ) : section.id === "outcome" ? (
                 <>
                   <p className="mt-4">
-                    The same four building blocks carried businesses that share almost nothing, one account spanning 15+ locations, with no POS integration.
+                    The same building blocks ran businesses that share almost nothing. One client ran more than 15 locations on a single account, without needing any POS integration.
                   </p>
                   <OutcomeClients />
                   <p className="mt-8">
-                    It grew past the first release, too. Because products were building blocks, not fixed rules, the system took on earned rewards without a rebuild, points and cashback, switched on per business.
+                    It grew past the first release, too. Because products were built from blocks, not fixed rules, the system took on earned rewards without a rebuild, switched on per business. A gas station&apos;s drivers earned points per liter toward a free car wash. A spa&apos;s customers earned cashback into their account on everything they bought, from products in the spa&apos;s online shop to treatments staff logged at the counter.
                   </p>
                   <p className="mt-4">
-                    That is the payoff of designing structure instead of features: one commerce layer running a cafe&apos;s subscription, a studio&apos;s bundles, and a gas station&apos;s points, without splitting into a separate system for each.
+                    That is the payoff of designing structure instead of features: one commerce layer running a skincare studio&apos;s bundles, a dry cleaner&apos;s credit, a soft-serve shop&apos;s member vouchers, and a gas station&apos;s points, without a separate system for each.
                   </p>
                 </>
               ) : (
                 <>
                   <p className="mt-4">
-                    The biggest lesson: in an online-to-offline product, the design that matters most happens before the screen. Getting the model right, four building blocks, did more for usability than any layout could. And the harder call, keeping refunds manual, was right once I weighed liability, revenue, and who delivers the service.
+                    The biggest lesson: in an online-to-offline product, the design that matters most happens before the screen. Getting the model right did more for usability than any layout could. And the harder call, keeping refunds manual, was right once I saw a refund as part of a relationship, not a transaction.
                   </p>
                   <p className="mt-4">
                     That is how I approach product design: start with the model, the incentives, and the offline reality, then design the screen that fits.

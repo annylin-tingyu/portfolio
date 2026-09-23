@@ -22,7 +22,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     title: "CRM marketplace",
     year: "2023",
     tagline:
-      "A manual loyalty tool rebuilt into a commerce layer, now running across beauty, retail, and fuel.",
+      "A manual loyalty tool rebuilt into a commerce layer for beauty, retail, and fuel.",
     tags: ["CRM", "Commerce", "B2B"],
   },
   {
