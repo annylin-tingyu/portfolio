@@ -58,7 +58,7 @@ const PAGE = CARD_W + GAP;
 const REVEAL_PX = (EVENTS.length - 1) * PAGE; // scroll from card 0 to the last card
 const VIEW_H = CARD_H + 28; // card height + vertical room for the shadow
 const TYPING_MS = 1200; // Ollie "generating" beat
-const CARDS_MS = 6800; // scroll through the suggestions, then loop back to typing
+const CARDS_MS = 4800; // scroll through the suggestions, then loop back to typing
 
 function OllieAvatar() {
   // Reconstructed from the Figma geometry (32×32): blue disc, white peanut
