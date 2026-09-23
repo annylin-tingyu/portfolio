@@ -185,7 +185,7 @@ function ShiftFlow() {
     <div className="mt-12">
       {/* BEFORE: manual staff relay */}
       <FlowKicker strong="BEFORE" muted="Manual handoff" />
-      <FlowTitle>The offer lived outside the experience.</FlowTitle>
+      <FlowTitle>Loyalty lived outside the experience.</FlowTitle>
 
       {/* Desktop: cards + dashed connectors, notes aligned beneath each card */}
       <div className="mt-8 hidden sm:grid" style={{ gridTemplateColumns: "1fr auto 1fr auto 1fr", columnGap: "6px" }}>
@@ -231,7 +231,7 @@ function ShiftFlow() {
         <SideLabel role="Customer" align="left">Buy on Marketplace</SideLabel>
       </div>
       <p className="mt-8 text-center text-[11px] font-medium uppercase tracking-[0.18em]" style={{ color: "rgba(0,0,0,0.4)", fontFamily: MONO }}>
-        One offer &middot; Live in the product
+        One product &middot; Live in the Marketplace
       </p>
     </div>
   );
@@ -244,7 +244,7 @@ function ShiftBeats() {
       label: "The gap",
       body: (
         <>
-          This wasn&apos;t one business improvising. Every business ran loyalty by hand because the product left no other way. A workaround everyone reinvents the same way isn&apos;t an edge case, it&apos;s the product telling you what&apos;s missing.
+          This wasn&apos;t one business improvising. Every business ran loyalty by hand because the product left no other way. A workaround everyone reinvents the same way isn&apos;t an edge case. It&apos;s the product telling you what&apos;s missing.
         </>
       ),
     },
@@ -252,7 +252,7 @@ function ShiftBeats() {
       label: "The decision",
       body: (
         <>
-          The easy fix was to smooth the manual flow. But that keeps loyalty one-sided: the business deducts, the customer just watches a number drop. So the team went further, bringing the whole loop, selling, promoting, redeeming, inside the product and making it work for both sides.
+          The easy fix was to smooth the manual flow. But that keeps loyalty one-sided: the business deducts, the customer just watches a number drop. So the team went further, bringing the whole loop (selling, promoting, redeeming) inside the product, and making it work for both sides.
         </>
       ),
     },
@@ -260,7 +260,7 @@ function ShiftBeats() {
       label: "What it changed",
       body: (
         <>
-          That changed what the product was: not a booking tool with a manual pass tracker, but a commerce layer. Every decision after answered one question: how do you let customers browse and choose the offer that fits them, instead of deciding on the spot mid-conversation, while taking the manual work off both sides?
+          That changed what the product was: not a booking tool with a manual pass tracker, but a commerce layer. Every decision after answered one question: how do you let customers browse and choose the product that fits them, instead of deciding on the spot mid-conversation?
         </>
       ),
     },
@@ -457,7 +457,7 @@ const STEPS: { n: string; label: string; Ui: () => React.ReactElement; emphasis:
 function SetupStepper() {
   return (
     <div className="mt-8 w-full">
-      <DiagLabel>Building an offer, one decision at a time</DiagLabel>
+      <DiagLabel>Building a product, one decision at a time</DiagLabel>
 
       {/* Desktop: four steps in a row, arrows between, labels beneath */}
       <div className="hidden md:grid" style={{ gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr", columnGap: "6px", rowGap: "12px" }}>
@@ -513,13 +513,13 @@ function SurfaceRisk() {
         <div className="flex flex-col items-center justify-center gap-1 md:px-1">
           <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>edit definition</span>
           <StepArrow className="rotate-90 md:rotate-0" />
-          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>ripples to every offer</span>
+          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>ripples to every product</span>
         </div>
         {/* Module: defining, kept separate on purpose */}
         <div className="rounded-2xl border border-dashed p-5 md:flex-1" style={{ borderColor: "rgba(0,0,0,0.3)", background: "rgba(0,0,0,0.015)" }}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>Module &middot; Defining</p>
           <span className="mt-3 inline-block rounded-full border px-4 py-1.5 text-[13px] font-semibold" style={{ borderColor: INK, color: INK }}>Edit definition</span>
-          <p className="mt-3 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.5)" }}>changes ripple to every offer that uses it, and can&apos;t touch what a customer already bought</p>
+          <p className="mt-3 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.5)" }}>changes ripple to every product that uses it, and can&apos;t touch what a customer already bought</p>
         </div>
       </div>
     </div>
@@ -567,7 +567,7 @@ function OutcomeClients() {
   const clients: { industry: string; name: string; use: string; icon: React.ReactNode }[] = [
     { industry: "Skincare", name: "Eartha", use: "Session bundles", icon: <LeafIcon /> },
     { industry: "Dry cleaning", name: "SparKlean", use: "Account credit", icon: <HangerIcon /> },
-    { industry: "Soft-serve", name: "Cremia", use: "Retail offers", icon: <IceCreamIcon /> },
+    { industry: "Soft-serve", name: "Cremia", use: "Member vouchers", icon: <IceCreamIcon /> },
     { industry: "Fuel", name: "Victory", use: "Points per liter", icon: <FuelIcon /> },
   ];
   return (
@@ -607,7 +607,7 @@ function Strategy() {
       <div>
         <PillarTitle>One set of building blocks</PillarTitle>
         <p className="mt-4">
-          Every business sold something different, and I couldn&apos;t build a separate product for each. So I broke every offer into four building blocks that recombine.
+          The client base kept widening past beauty and wellness, into retail, food, and fuel. Every business sold something different, and building a separate system for each one wasn&apos;t practical. So I reduced every product to four building blocks that recombine.
         </p>
         <BuildingBlocks />
         <p className="mt-6">
@@ -619,14 +619,14 @@ function Strategy() {
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
         <PillarTitle>Build without leaving Marketplace</PillarTitle>
         <p className="mt-4">
-          Marketplace pulls every kind of item into one place to sell, and the plan had operators leave for every gap. I pushed to keep the frequent moves inline, and to keep one out on purpose: editing a definition ripples to every offer it&apos;s in, so it stays in the module.
+          Marketplace pulls every kind of item into one place to sell, and the plan had operators leave for every gap. I pushed to keep the frequent moves inline, and to keep one out on purpose: editing a definition ripples to every product it&apos;s in, so it stays in the module.
         </p>
         <SurfaceRisk />
       </div>
 
       {/* Pillar 2 */}
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
-        <PillarTitle>Building offers without breaking them</PillarTitle>
+        <PillarTitle>Building products without breaking them</PillarTitle>
         <p className="mt-4">
           Combined into promotions, buy a bundle get a voucher, buy three for a better tier, these rules are easy to misconfigure, and a mistake loses real money in a live store. So I built setup as a sequence: one decision at a time, a preview of exactly what the customer will see, and a review before it goes live.
         </p>
@@ -736,7 +736,7 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
               {section.id === "context" ? (
                 <>
                   <p className="mt-4">
-                    The product began as a booking and CRM tool for appointment businesses. Loyalty existed, but barely.
+                    The product began as a booking and CRM tool for appointment businesses. It already had the basics of loyalty. What it didn&apos;t have was a way to grow them.
                   </p>
                   <div className="mb-6 mt-8 flex w-full justify-center">
                     <div className="overflow-hidden rounded-sm bg-white" style={{ maxWidth: 560, aspectRatio: "16/10", maxHeight: 320, minHeight: 220, borderRadius: "0.125rem" }}>
@@ -751,10 +751,13 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
                     </div>
                   </div>
                   <p className="mt-6">
-                    Staff set up a prepaid bundle on a customer&apos;s profile, then deducted each visit by hand at the counter while the customer waited. Both selling and redeeming happened in conversation, tracked in someone&apos;s head.
+                    Staff set up a prepaid bundle on a customer&apos;s profile, then deducted each visit by hand at the counter while the customer waited. The system stored the balance and nothing more; the selling and the redeeming still ran on conversation.
                   </p>
                   <p className="mt-4">
-                    Businesses sold prepaid because it put cash in the register before a service was delivered. The demand was never in doubt; what was missing was a system to carry it.
+                    Businesses sold prepaid because it put cash in the register before a service was delivered. The demand was there. The product just hadn&apos;t caught up to it.
+                  </p>
+                  <p className="mt-4">
+                    Closing that gap would carry the product far past the businesses it began with.
                   </p>
                 </>
               ) : section.id === "the-inflection-point-marketplace" ? (
@@ -771,16 +774,16 @@ export function CaseStudyLayout({ category, title, description }: CaseStudyLayou
                   </p>
                   <OutcomeClients />
                   <p className="mt-8">
-                    It grew past the first release, too. Because offers were building blocks, not fixed rules, the system took on earned rewards without a rebuild, points and cashback, switched on per business.
+                    It grew past the first release, too. Because products were building blocks, not fixed rules, the system took on earned rewards without a rebuild, points and cashback, switched on per business.
                   </p>
                   <p className="mt-4">
-                    That is the payoff of designing structure instead of features: one commerce layer running a cafe&apos;s subscription, a studio&apos;s bundles, and a gas station&apos;s points, without splitting into separate products.
+                    That is the payoff of designing structure instead of features: one commerce layer running a cafe&apos;s subscription, a studio&apos;s bundles, and a gas station&apos;s points, without splitting into a separate system for each.
                   </p>
                 </>
               ) : (
                 <>
                   <p className="mt-4">
-                    The biggest lesson: in an online-to-offline product, the design that matters most happens before the screen. Reducing a messy catalog to four building blocks did more for usability than any layout, and the least frictionless choice, not automating refunds, was the right one once I weighed liability, revenue, and who delivers the service.
+                    The biggest lesson: in an online-to-offline product, the design that matters most happens before the screen. Getting the model right, four building blocks, did more for usability than any layout could. And the harder call, keeping refunds manual, was right once I weighed liability, revenue, and who delivers the service.
                   </p>
                   <p className="mt-4">
                     That is how I approach product design: start with the model, the incentives, and the offline reality, then design the screen that fits.
