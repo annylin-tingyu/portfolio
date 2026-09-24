@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono, Sora, Manrope, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -58,6 +59,12 @@ export default function RootLayout({
         <CustomCursor />
         <SiteHeader />
         <LayoutShell>{children}</LayoutShell>
+        {/* Cloudflare Web Analytics — privacy-first, cookieless page views */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          strategy="afterInteractive"
+          data-cf-beacon='{"token": "2bbbc598383044a8828a4d90263f3306"}'
+        />
       </body>
     </html>
   );
