@@ -3,7 +3,7 @@ import type { Project } from "@/components/ProjectCard";
 export const projects: Project[] = [
   {
     slug: "auto-table-assignment",
-    title: "Auto Table Assignment System",
+    title: "Automatic Table Assignment System",
     category: "Case 01",
     description:
       "Designing flexible automation for real-time restaurant seating.",

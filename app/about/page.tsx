@@ -144,7 +144,7 @@ export default function AboutPage() {
         {/* Quote 1 */}
         <QuoteCard
           text={QUOTES[0]}
-          source={{ label: "Auto Table Assignment", slug: "auto-table-assignment" }}
+          source={{ label: "Automatic Table Assignment", slug: "auto-table-assignment" }}
           className="bento-col-2"
         />
 

@@ -403,7 +403,7 @@ export function AutoTableCaseStudyLayout({
                   {/* Role cards */}
                   <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3" style={{ marginBottom: "clamp(56px, 8vw, 88px)" }}>
                     {[
-                      "I designed the auto-assignment rules, state model, and override flow for a staff-facing reservation system used by 30+ restaurants.",
+                      "I designed the assignment rules, state model, and override flow for a staff-facing reservation system used by 30+ restaurants.",
                       "I ran research with restaurant operators to understand where automation earns trust and where human judgment has to take over.",
                       "I collaborated with the PM through multiple rounds of review, pressure-testing edge cases before anything shipped.",
                     ].map((text, i) => (

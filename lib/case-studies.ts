@@ -11,7 +11,7 @@ export type CaseStudy = {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "auto-table-assignment",
-    title: "Auto table assignment system",
+    title: "Automatic table assignment system",
     year: "2025",
     tagline:
       "Automated table logic for 30+ restaurants, reducing manual seating errors.",
