@@ -28,10 +28,10 @@ const SECTION_CONTENT: Record<string, (string | { list: string[] })[]> = {
     "The goal wasn't automation. It was a system staff could trust. Predictable enough that they'd rely on it during peak hours. Explainable enough that when it failed, they'd know why. Flexible enough that when they disagreed with it, they could act.\n\nThree rules shaped everything that followed.",
   ],
   outcome: [
-    "After rollout, hosts reported feeling less rushed during peak periods, and managers saw fewer sections running consistently behind.\n\nThe system didn’t replace judgment; it absorbed the repetitive decision-making so people could focus on exceptions and hospitality.",
+    "After rollout, hosts reported feeling less rushed during peak periods, and restaurants saw fewer sections falling behind.\n\nThe system didn’t replace judgment; it absorbed the repetitive decision-making so people could focus on exceptions and hospitality.",
   ],
   "what-i-learned": [
-    "The biggest reframe wasn’t a design decision. It was understanding what the override was actually for.\n\nGoing in, I thought of override as a safety net. A way for staff to correct the system when it got something wrong. But the cases where staff actually used it weren’t system failures. They were judgment calls the system had no visibility into. A walk-in willing to take a shorter dining window, a party of five willing to squeeze into a four-top. The system would turn that business away. The staff member didn’t have to.\n\nThat reframe changed how I thought about the whole feature. The system’s job wasn’t to make decisions. It was to make the right information visible so staff could.\n\nThe other thing this project reinforced: going back to users before building caught edge cases I would have missed at my desk. My first model felt complete until I tested it against how staff actually work. Getting that feedback early, before anything was built, is what changed the direction.\n\nOne thing I’d do differently: this shipped without usage instrumentation, so I can’t point to how often staff override or how many assignments resolve cleanly. Next time I’d build those signals in from the start, so the model could be validated against real behavior, not just my read of it.",
+    "The biggest reframe wasn’t a design decision. It was understanding what the override was actually for.\n\nGoing in, I thought of override as a safety net. A way for staff to correct the system when it got something wrong. But the cases where staff actually used it weren’t system failures. They were judgment calls the system had no visibility into: a walk-in willing to take a shorter dining window, or a party that didn’t want the slightly smaller table the system had flagged. Only the host, talking with the guest, could know either one.\n\nThat reframe changed how I thought about the whole feature. The system’s job wasn’t to make decisions. It was to make the right information visible so staff could.\n\nThe other thing this project reinforced: going back to users before building caught edge cases I would have missed at my desk. My first model felt complete until I tested it against how staff actually work. Getting that feedback early, before anything was built, is what changed the direction.\n\nOne thing I’d do differently: this shipped without usage instrumentation, so I can’t point to how often staff override or how many assignments resolve cleanly. Next time I’d build those signals in from the start, so the model could be validated against real behavior, not just my read of it.",
   ],
 };
 
@@ -122,12 +122,12 @@ function StrategyPillarGrid() {
     {
       label: "Rule 02",
       title: "Match each party to the right-sized table",
-      body: "The system prioritizes exact capacity match first, then smallest sufficient capacity. Seating two guests at a six-top leaves revenue on the floor. When no ideal match exists, the system still seats the party but flags that the table is larger than they need, so staff can make an informed call rather than an accidental one.",
+      body: "The system looks for an exact capacity match first. If there isn't one, it tries a slightly smaller table, like a four-top with two extra chairs for a party of six, then a larger one. Smaller comes first because it saves the big tables for the parties that need them. Seating two guests at a six-top leaves revenue on the floor. Either way, the system still assigns but flags that the table isn't a perfect fit, so the host can check with the party and make an informed call rather than an accidental one.",
     },
     {
       label: "Rule 03",
-      title: "Explain every outcome, including failure",
-      body: "When the system cannot assign, it communicates why. Assigned, cannot assign with explanation, or manual required. A failure without context is noise. A failure with context is a handoff.",
+      title: "Explain every outcome, never block staff",
+      body: "Every assignment ends in a clear result: assigned, flagged, or no available table, with the reason, so staff can answer a caller on the spot. During service, staff never wait on the system. They can assign any table directly, and the system warns about the risk without blocking.",
     },
   ];
 
@@ -519,7 +519,7 @@ export function AutoTableCaseStudyLayout({
                             The X that hid the problem
                           </h3>
                           <p style={{ color: "var(--mid-gray)", lineHeight: 1.75 }}>
-                            My first design let staff dismiss a conflict warning with an X, and they did, on reflex, without reading it. Three reports and a few overbookings later, I made the alert un-dismissable: a persistent state that clears only when the conflict is actually resolved, so the risk stays in front of staff.
+                            On our reservation panel, staff kept reporting problems they hadn&apos;t seen coming, even though an error message had appeared. They were closing it with the X on reflex, without reading it. So for table assignment, I made the conflict warning un-dismissable: a persistent state that stays on the table, so the risk stays in front of staff.
                           </p>
                         </div>
                       </div>
@@ -536,6 +536,17 @@ export function AutoTableCaseStudyLayout({
                       initialHeight={1560}
                     />
                   </div>
+                  {SECTION_CONTENT.outcome?.map((block, i) =>
+                    typeof block === "string" ? (
+                      <div key={i} className={i === 0 ? "mt-12" : "mt-6"}>
+                        {block.split(/\n{2,}/).map((para, idx) => (
+                          <div key={idx} className={idx > 0 ? "mt-4" : undefined}>
+                            <p>{para.trim()}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null
+                  )}
                 </>
               ) : (
                 SECTION_CONTENT[section.id]?.map((block, i) => {
