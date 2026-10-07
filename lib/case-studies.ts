@@ -11,7 +11,7 @@ export type CaseStudy = {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "auto-table-assignment",
-    title: "Automatic table assignment system",
+    title: "Automatic Table Assignment System",
     year: "2025",
     tagline:
       "Automated table logic for 30+ restaurants, reducing manual seating errors.",
@@ -19,7 +19,7 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
   {
     slug: "crm-marketplace",
-    title: "CRM marketplace",
+    title: "CRM Marketplace",
     year: "2023",
     tagline:
       "A manual loyalty tool rebuilt into a commerce layer for beauty, retail, and fuel.",
