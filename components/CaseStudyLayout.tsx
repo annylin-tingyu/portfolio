@@ -471,8 +471,8 @@ function SetupStepper() {
   );
 }
 
-// Pillar: where the work lives. Frequent, safe moves stay inline in Marketplace;
-// the one risky move, editing a definition, goes back to the module.
+// Pillar: where the work lives. Every action, including editing, stays inline in
+// Marketplace; an edit updates a single source of truth and never changes past purchases.
 function SurfaceRisk() {
   const pill = (label: string) => (
     <span key={label} className="rounded-full border px-3 py-1.5 text-[13px]" style={{ borderColor: HAIRLINE, color: INK }}>{label}</span>
@@ -482,23 +482,23 @@ function SurfaceRisk() {
       <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-4">
         {/* Marketplace: selling, all inline */}
         <div className="rounded-2xl border bg-white p-5 md:flex-[1.4]" style={{ borderColor: INK, borderWidth: 1.5 }}>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: INK, fontFamily: MONO }}>Marketplace &middot; Selling</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: INK, fontFamily: MONO }}>Marketplace &middot; One place</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {["Create", "Select", "Activate", "Price"].map((p) => pill(p))}
+            {["Create", "Select", "Edit", "Activate", "Price"].map((p) => pill(p))}
           </div>
           <p className="mt-3 text-[12px]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>all inline, no leaving the flow</p>
         </div>
         {/* Connector */}
         <div className="flex flex-col items-center justify-center gap-1 md:px-1">
-          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>edit definition</span>
+          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>edit in a pop-up</span>
           <StepArrow className="rotate-90 md:rotate-0" />
-          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>ripples to every product</span>
+          <span className="text-[11px] uppercase tracking-[0.1em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>updates the source</span>
         </div>
         {/* Module: defining, kept separate on purpose */}
         <div className="rounded-2xl border border-dashed p-5 md:flex-1" style={{ borderColor: "rgba(0,0,0,0.3)", background: "rgba(0,0,0,0.015)" }}>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>Module &middot; Defining</p>
-          <span className="mt-3 inline-block rounded-full border px-4 py-1.5 text-[13px] font-semibold" style={{ borderColor: INK, color: INK }}>Edit definition</span>
-          <p className="mt-3 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.5)" }}>changes ripple to every product that uses it, and can&apos;t touch what a customer already bought</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: "rgba(0,0,0,0.5)", fontFamily: MONO }}>Source of truth</p>
+          <span className="mt-3 inline-block rounded-full border px-4 py-1.5 text-[13px] font-semibold" style={{ borderColor: INK, color: INK }}>The item&apos;s definition</span>
+          <p className="mt-3 text-[12px] leading-snug" style={{ color: "rgba(0,0,0,0.5)" }}>It lives in its module. Edits update it here, and past purchases stay exactly as bought.</p>
         </div>
       </div>
     </div>
@@ -586,19 +586,16 @@ function Strategy() {
       <div>
         <PillarTitle>One set of building blocks</PillarTitle>
         <p className="mt-4">
-          Each vertical played the loyalty game differently. Underneath, it was one pattern: give customers something now that brings them back later. Building a new feature for every client wasn&apos;t going to scale, so I designed three building blocks that combine to fit each use case.
+          Each vertical played the loyalty game differently. Underneath, we saw one pattern: give customers something now that brings them back later. Bundles, vouchers, and account credit were the pieces for it. Building a new feature for every client wasn&apos;t going to scale, so I designed how each one is configured, and how they come together in the Marketplace.
         </p>
         <BuildingBlocks />
-        <p className="mt-6 font-semibold" style={{ color: INK }}>
-          New vertical, same blocks. Only the combination changes.
-        </p>
       </div>
 
       {/* Pillar: create/edit surface */}
       <div style={{ marginTop: "clamp(48px, 6vw, 72px)" }}>
         <PillarTitle>Build without leaving Marketplace</PillarTitle>
         <p className="mt-4">
-          Marketplace was first scoped for selecting, not creating. To list a bundle, staff picked from bundles already set up in the bundle module. Picture Thanksgiving: staff are listing a batch of holiday promotions, and one voucher doesn&apos;t exist yet. They&apos;d have to drop the listing, leave for the voucher module, build it, and come back. So I brought creation inline: create, select, activate, price, all without leaving Marketplace. I kept one move out on purpose. Editing a definition changes every product that uses it, so it stays in its module.
+          Marketplace was first scoped for selecting, not creating. To list a bundle, staff picked from bundles already set up in the bundle module. Picture Thanksgiving: staff are listing a batch of holiday promotions, and one voucher doesn&apos;t exist yet. They&apos;d have to drop the listing, leave for the voucher module, build it, and come back. So I brought it inline: create, select, edit, activate, and price, all without leaving Marketplace. Editing works the same way: a pop-up inside Marketplace edits the item and updates the source, and the change only applies to purchases made afterward, so customers who already bought keep exactly what they bought.
         </p>
         <SurfaceRisk />
       </div>
