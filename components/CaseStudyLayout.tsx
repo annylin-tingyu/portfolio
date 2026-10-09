@@ -258,7 +258,7 @@ function ShiftBeats() {
       label: "The decision",
       body: (
         <>
-          We&apos;d known the manual flow was a weak spot, but as a startup we spent that time rounding out the rest of the product. Clients from new verticals made it the priority, and the moment to rebuild rather than patch: a commerce layer where businesses sell prepaid value online, customers buy it on their own, and the product carries the loop from selling to redeeming.
+          We&apos;d known the manual flow was a weak spot, but as a startup our effort went into getting booking and appointment management right first. Loyalty was in from the start, but couldn&apos;t be perfected in one pass, so it stayed manual until the roadmap called for more. Clients from new verticals made it the priority, and the moment to rebuild rather than patch: a commerce layer where businesses sell prepaid value online, customers buy it on their own, and the product carries the loop from selling to redeeming.
         </>
       ),
     },
