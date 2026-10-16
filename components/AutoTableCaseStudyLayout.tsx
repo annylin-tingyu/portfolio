@@ -178,7 +178,7 @@ function AutoAssignmentFlowDiagram() {
         </p>
         <div className="w-full max-w-[960px]">
           <ImageLightbox
-            src={`${basePath}/table_assign_flow.png`}
+            src={`${basePath}/table_assign_flow.webp`}
             alt="Auto-assignment evaluation flow. Reservation details entered, then a check for complete inputs, then table availability. If a table can be assigned the system assigns it automatically. If not, it shows no available table and hands off to staff, who review the floor and either assign a table manually while the system flags the risk, or inform the customer when no table can be found."
             width={5080}
             height={2066}

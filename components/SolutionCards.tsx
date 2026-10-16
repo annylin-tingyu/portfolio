@@ -5,9 +5,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-/** Files in /public/owting/ (spaces encoded for URLs). */
-const surpriseMeSrc = `${basePath}/owting/surprise%20me.png`;
-const createWithMeSrc = `${basePath}/owting/let%27s%20get%20planning.png`;
+/** Files in /public/owting/ */
+const surpriseMeSrc = `${basePath}/owting/surprise-me.webp`;
+const createWithMeSrc = `${basePath}/owting/lets-get-planning.webp`;
 
 function FadeInOnScroll({
   delayMs,

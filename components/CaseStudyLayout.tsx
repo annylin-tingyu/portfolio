@@ -638,7 +638,7 @@ function HeroMockup() {
     <div className="relative mx-auto w-full max-w-[960px]">
       {/* Full composite — recreated operator console + real consumer screens */}
       <Image
-        src={`${basePath}/crm_hero.png`}
+        src={`${basePath}/crm_hero.webp`}
         alt="Staff create the Signature Skin Bundle in the operator console while the customer holds it in their My Purchases wallet and opens the pass to redeem"
         width={2672}
         height={2067}
