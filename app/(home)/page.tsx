@@ -35,7 +35,7 @@ export default function CityPage() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`${basePath}/golden-gate-bridge.png`}
+            src={`${basePath}/golden-gate-bridge.webp`}
             alt="Golden Gate Bridge illustration"
             className="h-auto w-full"
           />
